@@ -78,7 +78,7 @@
       "name": "Communauté",
       "short_name": "Communauté",
       "description": "Voir les publications",
-      "url": "/community.html",
+      "url": "communauté.html",
       "icons": [
         {
           "src": "icon-96.png",
