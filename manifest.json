@@ -75,10 +75,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Communauté",
+      "name": "community",
       "short_name": "Communauté",
       "description": "Voir les publications",
-      "url": "communauté.html",
+      "url": "community.html",
       "icons": [
         {
           "src": "icon-96.png",
