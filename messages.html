@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "598bd958-5b76-41b9-8d72-a84ffe1cf92b",
+      serviceWorkerParam: { scope: "/" },
+      serviceWorkerPath: "sw.js"
+    });
+  });
+</script>
+
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share — Messages</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+--green: #28C840;
+--text-soft: rgba(255,255,255,0.75);
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+html, body {
+height: 100%;
+overflow: hidden;
+}
+body {
+background: var(--black);
+color:var(--white);
+font-family:sans-serif;
+display: flex;
+flex-direction: column;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+nav {
+position: relative;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 12px 20px;
+background: rgba(10,10,10,0.98);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+flex-shrink: 0;
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+}
+.nav-logo img {
+width: 40px;
+height: 40px;
+object-fit: contain;
+border-radius: 50%;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color: var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.nav-links {
+display: flex;
+gap: 20px;
+}
+.nav-links a {
+color: var(--gray);
+text-decoration: none;
+font-size: 0.8rem;
+font-weight: 600;
+cursor: none;
+transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+color: var(--gold);
+}
+.nav-right {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.nav-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.78rem;
+cursor: none;
+border: 1px solid rgba(245,168,0,0.4);
+overflow: hidden;
+flex-shrink: 0;
+}
+.nav-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+
+.chat-layout {
+display: flex;
+flex: 1;
+overflow: hidden;
+position: relative;
+z-index: 1;
+height: calc(100vh - 57px);
+}
+
+.conv-panel {
+width: 300px;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+border-right: 1px solid rgba(255,255,255,0.07);
+background: rgba(10,10,10,0.5);
+}
+.conv-header {
+padding: 14px 16px;
+border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.conv-header-top {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 10px;
+}
+.conv-title {
+font-family: "Orbitron",monospace;
+font-size: 1.3rem;
+font-weight: 700;
+color: var(--gold);
+}
+.btn-new-conv {
+background: var(--blue);
+color:#E2E5E7;
+border: none;
+border-radius: 6px;
+padding: 6px 12px;
+font-size: 1rem;
+font-weight: 700;
+cursor: none;
+font-family: sans-serif;
+transition: all 0.2s;
+}
+.btn-new-conv:hover {
+background: #e09500;
+}
+.conv-search {
+position: relative;
+}
+.conv-search-icon {
+position: absolute;
+left: 10px;
+top: 50%;
+transform: translateY(-50%);
+font-size: 0.85rem;
+}
+.conv-search input {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.08);
+border-radius: 8px;
+padding: 8px 10px 8px 32px;
+color: var(--white);
+font-family: sans-serif;
+font-size: 0.82rem;
+outline: none;
+transition: border-color 0.2s;
+}
+.conv-search input:focus {
+border-color: var(--gold);
+}
+.conv-search input::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.conv-list {
+flex: 1;
+overflow-y: auto;
+}
+.conv-list::-webkit-scrollbar {
+width: 4px;
+}
+.conv-list::-webkit-scrollbar-thumb {
+background: rgba(255,255,255,0.1);
+border-radius: 2px;
+}
+.conv-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 12px 16px;
+cursor: pointer;
+transition: background 0.2s;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+position: relative;
+}
+.conv-options-btn {
+background: none;
+border: none;
+color: var(--gray);
+font-size: 0.95rem;
+padding: 8px;
+flex-shrink: 0;
+cursor:none;
+border-radius: 8px;
+}
+.conv-options-btn:hover {
+color: var(--gold);
+background: rgba(255,255,255,0.06);
+}
+.block-banner {
+display: flex;
+align-items: center;
+gap: 8px;
+justify-content: center;
+flex-wrap: wrap;
+background: rgba(229,72,77,0.1);
+border-top: 1px solid rgba(229,72,77,0.25);
+color: #e5484d;
+font-size: 0.78rem;
+padding: 12px 16px;
+text-align: center;
+}
+.block-banner .unblock-link {
+color: var(--gold);
+text-decoration: underline;
+cursor: pointer;
+font-weight: 700;
+}
+.msg-delete-btn {
+background: none;
+border: none;
+color: var(--gray);
+font-size: 0.75rem;
+padding: 4px 6px;
+cursor:none;
+opacity: 0.6;
+transition: opacity 0.15s,color 0.15s;
+}
+.msg-delete-btn:hover {
+opacity: 1;
+color: #e5484d;
+}
+.msg-item {
+position: relative;
+}
+.msg-item .msg-content {
+position: relative;
+}
+.conv-item:hover {
+background: rgba(255,255,255,0.04);
+}
+.conv-item.active {
+background: rgba(245,168,0,0.08);
+border-left: 3px solid var(--gold);
+}
+.conv-item.active:hover {
+background: rgba(245,168,0,0.1);
+}
+.conv-avatar-wrap {
+position: relative;
+flex-shrink: 0;
+}
+.conv-avatar {
+width: 42px;
+height: 42px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.88rem;
+overflow: hidden;
+}
+.conv-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.status-dot {
+position: absolute;
+bottom: 1px;
+right: 1px;
+width: 11px;
+height: 11px;
+border-radius: 50%;
+border: 2px solid var(--black);
+}
+.status-dot.online {
+background: var(--green);
+}
+.status-dot.offline {
+background: var(--gray);
+}
+.conv-info {
+flex: 1;
+min-width: 0;
+}
+.conv-name {
+font-size: 0.86rem;
+font-weight: 600;
+margin-bottom: 2px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.conv-preview {
+font-size: 0.74rem;
+color: var(--gray);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.conv-preview.unread {
+color: var(--white);
+font-weight: 600;
+}
+.conv-meta {
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 4px;
+flex-shrink: 0;
+}
+.conv-time {
+font-size: 0.66rem;
+color: var(--gray);
+}
+.unread-badge {
+background: var(--gold);
+color: var(--black);
+font-size: 0.62rem;
+font-weight: 700;
+min-width: 18px;
+height: 18px;
+border-radius: 9px;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 4px;
+}
+.conv-empty {
+text-align: center;
+padding: 40px 16px;
+color: var(--gray);
+font-size: 0.82rem;
+line-height: 1.6;
+}
+
+
+.chat-panel {
+flex: 1;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+
+.chat-placeholder {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+color: var(--gray);
+text-align: center;
+padding: 20px;
+}
+.chat-placeholder img {
+width: 64px;
+height: 64px;
+object-fit: contain;
+opacity: 0.25;
+margin-bottom: 16px;
+}
+.chat-placeholder h3 {
+font-family: "Orbitron",monospace;
+font-size: 0.9rem;
+color: var(--white);
+opacity: 0.4;
+margin-bottom: 8px;
+}
+.chat-placeholder p {
+font-size: 0.82rem;
+line-height: 1.6;
+}
+
+
+.chat-head {
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 12px 18px;
+border-bottom: 1px solid rgba(255,255,255,0.07);
+background: rgba(10,10,10,0.6);
+flex-shrink: 0;
+}
+.back-mobile {
+display: none;
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 1.1rem;
+cursor: pointer;
+padding: 4px;
+}
+.chat-head-avatar-wrap {
+position: relative;
+}
+.chat-head-avatar {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.85rem;
+overflow: hidden;
+flex-shrink: 0;
+}
+.chat-head-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.chat-head-status-dot {
+position: absolute;
+bottom: 1px;
+right: 1px;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+border: 2px solid var(--black);
+}
+.chat-head-status-dot.online {
+background: var(--green);
+}
+.chat-head-status-dot.offline {
+background: var(--gray);
+}
+.chat-head-info {
+flex: 1;
+}
+.chat-head-name {
+font-weight: 700;
+font-size: 0.92rem;
+margin-bottom: 2px;
+cursor: pointer;
+}
+.chat-head-name:hover {
+color: var(--gold);
+}
+.chat-head-status {
+font-size: 0.72rem;
+}
+.chat-head-status.online {
+color: var(--green);
+}
+.chat-head-status.offline {
+color: var(--gray);
+}
+
+.messages-wrap {
+flex: 1;
+overflow-y: auto;
+padding: 16px;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+.messages-wrap::-webkit-scrollbar {
+width: 4px;
+}
+.messages-wrap::-webkit-scrollbar-thumb {
+background: rgba(255,255,255,0.08);
+border-radius: 2px;
+}
+
+
+.date-sep {
+text-align: center;
+position: relative;
+margin: 8px 0;
+}
+.date-sep::before {
+content: "";
+position: absolute;
+left: 0;
+right: 0;
+top: 50%;
+height: 1px;
+background: rgba(255,255,255,0.06);
+}
+.date-sep span {
+background: var(--black);
+padding: 0 12px;
+font-size: 0.7rem;
+color: var(--gray);
+position: relative;
+}
+
+.msg-group {
+display: flex;
+flex-direction: column;
+gap: 3px;
+}
+.msg-item {
+display: flex;
+gap: 8px;
+align-items: flex-end;
+max-width: 75%;
+}
+.msg-item.sent {
+margin-left: auto;
+flex-direction: row-reverse;
+}
+.msg-avatar {
+width: 28px;
+height: 28px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.65rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.msg-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.msg-avatar.hidden {
+visibility: hidden;
+}
+.msg-content {
+display: flex;
+flex-direction: column;
+gap: 2px;
+}
+.msg-bubble {
+padding: 10px 14px;
+border-radius: 16px;
+font-size: 0.86rem;
+line-height: 1.5;
+word-break: break-word;
+max-width: 100%;
+}
+.msg-item.received .msg-bubble {
+background: var(--card);
+border: 1px solid rgba(255,255,255,0.07);
+border-bottom-left-radius: 4px;
+color: var(--white);
+}
+.msg-item.sent .msg-bubble {
+background: linear-gradient(135deg,var(--blue),#1058c7);
+border-bottom-right-radius: 4px;
+color: var(--white);
+}
+
+.status-reply-quote {
+display: flex;
+align-items: center;
+gap: 8px;
+background: rgba(0,0,0,0.18);
+border-left: 3px solid var(--gold);
+border-radius: 8px;
+padding: 6px 8px;
+margin-bottom: 6px;
+cursor: pointer;
+}
+.status-reply-thumb {
+width: 32px;
+height: 32px;
+border-radius: 6px;
+object-fit: cover;
+flex-shrink: 0;
+}
+.status-reply-icon {
+width: 32px;
+height: 32px;
+border-radius: 6px;
+background: rgba(245,168,0,0.15);
+color: var(--gold);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+font-size: 0.9rem;
+}
+.status-reply-text {
+display: flex;
+flex-direction: column;
+gap: 2px;
+min-width: 0;
+}
+.status-reply-label {
+font-size: 0.68rem;
+font-weight: 700;
+color: var(--gold);
+text-transform: uppercase;
+letter-spacing: 0.3px;
+}
+.status-reply-preview {
+font-size: 0.78rem;
+color: var(--text-soft);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+max-width: 200px;
+}
+.msg-time {
+font-size: 0.64rem;
+color: var(--gray);
+}
+.msg-item.sent .msg-time {
+text-align: right;
+}
+.msg-status {
+font-size: 0.64rem;
+color: rgba(136,146,164,0.6);
+text-align: right;
+}
+.msg-status.read {
+color: var(--blue);
+}
+
+.typing-indicator {
+display: none;
+align-items: center;
+gap: 8px;
+padding: 8px 0;
+}
+.typing-indicator.show {
+display: flex;
+}
+.typing-dots {
+display: flex;
+gap: 4px;
+}
+.typing-dot {
+width: 6px;
+height: 6px;
+background: var(--gray);
+border-radius: 50%;
+animation: bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) {
+animation-delay: 0.2s;
+}
+.typing-dot:nth-child(3) {
+animation-delay: 0.4s;
+}
+@keyframes bounce {
+0%,80%,100% {
+transform: scale(1);
+opacity: 0.5
+}
+
+40% {
+transform: scale(1.3);
+opacity: 1
+}
+}
+.typing-text {
+font-size: 0.75rem;
+color: var(--gray);
+font-style: italic;
+}
+
+.msg-input-area {
+padding: 12px 16px;
+border-top: 1px solid rgba(255,255,255,0.07);
+background: rgba(10,10,10,0.6);
+flex-shrink: 0;
+}
+.msg-input-row {
+display: flex;
+gap: 10px;
+align-items: flex-end;
+}
+.msg-input {
+flex: 1;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 20px;
+padding: 10px 16px;
+color: var(--white);
+font-family:sans-serif;
+font-size: 0.88rem;
+outline: none;
+resize: none;
+max-height: 120px;
+min-height: 42px;
+line-height: 1.4;
+transition: border-color 0.2s;
+}
+.msg-input:focus {
+border-color: var(--blue);
+}
+.msg-input::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.btn-send {
+width: 42px;
+height: 42px;
+background: var(--blue);
+border: none;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1rem;
+transition: all 0.2s;
+flex-shrink: 0;
+}
+.btn-send:hover {
+background: #2a7fff;
+transform: scale(1.05);
+}
+.btn-send:disabled {
+opacity: 0.4;
+cursor: not-allowed;
+transform: none;
+}
+.input-hint {
+font-size: 0.7rem;
+color: rgba(136,146,164,0.4);
+margin-top: 5px;
+text-align: right;
+}
+
+
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.78);
+z-index: 200;
+align-items: center;
+justify-content: center;
+padding: 16px;
+}
+.modal-overlay.open {
+display: flex;
+}
+.modal {
+background: #1a1f2a;
+border: 1px solid rgba(245,168,0,0.2);
+border-radius: 14px;
+padding: 24px;
+width: 100%;
+max-width: 460px;
+max-height: 80vh;
+display: flex;
+flex-direction: column;
+}
+.modal-title {
+font-family: "Orbitron",monospace;
+font-size: 0.95rem;
+font-weight: 700;
+color: var(--gold);
+margin-bottom: 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.modal-close {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 1.2rem;
+cursor: pointer;
+}
+.modal-search {
+position: relative;
+margin-bottom: 12px;
+}
+.modal-search-icon {
+position: absolute;
+left: 12px;
+top: 50%;
+transform: translateY(-50%);
+}
+.modal-search input {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 10px 12px 10px 36px;
+color: var(--white);
+font-family: sans-serif;
+font-size: 0.88rem;
+outline: none;
+}
+.modal-search input:focus {
+border-color: var(--gold);
+}
+.modal-search input::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.user-results {
+flex: 1;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+.user-result {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px 12px;
+background: rgba(255,255,255,0.03);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.2s;
+}
+.user-result:hover {
+border-color: rgba(245,168,0,0.3);
+background: rgba(245,168,0,0.05);
+}
+.user-result-avatar {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.85rem;
+overflow: hidden;
+flex-shrink: 0;
+position: relative;
+}
+.user-result-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.user-result-status {
+position: absolute;
+bottom: 1px;
+right: 1px;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+border: 2px solid #1a1f2a;
+}
+.user-result-status.online {
+background: var(--green);
+}
+.user-result-status.offline {
+background: var(--gray);
+}
+.user-result-info {
+flex: 1;
+}
+.user-result-name {
+font-size: 0.88rem;
+font-weight: 600;
+}
+.user-result-sub {
+font-size: 0.72rem;
+color: var(--gray);
+}
+.user-result-online {
+font-size: 0.7rem;
+}
+.user-result-online.online {
+color: var(--green);
+}
+.user-result-online.offline {
+color: var(--gray);
+}
+.modal-empty {
+text-align: center;
+padding: 24px;
+color: var(--gray);
+font-size: 0.82rem;
+}
+
+
+@media(max-width:640px) {
+.conv-panel {
+position: absolute;
+left: 0;
+top: 0;
+bottom: 0;
+z-index: 10;
+background: var(--black);
+transform: translateX(0);
+transition: transform 0.3s;
+width: 100%;
+}
+.conv-panel.hidden-mobile {
+transform: translateX(-100%);
+}
+.chat-panel {
+width: 100%;
+}
+.back-mobile {
+display: block;
+}
+.nav-links {
+display: none;
+}
+}
+
+
+.bottom-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 72px;
+background: rgba(10,10,10,0.9);
+border-top: 1px solid rgba(245,168,0,.15);
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 999;
+}
+
+.bottom-item {
+flex: 1;
+text-decoration: none;
+color: var(--gray);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+font-size: .75rem;
+transition: .3s;
+
+}
+
+.bottom-item i {
+font-size: 1.2rem;
+}
+
+.bottom-item:hover,
+.bottom-item.active {
+color: var(--gold);
+border-radius: 50px;
+overflow: hidden;
+}
+
+@media(min-width:769px) {
+.bottom-bar {
+display: none;
+}
+}
+
+.msg-input-row { align-items: flex-end; }
+.btn-attach, .btn-mic {
+  background: transparent; border: none; color: var(--gray);
+  font-size: 1.2rem; cursor: pointer; padding: 8px; flex-shrink: 0;
+}
+.btn-mic.recording { color: #e33; animation: pulse-mic 1s infinite; }
+@keyframes pulse-mic { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.recording-bar {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  background: rgba(227,51,51,0.1); border-radius: 10px; margin-bottom: 6px;
+}
+.recording-bar .rec-time { font-weight: 700; color: #e33; font-size: 0.85rem; }
+.recording-bar .rec-cancel { margin-left: auto; color: var(--gray); cursor: pointer; }
+.chat-img-preview-wrap { position: relative; display: inline-block; margin-bottom: 6px; }
+.chat-img-preview-wrap img { max-height: 90px; border-radius: 8px; }
+.chat-img-preview-wrap .remove-preview {
+  position: absolute; top: -6px; right: -6px; background: #e33; color: #fff;
+  border-radius: 50%; width: 20px; height: 20px; font-size: 0.7rem;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.msg-bubble img.chat-msg-img { max-width: 220px; border-radius: 10px; cursor: zoom-in; display: block; }
+.msg-bubble audio { max-width: 220px; }
+.chat-img-fullscreen {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center;
+}
+.chat-img-fullscreen.open { display: flex; }
+.chat-img-fullscreen img { max-width: 92%; max-height: 92%; border-radius: 8px; }
+.chat-img-fullscreen .close-x { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 2rem; cursor: none; }
+
+
+</style>
+<link rel="stylesheet" href="shared-nav.css">
+<link rel="stylesheet" href="shared-ui.css">
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<body>
+
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<img src="data:image/png;base64,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" alt="Logo" />
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<div class="nav-links">
+<a onclick="window.location.href='community.html'">Communauté</a>
+<a onclick="window.location.href='forums.html'">Forums</a>
+<a class="active">Messages</a>
+<a onclick="window.location.href='discover.html'">Découvrir</a>
+<a onclick="window.location.href='profile.html'">Profil</a>
+</div>
+<div class="nav-right">
+<div class="notif-bell-mini" id="notifBell" onclick="window.location.href='notifications.html'">
+<i class="fa-solid fa-bell"></i>
+<span class="notif-badge-mini" id="notifCount"></span>
+</div>
+<div class="nav-avatar" id="navAvatar" onclick="window.location.href='profile.html'">
+?
+</div>
+</div>
+</nav>
+
+
+<div class="chat-layout">
+
+
+<div class="conv-panel" id="convPanel">
+<div class="conv-header">
+<div class="conv-header-top">
+<span class="conv-title"><i class="fa-solid fa-comments"></i> Messages</span>
+<button class="btn-new-conv" onclick="openNewConv()">+ Nouveau</button>
+</div>
+<div class="conv-search">
+<i class="fa-solid fa-magnifying-glass conv-search-icon"></i>
+<input type="text" id="convSearchInput" placeholder="Rechercher..." oninput="filterConvs()" />
+</div>
+</div>
+
+<input type="file" id="chatImgInput" accept="image/*" style="display:none;" onchange="handleChatImageSelect(event)">
+<div class="chat-img-fullscreen" id="chatImgFullscreen" onclick="closeChatImgFullscreen()">
+  <span class="close-x">&times;</span>
+  <img id="chatImgFullscreenImg" src="" onclick="event.stopPropagation()">
+</div>
+
+<div class="conv-list" id="convList">
+<div class="conv-empty">
+Aucune conversation.<br />Clique sur <strong>+ Nouveau</strong> pour commencer !
+</div>
+</div>
+</div>
+
+<div class="chat-panel" id="chatPanel">
+<div class="chat-placeholder" id="chatPlaceholder">
+<img src="data:image/png;base64,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" alt="Logo" />
+<h3>Tes Messages</h3>
+<p>
+Sélectionne une conversation<br />ou commence une nouvelle discussion.
+</p>
+</div>
+</div>
+
+</div>
+
+<div class="modal-overlay" id="newConvModal" onclick="if(event.target===this)closeNewConv()">
+<div class="modal">
+<div class="modal-title">
+<i class="fa-solid fa-comment-medical"></i> Nouvelle conversation
+<button class="modal-close" onclick="closeNewConv()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="modal-search">
+<i class="fa-solid fa-magnifying-glass modal-search-icon"></i>
+<input type="text" id="memberSearchInput" placeholder="Rechercher un membre..." oninput="searchMembers()" />
+</div>
+<div class="user-results" id="userResults">
+<div class="modal-empty">
+Tape pour rechercher un membre...
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<script type="module">
+import {
+getApps, getApp, initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import "./onesignal-config.js";
+
+import {
+getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+query, where, orderBy, onSnapshot, serverTimestamp, increment, arrayRemove, arrayUnion
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const cfg = {
+apiKey: "AIzaSyBXDDwYx0FPnJBc6vkgLPzeIJk6hiEVMEw", authDomain: "code-share-2c4ea.firebaseapp.com", projectId: "code-share-2c4ea", storageBucket: "code-share-2c4ea.firebasestorage.app", messagingSenderId: "706094984093", appId: "1:706094984093:web:bd62bbed06c156bb5c1d74"
+};
+
+const app = getApps().length ? getApp() : initializeApp(cfg);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let me = null; 
+let myData = {}; 
+let activeConvId = null;
+let unsubMsgs = null;
+let unsubConvs = null;
+let allConvs = [];
+let onlineUsers = {}; 
+let typingTimer = null;
+let heartbeatInterval = null;
+let chatSelectedImg = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordTimer = null;
+let recordSeconds = 0;
+let isRecording = false;
+const MAX_RECORD_SECONDS = 60;
+
+async function setOnline(uid) {
+try {
+await setDoc(doc(db, "presence", uid),
+{
+online: true,
+lastSeen: new Date()
+},
+{
+merge: true
+});
+} catch(e) {}
+}
+
+async function setOffline(uid) {
+try {
+await setDoc(doc(db, "presence", uid),
+{
+online: false,
+lastSeen: new Date()
+},
+{
+merge: true
+});
+} catch(e) {}
+}
+
+function watchPresence(uid, callback) {
+return onSnapshot(doc(db, "presence", uid),
+snap => {
+if (snap.exists()) {
+const data = snap.data();
+const online = data.online === true;
+const lastSeen = data.lastSeen?.toDate ? data.lastSeen.toDate(): null;
+const isOnline = online && lastSeen && (Date.now() - lastSeen.getTime()) < 3 * 60 * 1000;
+callback(isOnline, lastSeen);
+} else {
+callback(false, null);
+}
+});
+}
+
+
+window.handleChatImageSelect = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        showToast("Image trop grande. Maximum 5MB.", "error");
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement("canvas");
+            const MAX = 800;
+            let w = img.width, h = img.height;
+            if (w > MAX || h > MAX) {
+                if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                else { w = Math.round(w * MAX / h); h = MAX; }
+            }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            chatSelectedImg = canvas.toDataURL("image/jpeg", 0.7);
+            document.getElementById("chatImgPreviewZone").innerHTML = `
+                <div class="chat-img-preview-wrap">
+                    <img src="${chatSelectedImg}">
+                    <div class="remove-preview" onclick="removeChatImgPreview()">✕</div>
+                </div>`;
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removeChatImgPreview = function() {
+    chatSelectedImg = null;
+    document.getElementById("chatImgPreviewZone").innerHTML = "";
+    document.getElementById("chatImgInput").value = "";
+};
+
+async function sendImageMessage(convId, otherId) {
+    if (!chatSelectedImg || !me) return;
+    const imgToSend = chatSelectedImg;
+    removeChatImgPreview();
+    await sendChatContent(convId, otherId, { type: "image", imageBase64: imgToSend }, "📷 Photo");
+}
+
+
+window.toggleVoiceRecording = async function(convId, otherId) {
+    if (isRecording) {
+        mediaRecorder.stop();
+        return;
+    }
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm"
+            : MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "";
+        mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+        audioChunks = [];
+        isRecording = true;
+        recordSeconds = 0;
+
+        document.getElementById("micBtn").classList.add("recording");
+        document.getElementById("recordingBarZone").innerHTML = `
+            <div class="recording-bar">
+                <i class="fa-solid fa-microphone" style="color:#e33;"></i>
+                <span class="rec-time" id="recTimeLabel">0:00</span>
+                <span class="rec-cancel" onclick="cancelVoiceRecording()">Annuler</span>
+            </div>`;
+        recordTimer = setInterval(() => {
+            recordSeconds++;
+            const m = Math.floor(recordSeconds / 60), s = recordSeconds % 60;
+            const label = document.getElementById("recTimeLabel");
+            if (label) label.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+            if (recordSeconds >= MAX_RECORD_SECONDS) mediaRecorder.stop();
+        }, 1000);
+
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = async () => {
+            clearInterval(recordTimer);
+            stream.getTracks().forEach(t => t.stop());
+            isRecording = false;
+            document.getElementById("micBtn").classList.remove("recording");
+            document.getElementById("recordingBarZone").innerHTML = "";
+
+            if (recordSeconds < 1) return; 
+            const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const base64Audio = reader.result;
+                if (base64Audio.length > 900000) {
+                    showToast("Message vocal trop long, réessaie en plus court.", "error");
+                    return;
+                }
+                await sendChatContent(convId, otherId, { type: "audio", audioBase64: base64Audio, audioDuration: recordSeconds }, "🎤 Message vocal");
+            };
+            reader.readAsDataURL(blob);
+        };
+
+        mediaRecorder.start();
+    } catch (e) {
+        showToast("Impossible d'accéder au micro : " + e.message, "error");
+    }
+};
+
+window.cancelVoiceRecording = function() {
+    recordSeconds = 0;
+    if (mediaRecorder && isRecording) mediaRecorder.stop();
+};
+
+
+async function sendChatContent(convId, otherId, contentFields, previewLabel) {
+    try {
+        const convCheck = await getDoc(doc(db, "conversations", convId));
+        if ((convCheck.data()?.blockedBy || []).length > 0) {
+            showToast("Impossible d'envoyer : la conversation est bloquée.", "error");
+            return;
+        }
+
+        await addDoc(collection(db, "conversations", convId, "messages"), {
+            ...contentFields,
+            senderId: me.uid,
+            senderName: myData.username || me.email.split("@")[0],
+            createdAt: serverTimestamp()
+        });
+
+        await setDoc(doc(db, "conversations", convId), {
+            lastMessage: previewLabel,
+            lastMessageAt: serverTimestamp(),
+            unreadBy: [otherId],
+            deletedFor: arrayRemove(me.uid, otherId)
+        }, { merge: true });
+
+        try {
+            await addDoc(collection(db, "users", otherId, "notifications"), {
+                type: "message",
+                senderName: myData.username || me.email.split("@")[0],
+                senderPhoto: myData.photoBase64 || null,
+                message: "t a envoyé un message",
+                link: "messages.html?conv=" + convId,
+                read: false,
+                createdAt: new Date()
+            });
+        } catch (e) {}
+
+        sendOneSignalNotification(otherId, myData.username || me.email.split("@")[0], previewLabel, "messages.html?conv=" + convId);
+    } catch (e) {
+        showToast("Erreur: " + e.message, "error");
+    }
+}
+
+window.openChatImgFullscreen = function(url) {
+    document.getElementById("chatImgFullscreenImg").src = url;
+    document.getElementById("chatImgFullscreen").classList.add("open");
+};
+window.closeChatImgFullscreen = function() {
+    document.getElementById("chatImgFullscreen").classList.remove("open");
+};
+
+
+function startHeartbeat(uid) {
+    if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+    }
+    setOnline(uid);
+    heartbeatInterval = setInterval(() => setOnline(uid), 60000);
+}
+
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+
+    me = user;
+
+    initOneSignal(user.uid);
+
+    try {
+        const ud = await getDoc(doc(db, "users", user.uid));
+        if (ud.exists()) {
+            myData = ud.data();
+        } else {
+            myData = {};
+        }
+    } catch (error) {
+        console.error("Erreur lors du chargement du profil :", error);
+        myData = {};
+    }
+
+    const navAvatar = document.getElementById("navAvatar");
+    if (myData.photoBase64) {
+        navAvatar.innerHTML = `<img src="${myData.photoBase64}" alt="Avatar" />`;
+    } else {
+        const displayName = user.displayName || user.email || "?";
+        const initials = displayName.substring(0, 2).toUpperCase();
+        navAvatar.textContent = initials;
+        navAvatar.innerHTML = initials;
+    }
+
+
+    startHeartbeat(user.uid);
+
+    loadConversations();
+
+    const params = new URLSearchParams(window.location.search);
+    const convId = params.get("conv");
+    if (convId) {
+        setTimeout(() => openConversation(convId), 1000);
+    }
+});
+
+
+function loadConversations() {
+const q = query(collection(db, "conversations"),
+where("members", "array-contains", me.uid));
+unsubConvs = onSnapshot(q,
+async snap => {
+allConvs = [];
+const convList = document.getElementById("convList");
+
+if (snap.empty) {
+convList.innerHTML = "<div class=\"conv-empty\">Aucune conversation.<br/>Clique sur <strong>+ Nouveau</strong> pour commencer !</div>";
+return;
+}
+
+const convData = [];
+for (const d of snap.docs) {
+try {
+const conv = d.data();
+if (!conv.members || !Array.isArray(conv.members)) continue;
+if ((conv.deletedFor || []).includes(me.uid)) continue;
+const otherId = conv.members.find(m => m !== me.uid);
+if (!otherId) continue;
+let otherUser = {
+username: "Membre",
+photoBase64: null,
+role: "apprenant"
+};
+try {
+const ou = await getDoc(doc(db, "users", otherId));
+if (ou.exists()) otherUser = ou.data();
+} catch(e) {}
+convData.push({
+id: d.id, conv, otherId, otherUser
+});
+} catch(e) {
+console.error("Conv error:", e);
+}
+}
+convData.sort((a, b) => {
+const ta = a.conv.lastMessageAt?.toDate ? a.conv.lastMessageAt.toDate().getTime(): 0;
+const tb = b.conv.lastMessageAt?.toDate ? b.conv.lastMessageAt.toDate().getTime(): 0;
+return tb - ta;
+});
+allConvs = convData;
+renderConvList(convData);
+});
+}
+
+function renderConvList(convData) {
+const convList = document.getElementById("convList");
+const search = document.getElementById("convSearchInput").value.toLowerCase();
+const filtered = search ? convData.filter(c => {
+const name = c.otherUser.firstName ? c.otherUser.firstName+" "+c.otherUser.lastName: c.otherUser.username || "";
+return name.toLowerCase().includes(search) || (c.otherUser.username || "").toLowerCase().includes(search);
+}): convData;
+
+if (filtered.length === 0) {
+convList.innerHTML = "<div class=\"conv-empty\">Aucune conversation trouvée.</div>";
+return;
+}
+
+convList.innerHTML = "";
+filtered.forEach(({
+id, conv, otherId, otherUser
+}) => {
+const name = otherUser.firstName ? otherUser.firstName+" "+otherUser.lastName: otherUser.username || "Membre";
+const safeName = escapeHtml(name);
+const avHtml = otherUser.photoBase64 ? "<img src=\""+otherUser.photoBase64+"\"/>": safeName.substring(0, 2).toUpperCase();
+const isUnread = (conv.unreadBy || []).includes(me.uid);
+const time = conv.lastMessageAt?.toDate ? formatTime(conv.lastMessageAt.toDate()): "";
+const preview = escapeHtml(conv.lastMessage || "Nouvelle conversation");
+
+const item = document.createElement("div");
+item.className = "conv-item" + (id === activeConvId ? " active": "");
+item.id = "conv-"+id;
+item.innerHTML = `
+<div class="conv-avatar-wrap">
+<div class="conv-avatar">${avHtml}</div>
+<div class="status-dot offline" id="dot-${otherId}"></div>
+</div>
+<div class="conv-info">
+<div class="conv-name">${safeName}</div>
+<div class="conv-preview ${isUnread?"unread": ""}">${isUnread?"● ": ""}${preview}</div>
+</div>
+<div class="conv-meta">
+<div class="conv-time">${time}</div>
+${isUnread ? '<div class="unread-badge">●</div>': ""}
+</div>
+<button class="conv-options-btn" title="Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+item.onclick = () => openConversation(id, name, otherId, otherUser);
+item.querySelector(".conv-options-btn").onclick = (e) => {
+e.stopPropagation();
+openConvOptions(id, otherId, name);
+};
+convList.appendChild(item);
+
+watchPresence(otherId, (isOnline) => {
+const dot = document.getElementById("dot-"+otherId);
+if (dot) {
+dot.className = "status-dot " + (isOnline ? "online": "offline");
+}
+if (id === activeConvId) {
+updateChatHeadStatus(otherId, isOnline, name);
+}
+});
+});
+}
+
+window.filterConvs = function() {
+renderConvList(allConvs);
+};
+
+
+window.openConversation = async function(convId, otherName, otherId, otherUser) {
+if (!otherName) {
+try {
+const snap = await getDoc(doc(db, "conversations", convId));
+if (!snap.exists()) return;
+const conv = snap.data();
+otherId = conv.members.find(m => m !== me.uid);
+const ou = await getDoc(doc(db, "users", otherId));
+otherUser = ou.exists() ? ou.data(): {};
+otherName = otherUser.firstName ? otherUser.firstName+" "+otherUser.lastName: otherUser.username || "Membre";
+} catch(e) {
+return;
+}
+}
+
+activeConvId = convId;
+
+document.querySelectorAll(".conv-item").forEach(i => i.classList.remove("active"));
+const activeItem = document.getElementById("conv-"+convId);
+if (activeItem) activeItem.classList.add("active");
+
+try {
+const convSnap = await getDoc(doc(db, "conversations", convId));
+if (convSnap.exists()) {
+const unread = (convSnap.data().unreadBy || []).filter(id => id !== me.uid);
+await updateDoc(doc(db, "conversations", convId), {
+unreadBy: unread
+});
+}
+} catch(e) {}
+
+document.getElementById("convPanel").classList.add("hidden-mobile");
+
+const displayOtherName = escapeHtml(otherName);
+const avHtml = otherUser.photoBase64 ? "<img src=\""+otherUser.photoBase64+"\"/>": displayOtherName.substring(0, 2).toUpperCase();
+const myAvHtml = myData.photoBase64 ? "<img src=\""+myData.photoBase64+"\"/>": (me.displayName || me.email).substring(0, 2).toUpperCase();
+
+const safeOtherName = otherName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+document.getElementById("chatPanel").innerHTML = `
+<div class="chat-head">
+<button class="back-mobile" onclick="showConvPanel()"><i class="fa-solid fa-arrow-left"></i></button>
+<div class="chat-head-avatar-wrap">
+<div class="chat-head-avatar">${avHtml}</div>
+<div class="chat-head-status-dot offline" id="head-dot"></div>
+</div>
+<div class="chat-head-info">
+<div class="chat-head-name" onclick="window.location.href='user-profile.html?uid=${otherId}'">${displayOtherName}</div>
+<div class="chat-head-status offline" id="head-status">Hors ligne</div>
+</div>
+<button class="conv-options-btn" onclick="openConvOptions('${convId}','${otherId}','${safeOtherName}')" title="Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+</div>
+<div class="messages-wrap" id="messagesWrap"></div>
+<div class="typing-indicator" id="typingIndicator">
+<div class="typing-dots">
+<div class="typing-dot"></div>
+<div class="typing-dot"></div>
+<div class="typing-dot"></div>
+</div>
+<span class="typing-text">${displayOtherName} est en train d'écrire...</span>
+</div>
+<div class="msg-input-area">
+<div id="chatImgPreviewZone"></div>
+<div id="recordingBarZone"></div>
+<div class="msg-input-row">
+<button class="btn-attach" onclick="document.getElementById('chatImgInput').click()" title="Envoyer une photo"><i class="fa-solid fa-image"></i></button>
+<textarea class="msg-input" id="msgInput" placeholder="Écris ton message..." rows="1"
+oninput="autoResize(this);handleTyping('${convId}')"
+onkeydown="handleKey(event,'${convId}','${otherId}')"></textarea>
+<button class="btn-mic" id="micBtn" onclick="toggleVoiceRecording('${convId}','${otherId}')" title="Message vocal"><i class="fa-solid fa-microphone"></i></button>
+<button class="btn-send" onclick="sendMessage('${convId}','${otherId}')" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+</div>
+<div class="input-hint">Entrée pour envoyer · Maj+Entrée pour saut de ligne</div>
+</div>`;
+
+refreshBlockBanner(convId);
+
+watchPresence(otherId, (isOnline, lastSeen) => {
+updateChatHeadStatus(otherId, isOnline, otherName, lastSeen);
+});
+
+watchTyping(convId, otherId);
+
+if (unsubMsgs) unsubMsgs();
+const msgsRef = collection(db, "conversations", convId, "messages");
+unsubMsgs = onSnapshot(query(msgsRef, orderBy("createdAt", "asc")), snap => {
+const wrap = document.getElementById("messagesWrap");
+if (!wrap) return;
+if (snap.empty) {
+wrap.innerHTML = "<div style=\"text-align:center;color:var(--gray);font-size:0.82rem;padding:30px;\">Dis bonjour <i class='fa-solid fa-hand-peace'></i></div>";
+return;
+}
+
+let html = "";
+let lastDate = "";
+let lastSender = "";
+const visibleDocs = snap.docs.filter(d => !((d.data().deletedFor || []).includes(me.uid)));
+
+if (visibleDocs.length === 0) {
+wrap.innerHTML = "<div style=\"text-align:center;color:var(--gray);font-size:0.82rem;padding:30px;\">Dis bonjour <i class='fa-solid fa-hand-peace'></i></div>";
+return;
+}
+
+visibleDocs.forEach((d, i) => {
+const m = d.data();
+const isSent = m.senderId === me.uid;
+const date = m.createdAt?.toDate ? m.createdAt.toDate(): new Date();
+const dateStr = formatDateLabel(date);
+const timeStr = formatTime(date);
+const isLast = i === visibleDocs.length - 1;
+const nextSame = i < visibleDocs.length-1 && visibleDocs[i+1].data().senderId === m.senderId;
+
+if (dateStr !== lastDate) {
+html += `<div class="date-sep"><span>${dateStr}</span></div>`;
+lastDate = dateStr;
+}
+
+const showAvatar = !nextSame || isLast;
+const myAv = myData.photoBase64 ? "<img src=\""+myData.photoBase64+"\"/>": (me.displayName || me.email).substring(0, 2).toUpperCase();
+const avHtml2 = isSent ? myAv: avHtml;
+
+let replyQuoteHtml = "";
+if (m.replyContext && m.replyContext.type === "status") {
+const previewText = escapeHtml(m.replyContext.preview || "Statut");
+const thumb = m.replyContext.mediaThumb
+? `<img class="status-reply-thumb" src="${m.replyContext.mediaThumb}" alt="Statut"/>`: `<div class="status-reply-icon"><i class="fa-solid fa-circle-play"></i></div>`;
+replyQuoteHtml = `
+<div class="status-reply-quote" onclick="window.location.href='status.html'">
+${thumb}
+<div class="status-reply-text">
+<span class="status-reply-label"><i class="fa-solid fa-circle-play"></i> Statut</span>
+<span class="status-reply-preview">${previewText}</span>
+</div>
+</div>`;
+}
+
+html += `<div class="msg-item ${isSent?"sent": "received"}">
+<div class="msg-avatar ${showAvatar?"": "hidden"}">${avHtml2}</div>
+<div class="msg-content">
+
+<div class="msg-bubble">${replyQuoteHtml}${
+    m.type === "image" ? `<img class="chat-msg-img" src="${m.imageBase64}" onclick="openChatImgFullscreen('${m.imageBase64}')">`
+    : m.type === "audio" ? `<audio controls src="${m.audioBase64}"></audio>`
+    : escapeHtml(m.text || "")
+}</div>
+
+<div class="msg-time">
+<button class="msg-delete-btn" onclick="openMessageOptions('${convId}','${d.id}',${isSent})" title="Options"><i class="fa-solid fa-ellipsis"></i></button>
+${timeStr}${isSent && isLast ? ' <span class="msg-status"><i class="fa-solid fa-check-double"></i></span>': ""}
+</div>
+</div>
+</div>`;
+lastSender = m.senderId;
+});
+
+wrap.innerHTML = html;
+wrap.scrollTop = wrap.scrollHeight;
+});
+};
+
+window.openMessageOptions = async function(convId, msgId, isSent) {
+const actions = [{
+key: "forMe", label: "Supprimer pour moi", icon: "fa-solid fa-trash", danger: true
+}];
+if (isSent) {
+actions.push({
+key: "forEveryone", label: "Supprimer pour tout le monde", icon: "fa-solid fa-trash-can", danger: true
+});
+}
+const choice = await showActionSheet(null, actions);
+if (!choice) return;
+
+if (choice === "forMe") {
+try {
+await updateDoc(doc(db, "conversations", convId, "messages", msgId), {
+deletedFor: arrayUnion(me.uid)
+});
+showToast("Message supprimé pour vous.", "success");
+} catch (e) {
+showToast("Erreur : " + e.message, "error");
+}
+}
+
+if (choice === "forEveryone") {
+const ok = await showConfirm("Ce message sera supprimé pour tout le monde, sans possibilité de le récupérer.", {
+title: "Supprimer pour tout le monde ?", danger: true, confirmLabel: "Supprimer"
+});
+if (!ok) return;
+try {
+await deleteDoc(doc(db, "conversations", convId, "messages", msgId));
+showToast("Message supprimé.", "success");
+} catch (e) {
+showToast("Erreur : " + e.message, "error");
+}
+}
+};
+
+window.openConvOptions = async function(convId, otherId, name) {
+let isBlocked = false;
+try {
+const snap = await getDoc(doc(db, "conversations", convId));
+isBlocked = (snap.data()?.blockedBy || []).includes(me.uid);
+} catch (e) {}
+
+const choice = await showActionSheet(name, [{
+key: "delete", label: "Supprimer la discussion", icon: "fa-solid fa-trash", danger: true
+},
+isBlocked
+? {
+key: "unblock", label: "Débloquer cet utilisateur", icon: "fa-solid fa-circle-check"
+}: {
+key: "block", label: "Bloquer cet utilisateur", icon: "fa-solid fa-ban", danger: true
+},
+{
+key: "profile", label: "Voir le profil", icon: "fa-solid fa-user"
+}]);
+
+if (choice === "delete") {
+const ok = await showConfirm("Cette discussion disparaîtra de votre liste. Elle réapparaîtra si l'autre personne vous écrit à nouveau.", {
+title: "Supprimer cette discussion ?", danger: true, confirmLabel: "Supprimer"
+});
+if (!ok) return;
+try {
+await updateDoc(doc(db, "conversations", convId), {
+deletedFor: arrayUnion(me.uid)
+});
+if (activeConvId === convId) {
+document.getElementById("chatPanel").innerHTML = "";
+activeConvId = null;
+}
+showToast("Discussion supprimée.", "success");
+} catch (e) {
+showToast("Erreur : " + e.message, "error");
+}
+}
+
+if (choice === "block") {
+const ok = await showConfirm(`${name} ne pourra plus vous envoyer de message, et vous ne pourrez plus lui en envoyer non plus.`, {
+title: "Bloquer cet utilisateur ?", danger: true, confirmLabel: "Bloquer"
+});
+if (!ok) return;
+try {
+await updateDoc(doc(db, "conversations", convId), {
+blockedBy: arrayUnion(me.uid)
+});
+showToast(`@${name} a été bloqué.`, "success");
+if (activeConvId === convId) refreshBlockBanner(convId);
+} catch (e) {
+showToast("Erreur : " + e.message, "error");
+}
+}
+
+if (choice === "unblock") {
+try {
+await updateDoc(doc(db, "conversations", convId), {
+blockedBy: arrayRemove(me.uid)
+});
+showToast(`@${name} a été débloqué.`, "success");
+if (activeConvId === convId) refreshBlockBanner(convId);
+} catch (e) {
+showToast("Erreur : " + e.message, "error");
+}
+}
+
+if (choice === "profile") {
+window.location.href = `user-profile.html?uid=${otherId}`;
+}
+};
+
+async function refreshBlockBanner(convId) {
+const inputArea = document.querySelector(".msg-input-area");
+if (!inputArea) return;
+try {
+const snap = await getDoc(doc(db, "conversations", convId));
+const blockedBy = snap.data()?.blockedBy || [];
+const existingBanner = document.getElementById("blockBanner");
+if (existingBanner) existingBanner.remove();
+
+if (blockedBy.length > 0) {
+const iBlocked = blockedBy.includes(me.uid);
+const banner = document.createElement("div");
+banner.id = "blockBanner";
+banner.className = "block-banner";
+banner.innerHTML = iBlocked
+? `<i class="fa-solid fa-ban"></i> Vous avez bloqué cet utilisateur. <span class="unblock-link" onclick="unblockFromBanner('${convId}')">Débloquer</span>`: `<i class="fa-solid fa-ban"></i> Vous ne pouvez plus échanger de messages ici.`;
+inputArea.parentElement.insertBefore(banner, inputArea);
+inputArea.style.display = "none";
+} else {
+inputArea.style.display = "";
+}
+} catch (e) {}
+}
+
+window.unblockFromBanner = async function(convId) {
+try {
+await updateDoc(doc(db, "conversations", convId), {
+blockedBy: arrayRemove(me.uid)
+});
+showToast("Utilisateur débloqué.", "success");
+refreshBlockBanner(convId);
+} catch (e) {
+showToast("Erreur : " + e.message, "error");
+}
+};
+
+function updateChatHeadStatus(otherId, isOnline, name, lastSeen) {
+const dot = document.getElementById("head-dot");
+const status = document.getElementById("head-status");
+if (!dot || !status) return;
+if (isOnline) {
+dot.className = "chat-head-status-dot online";
+status.className = "chat-head-status online";
+status.textContent = "En ligne";
+} else {
+dot.className = "chat-head-status-dot offline";
+status.className = "chat-head-status offline";
+status.textContent = lastSeen ? "Vu " + timeAgo(lastSeen): "Hors ligne";
+}
+}
+
+function watchTyping(convId, otherId) {
+onSnapshot(doc(db, "conversations", convId), snap => {
+if (!snap.exists()) return;
+const data = snap.data();
+const typing = data.typingUsers || {};
+const isTyping = typing[otherId] === true;
+const indicator = document.getElementById("typingIndicator");
+if (indicator) indicator.className = "typing-indicator" + (isTyping ? " show": "");
+});
+}
+
+window.handleTyping = async function(convId) {
+if (!me || !convId) return;
+clearTimeout(typingTimer);
+try {
+await updateDoc(doc(db, "conversations", convId), {
+[`typingUsers.${me.uid}`]: true
+});
+typingTimer = setTimeout(async () => {
+await updateDoc(doc(db, "conversations", convId), {
+[`typingUsers.${me.uid}`]: false
+}).catch(()=> {});
+}, 2000);
+} catch(e) {}
+};
+
+window.sendMessage = async function(convId, otherId) {
+if (chatSelectedImg) {
+    await sendImageMessage(convId, otherId);
+    return;
+}
+const input = document.getElementById("msgInput");
+if (!input) return;
+const text = input.value.trim();
+if (!text || !me) return;
+const btn = document.getElementById("sendBtn");
+if (btn) btn.disabled = true;
+
+try {
+const convCheck = await getDoc(doc(db, "conversations", convId));
+if ((convCheck.data()?.blockedBy || []).length > 0) {
+showToast("Impossible d'envoyer : la conversation est bloquée.", "error");
+if (btn) btn.disabled = false;
+return;
+}
+
+await updateDoc(doc(db, "conversations", convId), {
+[`typingUsers.${me.uid}`]: false
+}).catch(()=> {});
+
+await addDoc(collection(db, "conversations", convId, "messages"), {
+text,
+senderId: me.uid,
+senderName: myData.username || me.email.split("@")[0],
+createdAt: serverTimestamp()
+});
+
+await setDoc(doc(db, "conversations", convId), {
+lastMessage: text.length > 50 ? text.substring(0, 50)+"...": text,
+lastMessageAt: serverTimestamp(),
+unreadBy: [otherId],
+deletedFor: arrayRemove(me.uid, otherId)
+}, {
+merge: true
+});
+
+try {
+await addDoc(collection(db, "users", otherId, "notifications"), {
+type: "message",
+senderName: myData.username || me.email.split("@")[0],
+senderPhoto: myData.photoBase64 || null,
+message: "t a envoyé un message",
+link: "messages.html?conv="+convId,
+read: false,
+createdAt: new Date()
+});
+} catch(e) {}
+
+
+sendOneSignalNotification(
+    otherId,
+    myData.username || me.email.split("@")[0],
+    text.length > 100 ? text.substring(0, 100) + "..." : text,
+    "messages.html?conv=" + convId
+);
+
+input.value = "";
+input.style.height = "42px";
+if (btn) btn.disabled = false;
+} catch(e) {
+if (btn) btn.disabled = false;
+showToast("Erreur: "+e.message, "error");
+}
+};
+
+window.handleKey = function(e, convId, otherId) {
+if (e.key === "Enter" && !e.shiftKey) {
+e.preventDefault();
+sendMessage(convId, otherId);
+}
+};
+
+window.autoResize = function(el) {
+el.style.height = "42px";
+el.style.height = Math.min(el.scrollHeight, 120) + "px";
+};
+
+window.openNewConv = () => document.getElementById("newConvModal").classList.add("open");
+window.closeNewConv = () => {
+document.getElementById("newConvModal").classList.remove("open");
+document.getElementById("memberSearchInput").value = "";
+document.getElementById("userResults").innerHTML = "<div class=\"modal-empty\">Tape pour rechercher un membre...</div>";
+};
+
+window.searchMembers = async function() {
+const search = document.getElementById("memberSearchInput").value.trim().toLowerCase();
+const results = document.getElementById("userResults");
+if (!search) {
+results.innerHTML = "<div class=\"modal-empty\">Tape pour rechercher un membre...</div>";
+return;
+}
+results.innerHTML = "<div class=\"modal-empty\">Recherche...</div>";
+try {
+const snap = await getDocs(collection(db, "users"));
+const users = snap.docs
+.map(d => ({
+id: d.id, ...d.data()}))
+.filter(u => u.id !== me.uid)
+.filter(u =>
+(u.username || "").toLowerCase().includes(search) ||
+(u.firstName || "").toLowerCase().includes(search) ||
+(u.lastName || "").toLowerCase().includes(search)
+);
+
+if (users.length === 0) {
+results.innerHTML = "<div class=\"modal-empty\">Aucun membre trouvé.</div>";
+return;
+}
+
+results.innerHTML = "";
+for (const u of users) {
+const name = u.firstName ? u.firstName+" "+u.lastName: u.username || "Membre";
+const avHtml = u.photoBase64 ? "<img src=\""+u.photoBase64+"\"/>": name.substring(0, 2).toUpperCase();
+
+let isOnline = false;
+try {
+const ps = await getDoc(doc(db, "presence", u.id));
+if (ps.exists()) {
+const pd = ps.data();
+const ls = pd.lastSeen?.toDate ? pd.lastSeen.toDate(): null;
+isOnline = pd.online && ls && (Date.now()-ls.getTime()) < 3*60*1000;
+}
+} catch(e) {}
+
+const div = document.createElement("div");
+div.className = "user-result";
+div.innerHTML = `
+<div class="user-result-avatar">
+${avHtml}
+<div class="user-result-status ${isOnline?"online": "offline"}"></div>
+</div>
+<div class="user-result-info">
+<div class="user-result-name">@${u.username || name}</div>
+<div class="user-result-sub">${u.role === "mentor"?'<i class="fa-solid fa-star"></i> Mentor': '<i class="fa-solid fa-graduation-cap"></i> Apprenant'} · <span class="user-result-online ${isOnline?"online": "offline"}">${isOnline?"● En ligne": "Hors ligne"}</span></div>
+</div>`;
+div.onclick = () => startConversation(u.id, name, u);
+results.appendChild(div);
+}
+} catch(e) {
+results.innerHTML = "<div class=\"modal-empty\">Erreur: "+e.message+"</div>";
+}
+};
+
+window.startConversation = async function(otherId, otherName, otherUser) {
+closeNewConv();
+const q = query(collection(db, "conversations"), where("members", "array-contains", me.uid));
+const snap = await getDocs(q);
+let existingId = null;
+snap.forEach(d => {
+if (d.data().members.includes(otherId)) existingId = d.id;
+});
+
+if (!existingId) {
+const ref = doc(collection(db, "conversations"));
+await setDoc(ref, {
+members: [me.uid, otherId],
+createdAt: serverTimestamp(),
+lastMessageAt: serverTimestamp(),
+lastMessage: "",
+unreadBy: [],
+typingUsers: {}
+});
+existingId = ref.id;
+}
+openConversation(existingId, otherName, otherId, otherUser);
+};
+
+window.showConvPanel = function() {
+document.getElementById("convPanel").classList.remove("hidden-mobile");
+activeConvId = null;
+};
+
+function escapeHtml(text) {
+return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>");
+}
+
+function formatTime(date) {
+return date.toLocaleTimeString("fr-FR", {
+hour: "2-digit", minute: "2-digit"
+});
+}
+
+function formatDateLabel(date) {
+const now = new Date();
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+const diff = Math.floor((today-d)/86400000);
+if (diff === 0) return "Aujourd hui";
+if (diff === 1) return "Hier";
+return date.toLocaleDateString("fr-FR", {
+day: "numeric", month: "long"
+});
+}
+
+function timeAgo(date) {
+const d = Math.floor((Date.now()-date)/1000);
+if (d < 60) return "à l instant";
+if (d < 3600) return "Il y a "+Math.floor(d/60)+" min";
+if (d < 86400) return "Il y a "+Math.floor(d/3600)+"h";
+return "Il y a "+Math.floor(d/86400)+"j";
+}
+
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.log('Erreur Service Worker:', err));
+}
+</script>
+
+</body>
+</html>
+<!--jodia 4 aout 2026 map fete 24 triem anivesem pou bonem hmm chwazi chita lakay mw poum code en solo sou reve mw happy day for me -->

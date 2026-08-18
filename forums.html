@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "598bd958-5b76-41b9-8d72-a84ffe1cf92b",
+      serviceWorkerParam: { scope: "/" },
+      serviceWorkerPath: "sw.js"
+    });
+  });
+</script>
+
+<title>Code-Share — Forums</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+background: var(--black);
+color:var(--white);
+font-family:sans-serif;
+min-height: 100vh;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+cursor:none;
+}
+.nav-logo img {
+width: 40px;
+height: 40px;
+object-fit: contain;
+border-radius: 50%;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color: var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.nav-links {
+display: flex;
+gap: 20px;
+}
+.nav-links a {
+color: var(--gray);
+text-decoration: none;
+font-size: 0.82rem;
+font-weight: 600;
+cursor:none;
+transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+color: var(--gold);
+}
+.nav-right {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.nav-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.8rem;
+cursor:none;
+border: 1px solid rgba(245,168,0,0.4);
+overflow: hidden;
+}
+.nav-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+
+.page-header {
+position: relative;
+z-index: 1;
+padding: 28px 20px 22px;
+text-align: center;
+background: var(--black);
+border:none;
+}
+.page-header h1 {
+font-family: "Orbitron",monospace;
+font-size: 1.6rem;
+font-weight: 900;
+margin-bottom: 8px;
+}
+.page-header h1 span {
+color: var(--gold);
+}
+.page-header p {
+color:var(--white);
+font-size: 0.88rem;
+max-width: 500px;
+margin: 0 auto 18px;
+}
+.search-bar {
+display: flex;
+gap: 10px;
+max-width: 560px;
+margin: 0 auto;
+align-items: center;
+}
+.search-wrap {
+flex: 1;
+position: relative;
+display: flex;
+align-items: center;
+}
+.search-wrap i {
+position: absolute;
+left: 14px;
+top: 50%;
+transform: translateY(-50%);
+color: var(--gray);
+font-size: 0.9rem;
+pointer-events: none;
+z-index: 1;
+}
+.search-wrap input {
+width: 100%;
+background: var(--card);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 10px;
+padding: 12px 14px 12px 42px;
+color:#E2E5E7;
+font-family:sans-serif;
+font-size: 0.88rem;
+outline: none;
+transition: border-color 0.2s;
+height: 44px;
+}
+.search-wrap input:focus {
+border-color: var(--gold);
+}
+.search-wrap input::placeholder {
+color: rgba(255,255,255,0.25);
+}
+.btn-search {
+padding: 0 20px;
+background: var(--blue);
+color:#E2E5E7;
+border: none;
+border-radius: 10px;
+font-weight: 700;
+cursor: none;
+font-size: 0.85rem;
+height: 44px;
+white-space: nowrap;
+display: flex;
+align-items: center;
+gap: 6px;
+flex-shrink: 0;
+transition: background 0.2s;
+}
+.btn-search:hover {
+background: #2a7fff;
+}
+
+.main {
+position: relative;
+z-index: 1;
+max-width: 1000px;
+margin: 0 auto;
+padding: 24px 16px 60px;
+}
+
+.forums-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+gap: 16px;
+}
+.forum-card {
+background: var(--black);
+border:none;
+border-radius: 14px;
+padding: 20px;
+cursor: none;
+transition: all 0.25s;
+position: relative;
+overflow: hidden;
+}
+.forum-card::before {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 3px;
+opacity: 0;
+transition: opacity 0.3s;
+}
+.forum-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+.forum-card:hover::before {
+opacity: 1;
+}
+.fc-js::before {
+background: linear-gradient(90deg,#F7DF1E,#F5A800);
+}
+.fc-py::before {
+background: linear-gradient(90deg,#3776AB,#FFD43B);
+}
+.fc-css::before {
+background: linear-gradient(90deg,#264DE4,#2965F1);
+}
+.fc-react::before {
+background: linear-gradient(90deg,#61DAFB,#1A6FE8);
+}
+.fc-node::before {
+background: linear-gradient(90deg,#339933,#68A063);
+}
+.fc-php::before {
+background: linear-gradient(90deg,#777BB4,#4F5B93);
+}
+.fc-java::before {
+background: linear-gradient(90deg,#F89820,#5382A1);
+}
+.fc-git::before {
+background: linear-gradient(90deg,#F05032,#DE4C36);
+}
+.fc-gen::before {
+background: linear-gradient(90deg,var(--gold),var(--blue));
+}
+.forum-header {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 12px;
+}
+.forum-icon {
+width: 44px;
+height: 44px;
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.4rem;
+flex-shrink: 0;
+background:var(--blue);
+}
+.forum-name {
+font-family: "Orbitron",monospace;
+font-size: 0.88rem;
+font-weight: 700;
+margin-bottom: 2px;
+}
+.forum-tag {
+font-size: 0.7rem;
+color:var(--white);
+}
+.forum-desc {
+font-size: 0.8rem;
+color:#E2E5E7;
+line-height: 1.5;
+margin-bottom: 12px;
+}
+.forum-stat {
+font-size: 0.75rem;
+color: var(--gray);
+}
+.forum-stat strong {
+color: var(--white);
+font-family: "Orbitron",monospace;
+font-size: 0.8rem;
+}
+
+.back-btn {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: transparent;
+border: 1.5px solid rgba(255,255,255,0.1);
+color: var(--gray);
+padding: 8px 16px;
+border-radius: 8px;
+font-family:sans-serif;
+font-weight: 600;
+font-size: 0.82rem;
+cursor:none;
+margin-bottom: 18px;
+transition: all 0.2s;
+}
+.back-btn:hover {
+border-color: var(--gold);
+color: var(--gold);
+}
+
+.forum-detail-box {
+display: flex;
+align-items: center;
+gap: 14px;
+padding: 18px;
+background: var(--card);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 12px;
+margin-bottom: 20px;
+}
+.forum-detail-icon {
+width: 50px;
+height: 50px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+background: rgba(255,255,255,0.05);
+}
+.forum-detail-name {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.forum-detail-desc {
+font-size: 0.82rem;
+color: var(--gray);
+}
+.forum-detail-count {
+font-family: "Orbitron",monospace;
+font-size: 0.75rem;
+color: var(--gold);
+margin-top: 4px;
+}
+.forum-actions {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 16px;
+}
+.section-label {
+font-family: "Orbitron",monospace;
+font-size: 0.72rem;
+color: var(--gold);
+letter-spacing: 1.5px;
+}
+.btn-new-topic {
+padding: 9px 18px;
+background: var(--gold);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: sans-serif;
+font-weight: 700;
+font-size: 0.82rem;
+cursor:none;
+transition: all 0.2s;
+}
+.btn-new-topic:hover {
+background: #e09500;
+}
+
+.topic-list {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+.topic-item {
+display: flex;
+gap: 12px;
+padding: 14px 16px;
+background: var(--card);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 10px;
+cursor:none;
+transition: all 0.2s;
+}
+.topic-item:hover {
+border-color: rgba(245,168,0,0.25);
+transform: translateX(3px);
+}
+.vote-col {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 3px;
+min-width: 34px;
+}
+.vote-btn {
+width: 26px;
+height: 26px;
+border-radius: 5px;
+border: 1px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--white);
+cursor: none;
+font-size: 0.8rem;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+}
+.vote-btn:hover, .vote-btn.voted {
+border-color: var(--gold);
+color: var(--gold);
+background: rgba(245,168,0,0.1);
+}
+.vote-count {
+font-family: "Orbitron",monospace;
+font-size: 0.78rem;
+font-weight: 700;
+}
+.topic-body {
+flex: 1;
+min-width: 0;
+}
+.topic-meta {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 6px;
+flex-wrap: wrap;
+}
+.t-badge {
+font-size: 0.65rem;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+}
+.tb-q {
+background: rgba(26,111,232,0.12);
+color: #7ab3ff;
+border: 1px solid rgba(26,111,232,0.3);
+}
+.tb-t {
+background: rgba(245,168,0,0.12);
+color: var(--gold);
+border: 1px solid rgba(245,168,0,0.3);
+}
+.tb-d {
+background: rgba(168,85,247,0.12);
+color: #c084fc;
+border: 1px solid rgba(168,85,247,0.3);
+}
+.topic-author {
+font-size: 0.72rem;
+color: var(--gray);
+}
+.topic-author a {
+color: var(--blue);
+text-decoration: none;
+font-weight: 700;
+}
+.topic-time {
+font-size: 0.68rem;
+color: rgba(136,146,164,0.5);
+}
+.topic-title {
+font-family: "Orbitron",monospace;
+font-size: 0.85rem;
+font-weight: 700;
+margin-bottom: 5px;
+line-height: 1.4;
+}
+.topic-item:hover .topic-title {
+color: var(--gold);
+}
+.topic-excerpt {
+font-size: 0.78rem;
+color: var(--gray);
+line-height: 1.5;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+margin-bottom: 8px;
+}
+.topic-foot {
+display: flex;
+gap: 12px;
+align-items: center;
+}
+.topic-stat {
+font-size: 0.72rem;
+color: var(--gray);
+}
+.topic-click-hint {
+font-size: 0.7rem;
+color: var(--gold);
+margin-left: auto;
+}
+
+.topic-detail-header {
+background: var(--card);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 12px;
+padding: 20px;
+margin-bottom: 20px;
+}
+.topic-detail-meta {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 10px;
+flex-wrap: wrap;
+}
+.topic-detail-title {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+line-height: 1.4;
+margin-bottom: 10px;
+}
+.topic-detail-content {
+font-size: 0.88rem;
+color: var(--gray);
+line-height: 1.7;
+margin-bottom: 14px;
+white-space: pre-wrap;
+}
+.topic-detail-footer {
+display: flex;
+align-items: center;
+gap: 14px;
+padding-top: 12px;
+border-top: 1px solid rgba(255,255,255,0.06);
+}
+.vote-big-btn {
+padding: 7px 16px;
+border-radius: 8px;
+border: 1.5px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--gray);
+cursor:none;
+font-size: 0.82rem;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.vote-big-btn:hover, .vote-big-btn.voted {
+border-color: var(--gold);
+color: var(--gold);
+background: rgba(245,168,0,0.1);
+}
+.vote-big-count {
+font-family: "Orbitron",monospace;
+font-size: 0.88rem;
+font-weight: 700;
+}
+
+.replies-title {
+font-family: "Orbitron",monospace;
+font-size: 0.72rem;
+color: var(--gold);
+letter-spacing: 1.5px;
+margin-bottom: 14px;
+margin-top: 20px;
+}
+.reply-list {
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin-bottom: 20px;
+}
+.reply-item {
+display: flex;
+gap: 10px;
+}
+.reply-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background: linear-gradient(135deg,var(--gold),var(--blue));
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.75rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.reply-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.reply-bubble {
+flex: 1;
+background: var(--card);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 12px;
+padding: 14px;
+}
+.reply-head {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 8px;
+flex-wrap: wrap;
+}
+.reply-author {
+font-size: 0.82rem;
+font-weight: 700;
+color: var(--blue);
+text-decoration: none;
+}
+.reply-author:hover {
+text-decoration: underline;
+}
+.reply-role {
+font-size: 0.68rem;
+color: var(--gray);
+}
+.reply-time {
+font-size: 0.68rem;
+color: rgba(136,146,164,0.45);
+margin-left: auto;
+}
+.reply-text {
+font-size: 0.85rem;
+color: var(--white);
+line-height: 1.6;
+white-space: pre-wrap;
+}
+.reply-foot {
+display: flex;
+gap: 10px;
+margin-top: 10px;
+padding-top: 8px;
+border-top: 1px solid rgba(255,255,255,0.05);
+}
+.reply-like-btn {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 0.78rem;
+cursor:none;
+display: flex;
+align-items: center;
+gap: 4px;
+padding: 0;
+transition: color 0.2s;
+}
+.reply-like-btn:hover, .reply-like-btn.voted {
+color: var(--gold);
+}
+
+.reply-input-box {
+background: var(--card);
+border: 1px solid rgba(245,168,0,0.15);
+border-radius: 12px;
+padding: 16px;
+}
+.reply-input-top {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 12px;
+}
+.reply-my-avatar {
+width: 32px;
+height: 32px;
+border-radius: 50%;
+background: var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.7rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.reply-my-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.reply-lbl {
+font-size: 0.82rem;
+font-weight: 600;
+color: var(--gold);
+}
+.reply-textarea {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 12px 14px;
+color: var(--white);
+font-family: "Exo 2",sans-serif;
+font-size: 0.88rem;
+outline: none;
+resize: vertical;
+min-height: 90px;
+margin-bottom: 10px;
+transition: border-color 0.2s;
+}
+.reply-textarea:focus {
+border-color: var(--gold);
+}
+.reply-textarea::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.reply-submit-row {
+display: flex;
+justify-content: flex-end;
+}
+.btn-submit-reply {
+padding: 10px 22px;
+background: linear-gradient(135deg,var(--gold),#e09500);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.82rem;
+cursor: none;
+transition: all 0.2s;
+}
+.btn-submit-reply:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 20px rgba(245,168,0,0.3);
+}
+.btn-submit-reply:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+.login-notice {
+text-align: center;
+padding: 14px;
+background: rgba(26,111,232,0.06);
+border: 1px solid rgba(26,111,232,0.15);
+border-radius: 8px;
+font-size: 0.84rem;
+color: var(--gray);
+}
+.login-notice a {
+color: var(--gold);
+font-weight: 600;
+text-decoration: none;
+}
+
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.75);
+z-index: 200;
+align-items: center;
+justify-content: center;
+padding: 16px;
+}
+.modal-overlay.open {
+display: flex;
+}
+.modal {
+background: #1a1f2a;
+border: 1px solid rgba(245,168,0,0.2);
+border-radius: 14px;
+padding: 24px;
+width: 100%;
+max-width: 560px;
+max-height: 90vh;
+overflow-y: auto;
+}
+.modal-title {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color: var(--gold);
+margin-bottom: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.modal-close {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 1.2rem;
+cursor: none;
+}
+.modal-label {
+display: block;
+font-size: 0.8rem;
+color: var(--gray);
+font-weight: 600;
+margin-bottom: 7px;
+}
+.modal-input, .modal-select, .modal-textarea {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 10px 12px;
+color: var(--white);
+font-family: sans-serif;
+font-size: 0.88rem;
+outline: none;
+margin-bottom: 14px;
+}
+.modal-textarea {
+min-height: 110px;
+resize: vertical;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus {
+border-color: var(--gold);
+}
+.modal-select option {
+background: #1a1f2a;
+}
+.btn-post {
+width: 100%;
+padding: 12px;
+background: linear-gradient(135deg,var(--gold),#e09500);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.88rem;
+cursor: pointer;
+}
+.btn-post:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+.spinner {
+width: 32px;
+height: 32px;
+border: 3px solid rgba(245,168,0,0.2);
+border-top-color: var(--gold);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 40px auto;
+}
+@keyframes spin {
+to {
+transform: rotate(360deg);
+}
+}
+.empty-msg {
+text-align: center;
+padding: 40px 20px;
+color: var(--gray);
+font-size: 0.85rem;
+line-height: 1.6;
+}
+
+
+#forumsView {
+display: block;
+}
+#forumDetailView {
+display: none;
+}
+#topicDetailView {
+display: none;
+}
+
+@media(max-width:600px) {
+.nav-links {
+display: none;
+}
+
+.forums-grid {
+grid-template-columns: 1fr;
+}
+}
+
+
+.bottom-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 72px;
+background: rgba(10,10,10,0.9);
+border:none;
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 999;
+}
+
+.bottom-item {
+flex: 1;
+text-decoration: none;
+color:var(--white);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+font-size: .75rem;
+transition: .3s;
+
+}
+
+.bottom-item i {
+font-size: 1.2rem;
+}
+
+.bottom-item:hover,
+.bottom-item.active {
+color: var(--gold);
+border-radius: 50px;
+overflow: hidden;
+}
+
+@media(min-width:769px) {
+.bottom-bar {
+display: none;
+}
+}
+
+</style>
+<link rel="stylesheet" href="shared-nav.css">
+</head>
+<body>
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<img src="data:image/png;base64,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" alt="Logo" />
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<div class="nav-links">
+<a onclick="window.location.href='community.html'">Communauté</a>
+<a onclick="window.location.href='tutorials.html'">Tutoriels</a>
+<a onclick="window.location.href='messages.html'">Messages</a>
+<a class="active">Forums</a>
+<a onclick="window.location.href='discover.html'">Découvrir</a>
+<a onclick="window.location.href='profile.html'">Profil</a>
+</div>
+<!--
+<div class="nav-right">
+<div class="notif-bell-mini" id="notifBell" onclick="window.location.href='notifications.html'">
+<i class="fa-solid fa-bell"></i>
+<span class="notif-badge-mini" id="notifCount"></span>
+</div>
+--> 
+<div class="nav-avatar" id="navAvatar" onclick="window.location.href='profile.html'">
+?
+</div>
+</div>
+</nav>
+
+<div class="page-header">
+<h1>Forums par <span>Thème</span></h1>
+<p>
+Rejoins la discussion dans ton langage préféré
+</p>
+<div class="search-bar">
+<div class="search-wrap">
+<input type="text" id="searchInput" placeholder="Rechercher dans les forums..." />
+</div>
+<button class="btn-search" onclick="doSearch()"><i class="fa-solid fa-magnifying-glass"></i> Rechercher</button>
+</div>
+</div>
+
+<div class="main">
+
+<div id="forumsView">
+<div class="forums-grid" id="forumsGrid"></div>
+</div>
+
+
+<div id="forumDetailView">
+<button class="back-btn" onclick="showForums()"><i class="fa-solid fa-arrow-left"></i> Retour aux forums</button>
+<div id="forumDetailBox"></div>
+<div class="forum-actions">
+<span class="section-label">// SUJETS</span>
+<button class="btn-new-topic" onclick="openModal()">+ Nouveau sujet</button>
+</div>
+<div id="topicList"></div>
+</div>
+
+
+<div id="topicDetailView">
+<button class="back-btn" onclick="showForumDetail()"><i class="fa-solid fa-arrow-left"></i> Retour aux sujets</button>
+<div id="topicDetailContent"></div>
+</div>
+
+</div>
+
+<div class="modal-overlay" id="topicModal" onclick="if(event.target===this)closeModal()">
+<div class="modal">
+<div class="modal-title">
+<i class="fa-solid fa-pen-to-square"></i> Nouveau sujet
+<button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<label class="modal-label">Type</label>
+<select class="modal-select" id="topicType">
+<option value="question">Question</option>
+<option value="tutorial">Tutoriel</option>
+<option value="discussion">Discussion</option>
+</select>
+<label class="modal-label">Titre *</label>
+<input class="modal-input" type="text" id="topicTitle" placeholder="Titre de ton sujet..." />
+<label class="modal-label">Contenu *</label>
+<textarea class="modal-textarea" id="topicContent" placeholder="Décris ton sujet en détail..."></textarea>
+<button class="btn-post" id="submitTopicBtn" onclick="submitTopic()"><i class="fa-solid fa-paper-plane"></i> Publier</button>
+</div>
+</div>
+
+<div class="bottom-bar">
+
+<a href="community.html" class="bottom-item">
+<i class="fa-solid fa-users"></i>
+<span class="nav-badge" id="navBadgeCommunity"></span>
+<span>Communauté</span>
+</a>
+
+<a href="messages.html" class="bottom-item">
+<i class="fa-solid fa-comments"></i>
+<span class="nav-badge" id="navBadgeMessages"></span>
+<span>Messages</span>
+</a>
+
+<a href="status.html" class="bottom-item">
+<i class="fa-solid fa-circle-play"></i>
+<span class="nav-badge" id="navBadgeStatus"></span>
+<span>Statut</span>
+</a>
+
+<a href="settings.html" class="bottom-item">
+<i class="fa-solid fa-gear"></i>
+<span class="nav-badge" id="navBadgeSettings"></span>
+<span data-i18n="bottombar.settings">Paramètres</span>
+</a>
+
+</div>
+
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<script type="module">
+import {
+getApps, getApp, initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getAuth,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import "./onesignal-config.js";
+import {
+getFirestore,
+collection,
+addDoc,
+doc,
+getDoc,
+setDoc,
+getDocs,
+query,
+orderBy,
+onSnapshot,
+updateDoc,
+increment,
+serverTimestamp,
+arrayUnion
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = getApps().length ? getApp() : initializeApp({
+apiKey: "AIzaSyBXDDwYx0FPnJBc6vkgLPzeIJk6hiEVMEw", authDomain: "code-share-2c4ea.firebaseapp.com", projectId: "code-share-2c4ea", storageBucket: "code-share-2c4ea.firebasestorage.app", messagingSenderId: "706094984093", appId: "1:706094984093:web:bd62bbed06c156bb5c1d74"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let myData = {};
+let activeForumId = null;
+let activeTopicId = null;
+let unsubTopics = null;
+let unsubReplies = null;
+
+const FORUMS = [{
+id: "javascript",
+name: "JavaScript",
+icon: '<i class="fa-brands fa-square-js"></i>',
+cls: "fc-js",
+tag: "#javascript",
+desc: "Tout sur JS, ES6+, async/await, DOM et plus."
+},
+{
+id: "python",
+name: "Python",
+icon: '<i class="fa-brands fa-python"></i>',
+cls: "fc-py",
+tag: "#python",
+desc: "Python débutants et experts. Scripts, Flask..."
+},
+{
+id: "css",
+name: "HTML/CSS",
+icon: '<i class="fa-brands fa-css3-alt"></i>',
+cls: "fc-css",
+tag: "#html #css",
+desc: "Mise en page, Flexbox, Grid, animations."
+},
+{
+id: "react",
+name: "React",
+icon: '<i class="fa-brands fa-react"></i>',
+cls: "fc-react",
+tag: "#react",
+desc: "Components, hooks, state management."
+},
+{
+id: "nodejs",
+name: "Node.js",
+icon: '<i class="fa-brands fa-node-js"></i>',
+cls: "fc-node",
+tag: "#nodejs",
+desc: "Backend JS, Express, APIs REST."
+},
+{
+id: "php",
+name: "PHP",
+icon: '<i class="fa-brands fa-php"></i>',
+cls: "fc-php",
+tag: "#php",
+desc: "PHP moderne, Laravel, WordPress."
+},
+{
+id: "java",
+name: "Java",
+icon: '<i class="fa-brands fa-java"></i>',
+cls: "fc-java",
+tag: "#java",
+desc: "Java OOP, Spring Boot, Android."
+},
+{
+id: "git",
+name: "Git & GitHub",
+icon: '<i class="fa-brands fa-git-alt"></i>',
+cls: "fc-git",
+tag: "#git",
+desc: "Contrôle de version, branches, CI/CD."
+},
+{
+id: "general",
+name: "Général",
+icon: '<i class="fa-solid fa-comments"></i>',
+cls: "fc-gen",
+tag: "#général",
+desc: "Tout ce qui ne rentre pas ailleurs."
+},
+];
+
+// authan an kale m anpil hmm use claude poul ede m  vérifié l byen mesye sil pah gen fay sekirite 
+
+onAuthStateChanged(auth, async user => {
+    currentUser = user;
+    const navAv = document.getElementById("navAvatar");
+
+    if (user) {
+        initOneSignal(user.uid);
+
+        try {
+            const ud = await getDoc(doc(db, "users", user.uid));
+            myData = ud.exists() ? ud.data() : {};
+
+            if (myData.photoBase64) {
+                navAv.innerHTML = `<img src="${myData.photoBase64}" alt="Avatar" />`;
+            } else {
+                navAv.textContent = (user.displayName || user.email).substring(0, 2).toUpperCase();
+            }
+        } catch (error) {
+            console.error("Erreur chargement profil :", error);
+            navAv.textContent = (user.displayName || user.email).substring(0, 2).toUpperCase();
+        }
+    } else {
+        navAv.textContent = "?";
+    }
+
+    buildForumsGrid();
+});
+
+
+async function buildForumsGrid() {
+const grid = document.getElementById("forumsGrid");
+grid.innerHTML = "<div class=\"spinner\"></div>";
+// Avant : une boucle "for...await" lançait les 9 requêtes Firestore
+// UNE PAR UNE, en attendant la réponse de chaque forum avant de
+// demander le suivant → 9 allers-retours réseau mis bout à bout,
+// d'où la lenteur ressentie. Avec Promise.all, les 9 requêtes
+// partent EN MÊME TEMPS ; le temps total = le temps du plus lent
+// des 9, pas la somme des 9.
+const cards = await Promise.all(FORUMS.map(async f => {
+let count = 0;
+try {
+const snap = await getDocs(collection(db, "forums", f.id, "topics"));
+count = snap.size;
+} catch(e) {}
+return {
+...f, count
+};
+}));
+grid.innerHTML = cards.map(f => `
+<div class="forum-card ${f.cls}" onclick="showForumDetail_load('${f.id}')">
+<div class="forum-header">
+<div class="forum-icon">${f.icon}</div>
+<div>
+<div class="forum-name">${f.name}</div>
+<div class="forum-tag">${f.tag}</div>
+</div>
+</div>
+<div class="forum-desc">${f.desc}</div>
+<div class="forum-stat"><strong>${f.count}</strong> sujet${f.count > 1?"s": ""}</div>
+</div>`).join("");
+
+document.getElementById("searchInput").oninput = function() {
+const s = this.value.toLowerCase();
+document.querySelectorAll(".forum-card").forEach(c => {
+const txt = c.textContent.toLowerCase();
+c.style.display = txt.includes(s) ? "": "none";
+});
+};
+}
+
+window.doSearch = function() {
+const s = document.getElementById("searchInput").value.toLowerCase();
+document.querySelectorAll(".forum-card").forEach(c => {
+c.style.display = c.textContent.toLowerCase().includes(s) ? "": "none";
+});
+};
+
+
+window.showForumDetail_load = function(forumId) {
+const forum = FORUMS.find(f => f.id === forumId);
+if (!forum) return;
+activeForumId = forumId;
+
+document.getElementById("forumsView").style.display = "none";
+document.getElementById("forumDetailView").style.display = "block";
+document.getElementById("topicDetailView").style.display = "none";
+
+document.getElementById("forumDetailBox").innerHTML = `
+<div class="forum-detail-box">
+<div class="forum-detail-icon">${forum.icon}</div>
+<div>
+<div class="forum-detail-name">${forum.name}</div>
+<div class="forum-detail-desc">${forum.desc}</div>
+<div class="forum-detail-count" id="topicCountLabel">Chargement...</div>
+</div>
+</div>`;
+
+loadTopics(forumId);
+};
+
+function loadTopics(forumId) {
+const listEl = document.getElementById("topicList");
+listEl.innerHTML = "<div class=\"spinner\"></div>";
+if (unsubTopics) unsubTopics();
+
+unsubTopics = onSnapshot(
+query(collection(db, "forums", forumId, "topics"), orderBy("createdAt", "desc")),
+snap => {
+const countEl = document.getElementById("topicCountLabel");
+if (countEl) countEl.textContent = snap.size + " sujet" + (snap.size > 1?"s": "");
+
+if (snap.empty) {
+listEl.innerHTML = "<div class=\"empty-msg\">Aucun sujet pour l\'instant.<br/>Sois le premier à publier !</div>";
+return;
+}
+
+const bMap = {
+question: "tb-q",
+tutorial: "tb-t",
+discussion: "tb-d"
+};
+const lMap = {
+question: "QUESTION",
+tutorial: "TUTORIEL",
+discussion: "DISCUSSION"
+};
+const topics = snap.docs.map(d => ({
+id: d.id, ...d.data()}));
+
+listEl.innerHTML = "<div class=\"topic-list\">" + topics.map(t => {
+const date = t.createdAt?.toDate ? timeAgo(t.createdAt.toDate()): "récemment";
+const voted = (t.votedBy || []).includes(currentUser?.uid);
+return `<div class="topic-item" onclick="openTopic('${t.id}')">
+<div class="vote-col">
+<button class="vote-btn ${voted?"voted": ""}" onclick="event.stopPropagation();voteTopic('${t.id}',this)">▲</button>
+<span class="vote-count" id="tv-${t.id}">${t.votes || 0}</span>
+<button class="vote-btn">▼</button>
+</div>
+<div class="topic-body">
+<div class="topic-meta">
+<span class="t-badge ${bMap[t.type] || "tb-q"}">${lMap[t.type] || "QUESTION"}</span>
+<span class="topic-author">par <a href="user-profile.html?uid=${t.userId}" onclick="event.stopPropagation()">@${t.username || "anonyme"}</a></span>
+<span class="topic-time">${date}</span>
+</div>
+<div class="topic-title">${t.title}</div>
+<div class="topic-excerpt">${t.content}</div>
+<div class="topic-foot">
+<span class="topic-stat"><i class="fa-solid fa-heart"></i> ${t.votes || 0}</span>
+<span class="topic-stat"><i class="fa-solid fa-comment"></i> ${t.comments || 0} réponse${(t.comments || 0) > 1?"s": ""}</span>
+<span class="topic-click-hint"><i class="fa-solid fa-comments"></i> Discuter</span>
+</div>
+</div>
+</div>`;
+}).join("") + "</div>";
+}
+);
+}
+
+window.showForums = function() {
+if (unsubTopics) unsubTopics();
+if (unsubReplies) unsubReplies();
+activeForumId = null;
+activeTopicId = null;
+document.getElementById("forumsView").style.display = "block";
+document.getElementById("forumDetailView").style.display = "none";
+document.getElementById("topicDetailView").style.display = "none";
+buildForumsGrid();
+};
+
+window.showForumDetail = function() {
+if (unsubReplies) unsubReplies();
+activeTopicId = null;
+document.getElementById("forumDetailView").style.display = "block";
+document.getElementById("topicDetailView").style.display = "none";
+};
+
+
+window.openTopic = async function(topicId) {
+activeTopicId = topicId;
+document.getElementById("forumDetailView").style.display = "none";
+document.getElementById("topicDetailView").style.display = "block";
+
+const container = document.getElementById("topicDetailContent");
+container.innerHTML = "<div class=\"spinner\"></div>";
+
+try {
+const snap = await getDoc(doc(db, "forums", activeForumId, "topics", topicId));
+if (!snap.exists()) {
+container.innerHTML = "<div class=\"empty-msg\">Sujet introuvable.</div>"; return;
+}
+const t = snap.data();
+const date = t.createdAt?.toDate ? timeAgo(t.createdAt.toDate()): "récemment";
+const bMap = {
+question: "tb-q",
+tutorial: "tb-t",
+discussion: "tb-d"
+};
+const lMap = {
+question: "QUESTION",
+tutorial: "TUTORIEL",
+discussion: "DISCUSSION"
+};
+const voted = (t.votedBy || []).includes(currentUser?.uid);
+
+let myAvHtml = "?";
+if (currentUser) {
+if (myData.photoBase64) myAvHtml = "<img src=\""+myData.photoBase64+"\"/>";
+else myAvHtml = (currentUser.displayName || currentUser.email || "?").substring(0, 2).toUpperCase();
+}
+
+container.innerHTML = `
+<div class="topic-detail-header">
+<div class="topic-detail-meta">
+<span class="t-badge ${bMap[t.type] || "tb-q"}">${lMap[t.type] || "QUESTION"}</span>
+<span style="font-size:0.78rem;color:var(--gray);">par <a href="user-profile.html?uid=${t.userId}" style="color:var(--blue);text-decoration:none;font-weight:700;">@${t.username || "anonyme"}</a></span>
+<span style="font-size:0.7rem;color:rgba(136,146,164,0.5);">${date}</span>
+</div>
+<div class="topic-detail-title">${t.title}</div>
+<div class="topic-detail-content">${t.content}</div>
+<div class="topic-detail-footer">
+<button class="vote-big-btn ${voted?"voted": ""}" id="topicVoteBtn" onclick="voteTopic('${topicId}',this)">
+<i class="fa-solid fa-heart"></i> J'aime
+</button>
+<span class="vote-big-count" id="topicVoteCount">${t.votes || 0}</span>
+<span style="font-size:0.78rem;color:var(--gray);"><i class="fa-solid fa-comment"></i> <span id="replyCountLabel">${t.comments || 0}</span> réponse${(t.comments || 0) > 1?"s": ""}</span>
+</div>
+</div>
+
+<div class="replies-title">// RÉPONSES (<span id="replyCountBadge">${t.comments || 0}</span>)</div>
+<div class="reply-list" id="replyList"></div>
+
+${currentUser ? `
+<div class="reply-input-box">
+<div class="reply-input-top">
+<div class="reply-my-avatar">${myAvHtml}</div>
+<span class="reply-lbl">Ajoute ta réponse</span>
+</div>
+<textarea class="reply-textarea" id="replyTextarea" placeholder="Partage ton expertise ou pose une question..."></textarea>
+<div class="reply-submit-row">
+<button class="btn-submit-reply" id="replyBtn" onclick="submitReply('${topicId}')"><i class="fa-solid fa-paper-plane"></i> Publier la réponse</button>
+</div>
+</div>`: `
+<div class="login-notice">
+<a href="login.html">Connecte-toi</a> ou <a href="signup.html">crée un compte</a> pour répondre.
+</div>`}`;
+
+loadReplies(topicId);
+
+} catch(e) {
+container.innerHTML = "<div class=\"empty-msg\">Erreur: "+e.message+"</div>";
+}
+};
+
+function loadReplies(topicId) {
+const list = document.getElementById("replyList");
+if (!list) return;
+if (unsubReplies) unsubReplies();
+
+unsubReplies = onSnapshot(
+query(collection(db, "forums", activeForumId, "topics", topicId, "replies"), orderBy("createdAt", "asc")),
+snap => {
+const countEl = document.getElementById("replyCountLabel");
+const countEl2 = document.getElementById("replyCountBadge");
+if (countEl) countEl.textContent = snap.size;
+if (countEl2) countEl2.textContent = snap.size;
+
+if (snap.empty) {
+list.innerHTML = "<div style=\"text-align:center;padding:24px;color:var(--gray);font-size:0.84rem;\">Aucune réponse encore. Sois le premier !</div>";
+return;
+}
+
+list.innerHTML = "";
+snap.docs.forEach(d => {
+const r = d.data();
+const date = r.createdAt?.toDate ? timeAgo(r.createdAt.toDate()): "récemment";
+const avHtml = r.photoBase64 ? "<img src=\""+r.photoBase64+"\"/>": (r.username || "?").substring(0, 2).toUpperCase();
+const voted = (r.votedBy || []).includes(currentUser?.uid);
+
+const item = document.createElement("div");
+item.className = "reply-item";
+item.innerHTML = `
+<div class="reply-avatar">${avHtml}</div>
+<div class="reply-bubble">
+<div class="reply-head">
+<a class="reply-author" href="user-profile.html?uid=${r.userId}">@${r.username || "anonyme"}</a>
+<span class="reply-role">${r.role === "mentor"?'<i class="fa-solid fa-star"></i> Mentor': '<i class="fa-solid fa-graduation-cap"></i> Apprenant'}</span>
+<span class="reply-time">${date}</span>
+</div>
+<div class="reply-text">${escapeHtml(r.text)}</div>
+<div class="reply-foot">
+<button class="reply-like-btn ${voted?"voted": ""}" onclick="voteReply('${d.id}','${topicId}',this)">
+<i class="fa-solid fa-heart"></i> <span>${r.votes || 0}</span>
+</button>
+</div>
+</div>`;
+list.appendChild(item);
+});
+}
+);
+}
+
+window.submitReply = async function(topicId) {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+}
+const textarea = document.getElementById("replyTextarea");
+const text = textarea?.value.trim();
+if (!text) {
+alert("Écris ta réponse !"); return;
+}
+
+const btn = document.getElementById("replyBtn");
+btn.disabled = true; btn.textContent = "Publication...";
+
+try {
+await addDoc(collection(db, "forums", activeForumId, "topics", topicId, "replies"), {
+text,
+username: myData.username || currentUser.email.split("@")[0],
+userId: currentUser.uid,
+photoBase64: myData.photoBase64 || null,
+role: myData.role || "apprenant",
+votes: 0,
+votedBy: [],
+createdAt: serverTimestamp()
+});
+
+await updateDoc(doc(db, "forums", activeForumId, "topics", topicId), {
+comments: increment(1)
+});
+try {
+await setDoc(doc(db, "users", currentUser.uid), {
+points: increment(2)
+}, {
+merge: true
+});
+} catch(e) {}
+
+try {
+const td = await getDoc(doc(db, "forums", activeForumId, "topics", topicId));
+if (td.exists() && td.data().userId !== currentUser.uid) {
+await addDoc(collection(db, "users", td.data().userId, "notifications"), {
+type: "comment", senderName: myData.username || currentUser.email.split("@")[0],
+senderPhoto: myData.photoBase64 || null, message: "a répondu à ton sujet",
+postTitle: td.data().title, link: "forums.html", read: false, createdAt: new Date()
+});
+
+sendOneSignalNotification(
+td.data().userId,
+myData.username || currentUser.email.split("@")[0],
+"a répondu à ton sujet : " + td.data().title,
+"forums.html"
+);
+}
+} catch(e) {}
+
+textarea.value = "";
+btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publier la réponse';
+} catch(e) {
+btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publier la réponse';
+alert("Erreur: "+e.message);
+}
+};
+
+window.voteTopic = async function(topicId, btn) {
+if (!currentUser) {
+alert("Connecte-toi pour voter !"); return;
+}
+if (btn.classList.contains("voted")) return;
+try {
+const ref = doc(db, "forums", activeForumId, "topics", topicId);
+const snap = await getDoc(ref);
+if (!snap.exists()) return;
+await updateDoc(ref, {
+votes: increment(1), votedBy: arrayUnion(currentUser.uid)
+});
+btn.classList.add("voted");
+const countEl = document.getElementById("tv-"+topicId) || document.getElementById("topicVoteCount");
+if (countEl) countEl.textContent = parseInt(countEl.textContent || "0") + 1;
+if (snap.data().userId !== currentUser.uid) {
+await setDoc(doc(db, "users", snap.data().userId), {
+points: increment(10)
+}, {
+merge: true
+});
+}
+} catch(e) {}
+};
+
+window.voteReply = async function(replyId, topicId, btn) {
+if (!currentUser) {
+alert("Connecte-toi pour voter !"); return;
+}
+if (btn.classList.contains("voted")) return;
+try {
+const ref = doc(db, "forums", activeForumId, "topics", topicId, "replies", replyId);
+const snap = await getDoc(ref);
+if (!snap.exists()) return;
+await updateDoc(ref, {
+votes: increment(1), votedBy: arrayUnion(currentUser.uid)
+});
+btn.classList.add("voted");
+const countEl = btn.querySelector("span");
+if (countEl) countEl.textContent = parseInt(countEl.textContent || "0") + 1;
+} catch(e) {}
+};
+
+window.submitTopic = async function() {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+}
+const title = document.getElementById("topicTitle").value.trim();
+const content = document.getElementById("topicContent").value.trim();
+const type = document.getElementById("topicType").value;
+const btn = document.getElementById("submitTopicBtn");
+if (!title||!content) {
+alert("Remplis le titre et le contenu."); return;
+}
+btn.disabled = true; btn.textContent = "Publication...";
+try {
+await addDoc(collection(db, "forums", activeForumId, "topics"), {
+title, content, type,
+username: myData.username || currentUser.email.split("@")[0],
+userId: currentUser.uid,
+votes: 0, comments: 0, votedBy: [],
+createdAt: serverTimestamp()
+});
+try {
+await setDoc(doc(db, "users", currentUser.uid), {
+points: increment(20)
+}, {
+merge: true
+});
+} catch(e) {}
+document.getElementById("topicTitle").value = "";
+document.getElementById("topicContent").value = "";
+btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publier';
+closeModal();
+} catch(e) {
+btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publier';
+alert("Erreur: "+e.message);
+}
+};
+
+window.openModal = () => {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+} document.getElementById("topicModal").classList.add("open");
+};
+window.closeModal = () => document.getElementById("topicModal").classList.remove("open");
+
+function escapeHtml(t) {
+return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>");
+}
+
+function timeAgo(date) {
+const d = Math.floor((Date.now()-date)/1000);
+if (d < 60) return "à l instant";
+if (d < 3600) return "Il y a "+Math.floor(d/60)+"min";
+if (d < 86400) return "Il y a "+Math.floor(d/3600)+"h";
+return "Il y a "+Math.floor(d/86400)+" jour(s)";
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.log('Erreur Service Worker:', err));
+}
+</script>
+<!-- zoulou hm sot vérifie autc joker korije a pou konnya pah gen okenn problème selman fe poun lan ap konekte lap pran ti tan paske nou pako gen cloud funct lan -->
+<!-- cassie hmm verife tut otograf yo epi korije kek lan yo -->
+
+</body>
+</html>

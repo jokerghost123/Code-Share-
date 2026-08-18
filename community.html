@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "598bd958-5b76-41b9-8d72-a84ffe1cf92b",
+      serviceWorkerParam: { scope: "/" },
+      serviceWorkerPath: "sw.js"
+    });
+  });
+</script>
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share — Communauté</title> <link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+background: var(--black);
+color: var(--white);
+font-family:sans-serif;
+min-height: 100vh;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+text-decoration: none;
+cursor: pointer;
+}
+.nav-logo img {
+width:40px;
+height:40px;
+object-fit: contain;
+border-radius: 50%;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color: var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.nav-right {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.btn-new-post {
+padding: 5px 5px;
+background: var(--blue);
+color:var(--white);
+border: none;
+border-radius: 10px;
+font-family:sans-serif;
+font-weight: 700;
+font-size: 0.65rem;
+cursor: none;
+display: flex;
+align-items: center;
+gap: -0px;
+}
+.btn-user-group {
+padding: 5px 5px;
+background: var(--blue);
+color: var(--white);
+border: none;
+border-radius: 10px;
+font-family:sans-serif;
+font-weight: 700;
+font-size: 0.85rem;
+cursor:none;
+display: flex;
+align-items: center;
+gap: 0px;
+}
+.nav-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.85rem;
+cursor:none;
+border: 1px solid rgba(245,168,0,0.4);
+overflow: hidden;
+}
+.nav-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+
+
+.page-header {
+position: relative;
+z-index: 1;
+padding: 28px 20px 22px;
+background:var(--black);
+border:none;
+}
+.page-header h1 {
+font-family: "Orbitron",monospace;
+font-size: 1.6rem;
+font-weight: 900;
+margin-bottom: 6px;
+}
+.page-header h1 span {
+color: var(--gold);
+}
+.page-header p {
+color: var(--gray);
+font-size: 0.88rem;
+margin-bottom: 18px;
+}
+.search-bar {
+display: flex;
+gap: 10px;
+}
+.search-wrap {
+flex: 1;
+position: relative;
+}
+.search-wrap i {
+position: absolute;
+left: 12px;
+top: 50%;
+transform: translateY(-50%);
+color: var(--gray);
+font-size: 0.88rem;
+}
+.search-wrap input {
+width: 100%;
+background: var(--black);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 10px 12px 10px 36px;
+color: var(--white);
+font-family:sans-serif;
+font-size: 0.88rem;
+outline: none;
+}
+.search-wrap input:focus {
+border-color: var(--gold);
+}
+.search-wrap input::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.btn-search {
+padding: 10px 18px;
+background: var(--blue);
+color: var(--white);
+border: none;
+border-radius: 8px;
+font-weight: 600;
+cursor:none;
+font-size: 0.85rem;
+}
+
+.filters {
+position: relative;
+z-index: 1;
+padding: 14px 20px;
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+border:none;
+}
+.cat-btn {
+padding: 6px 14px;
+border-radius: 20px;
+border: 1.5px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--gray);
+font-size: 0.8rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.cat-btn.active {
+background: rgba(245,168,0,0.1);
+border-color: var(--gold);
+color: var(--gold);
+}
+.filter-right {
+display: flex;
+gap: 6px;
+align-items: center;
+}
+.sort-btn {
+padding: 6px 14px;
+border-radius: 20px;
+border: 1.5px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--gray);
+font-size: 0.8rem;
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.sort-btn.active {
+background: rgba(26,111,232,0.1);
+border-color: var(--blue);
+color: #7ab3ff;
+}
+
+
+.main {
+position: relative;
+z-index: 1;
+max-width: 800px;
+margin: 0 auto;
+padding: 20px 16px 60px;
+}
+.login-notice {
+background: rgba(26,111,232,0.08);
+border: 1px solid rgba(26,111,232,0.2);
+border-radius: 10px;
+padding: 14px 16px;
+text-align: center;
+margin-bottom: 16px;
+font-size: 0.85rem;
+color: var(--gray);
+}
+.login-notice a {
+color: var(--gold);
+font-weight: 600;
+text-decoration: none;
+}
+.spinner {
+width: 36px;
+height: 36px;
+border: 3px solid rgba(245,168,0,0.2);
+border-top-color: var(--gold);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 0 auto 14px;
+}
+@keyframes spin {
+to {
+transform: rotate(360deg);
+}
+}
+.loading-state {
+text-align: center;
+padding: 50px 20px;
+color: var(--gray);
+}
+.empty-state {
+text-align: center;
+padding: 50px 20px;
+color: var(--gray);
+}
+.empty-icon {
+font-size: 2.5rem;
+margin-bottom: 10px;
+color: var(--gold);
+opacity: 0.4;
+}
+
+
+.post-list {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+.post-card {
+background: var(--black);
+border:none;
+border-radius: 12px;
+overflow: hidden;
+transition: border-color 0.2s;
+}
+.post-card:hover {
+border-color: rgba(245,168,0,0.2);
+}
+.post-main {
+display: flex;
+gap: 12px;
+padding: 16px;
+}
+.vote-col {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 4px;
+min-width: 38px;
+}
+.vote-btn {
+width: 30px;
+height: 30px;
+border-radius: 6px;
+border: 1px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--gray);
+cursor:none;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.9rem;
+transition: all 0.2s;
+}
+.vote-btn:hover, .vote-btn.voted {
+border-color: var(--gold);
+color: var(--gold);
+background: rgba(245,168,0,0.1);
+}
+.vote-count {
+font-family: "Orbitron",monospace;
+font-size: 0.85rem;
+font-weight: 700;
+}
+.post-body {
+flex: 1;
+min-width: 0;
+}
+.post-meta {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 8px;
+flex-wrap: wrap;
+}
+
+
+.post-menu-btn {
+background: transparent;
+border: none;
+color: var(--gray);
+cursor:none;
+padding: 4px 8px;
+font-size: 0.9rem;
+border-radius: 6px;
+transition: all 0.2s;
+}
+.post-menu-btn:hover {
+background: rgba(255,255,255,0.06);
+color: var(--white);
+}
+.post-menu-dropdown {
+display: none;
+position: absolute;
+top: 100%;
+right: 0;
+background: #1a1f2a;
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+min-width: 140px;
+z-index: 50;
+box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+overflow: hidden;
+}
+.post-menu-dropdown.open {
+display: block;
+}
+.post-menu-item {
+width: 100%;
+text-align: left;
+padding: 10px 14px;
+background: transparent;
+border: none;
+color: var(--white);
+font-family: sans-serif;
+font-size: 0.82rem;
+cursor:none;
+display: flex;
+align-items: center;
+gap: 8px;
+transition: all 0.2s;
+}
+.post-menu-item:hover {
+background: rgba(255,255,255,0.05);
+}
+.post-menu-item.delete {
+color: #ff6b6b;
+}
+.post-menu-item.delete:hover {
+background: rgba(255,77,77,0.1);
+}
+.post-badge {
+font-size: 0.65rem;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 10px;
+font-family: "Orbitron",monospace;
+}
+.badge-q {
+background: rgba(26,111,232,0.12);
+color: #7ab3ff;
+border: 1px solid rgba(26,111,232,0.3);
+}
+.badge-t {
+background: rgba(245,168,0,0.12);
+color: var(--gold);
+border: 1px solid rgba(245,168,0,0.3);
+}
+.badge-d {
+background: rgba(168,85,247,0.12);
+color: #c084fc;
+border: 1px solid rgba(168,85,247,0.3);
+}
+.post-author {
+font-size: 0.75rem;
+color: var(--gray);
+}
+.post-author strong {
+color: var(--blue);
+}
+.post-time {
+font-size: 0.72rem;
+color: rgba(136,146,164,0.6);
+}
+.post-title {
+font-family: "Orbitron",monospace;
+font-size: 0.9rem;
+font-weight: 700;
+margin-bottom: 6px;
+line-height: 1.4;
+cursor: none;
+}
+.post-title:hover {
+color: var(--gold);
+}
+
+
+.post-excerpt {
+font-size: 0.82rem;
+color: var(--gray);
+line-height: 1.6;
+margin-bottom: 6px;
+}
+.post-excerpt.collapsed {
+display: -webkit-box;
+-webkit-box-orient: vertical;
+overflow: hidden;
+}
+.voir-plus-btn {
+background: transparent;
+border: none;
+color: var(--gold);
+font-size: 0.78rem;
+font-weight: 700;
+cursor: none;
+padding: 0;
+margin-bottom: 8px;
+display: none;
+}
+.voir-plus-btn.visible {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+}
+.voir-plus-btn:hover {
+text-decoration: underline;
+}
+
+.post-image {
+width: 100%;
+max-height: 320px;
+object-fit: cover;
+border-radius: 8px;
+margin-bottom: 10px;
+cursor: none ;
+}
+.post-image:hover {
+opacity: 0.9;
+}
+
+.post-pdf {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px 14px;
+background: rgba(255,77,77,0.06);
+border: 1px solid rgba(255,77,77,0.2);
+border-radius: 8px;
+margin-bottom: 10px;
+cursor: pointer;
+transition: all 0.2s;
+text-decoration: none;
+}
+.post-pdf:hover {
+background: rgba(255,77,77,0.1);
+border-color: rgba(255,77,77,0.4);
+}
+.post-pdf-icon {
+color: #ff6b6b;
+font-size: 1.4rem;
+flex-shrink: 0;
+}
+.post-pdf-info {
+flex: 1;
+min-width: 0;
+}
+.post-pdf-name {
+font-size: 0.82rem;
+font-weight: 600;
+color: var(--white);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.post-pdf-size {
+font-size: 0.7rem;
+color: var(--gray);
+}
+
+.post-footer {
+display: flex;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+padding-top: 8px;
+border-top: 1px solid rgba(255,255,255,0.05);
+}
+.post-stat {
+font-size: 0.75rem;
+color: var(--gray);
+display: flex;
+align-items: center;
+gap: 4px;
+}
+.post-stat i {
+color: var(--gold);
+}
+.post-tags {
+display: flex;
+gap: 5px;
+margin-left: auto;
+flex-wrap: wrap;
+}
+.post-tag {
+font-size: 0.68rem;
+padding: 2px 7px;
+border-radius: 8px;
+background: rgba(26,111,232,0.08);
+color: #7ab3ff;
+border: 1px solid rgba(26,111,232,0.15);
+}
+
+
+.comments-section {
+border-top: 1px solid rgba(255,255,255,0.06);
+padding: 14px 16px;
+display: none;
+}
+.comments-section.open {
+display: block;
+}
+.comments-title {
+font-family: "Orbitron",monospace;
+font-size: 0.75rem;
+color: var(--gold);
+letter-spacing: 1px;
+margin-bottom: 12px;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.comment-list {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 14px;
+}
+.comment-item {
+display: flex;
+gap: 10px;
+}
+.comment-avatar {
+width: 30px;
+height: 30px;
+border-radius: 50%;
+background: linear-gradient(135deg,var(--gold),var(--blue));
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.7rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.comment-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.comment-bubble {
+flex: 1;
+background: rgba(255,255,255,0.03);
+border: 1px solid rgba(255,255,255,0.06);
+border-radius: 10px;
+padding: 10px 12px;
+}
+.comment-author {
+font-size: 0.75rem;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.comment-text {
+font-size: 0.82rem;
+color: var(--gray);
+line-height: 1.5;
+}
+.comment-time {
+font-size: 0.68rem;
+color: rgba(136,146,164,0.5);
+margin-top: 4px;
+display: flex;
+align-items: center;
+gap: 4px;
+}
+.comment-input-wrap {
+display: flex;
+gap: 8px;
+align-items: flex-start;
+}
+.comment-input-avatar {
+width: 30px;
+height: 30px;
+border-radius: 50%;
+background: linear-gradient(135deg,var(--gold),var(--blue));
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.7rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.comment-input-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.comment-input-box {
+flex: 1;
+}
+.comment-input {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 10px 12px;
+color: var(--white);
+font-family: "Exo 2",sans-serif;
+font-size: 0.85rem;
+outline: none;
+resize: none;
+min-height: 40px;
+max-height: 120px;
+}
+.comment-input:focus {
+border-color: var(--gold);
+}
+.comment-input::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.btn-send {
+padding: 8px 14px;
+background: var(--blue);
+color: var(--white);
+border: none;
+border-radius: 8px;
+font-size: 0.82rem;
+font-weight: 600;
+cursor: pointer;
+margin-top: 6px;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.btn-send:hover {
+background: #2a7fff;
+}
+.btn-send:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+.btn-toggle-comments {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 0.78rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 5px;
+padding: 0;
+transition: color 0.2s;
+}
+.btn-toggle-comments:hover {
+color: var(--gold);
+}
+
+
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.75);
+z-index: 200;
+align-items: center;
+justify-content: center;
+padding: 16px;
+}
+.modal-overlay.open {
+display: flex;
+}
+.modal {
+background: #1a1f2a;
+border: 1px solid rgba(245,168,0,0.2);
+border-radius: 14px;
+padding: 24px;
+width: 100%;
+max-width: 560px;
+max-height: 90vh;
+overflow-y: auto;
+}
+.modal-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 20px;
+}
+.modal-title {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color: var(--gold);
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.modal-close {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 1.1rem;
+cursor: pointer;
+}
+.modal-close:hover {
+color: var(--white);
+}
+.modal-group {
+margin-bottom: 16px;
+}
+.modal-label {
+display: block;
+font-size: 0.8rem;
+color: var(--gray);
+font-weight: 600;
+margin-bottom: 7px;
+}
+.modal-input, .modal-select, .modal-textarea {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 10px 12px;
+color: var(--white);
+font-family: "Exo 2",sans-serif;
+font-size: 0.88rem;
+outline: none;
+}
+.modal-textarea {
+min-height: 110px;
+resize: vertical;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus {
+border-color: var(--gold);
+}
+.modal-input::placeholder, .modal-textarea::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.modal-select option {
+background: #1a1f2a;
+}
+
+
+.upload-row {
+display: flex;
+gap: 10px;
+margin-bottom: 16px;
+}
+.upload-btn {
+flex: 1;
+padding: 10px;
+border: 1.5px dashed rgba(255,255,255,0.15);
+border-radius: 8px;
+background: transparent;
+color: var(--gray);
+font-family: "Exo 2",sans-serif;
+font-size: 0.82rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 7px;
+transition: all 0.2s;
+}
+.upload-btn:hover {
+border-color: var(--gold);
+color: var(--gold);
+background: rgba(245,168,0,0.05);
+}
+.upload-btn.has-file {
+border-color: var(--blue);
+color: #7ab3ff;
+background: rgba(26,111,232,0.08);
+}
+.upload-input {
+display: none;
+}
+
+
+.img-preview-wrap {
+position: relative;
+margin-bottom: 12px;
+display: none;
+}
+.img-preview-wrap.show {
+display: block;
+}
+.img-preview {
+width: 100%;
+max-height: 200px;
+object-fit: cover;
+border-radius: 8px;
+border: 1px solid rgba(255,255,255,0.1);
+}
+.img-preview-remove {
+position: absolute;
+top: 6px;
+right: 6px;
+background: rgba(0,0,0,0.7);
+border: none;
+color: var(--white);
+width: 26px;
+height: 26px;
+border-radius: 50%;
+cursor: pointer;
+font-size: 0.8rem;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+
+.pdf-preview-wrap {
+display: none;
+align-items: center;
+gap: 10px;
+padding: 10px 14px;
+background: rgba(255,77,77,0.06);
+border: 1px solid rgba(255,77,77,0.2);
+border-radius: 8px;
+margin-bottom: 12px;
+}
+.pdf-preview-wrap.show {
+display: flex;
+}
+.pdf-preview-name {
+flex: 1;
+font-size: 0.82rem;
+color: var(--white);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.pdf-preview-remove {
+background: transparent;
+border: none;
+color: var(--gray);
+cursor: pointer;
+font-size: 0.9rem;
+}
+
+.btn-post {
+width: 100%;
+padding: 12px;
+background: linear-gradient(135deg,var(--gold),#e09500);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.88rem;
+cursor: pointer;
+margin-top: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+.btn-post:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+.btn-post:hover:not(:disabled) {
+transform: translateY(-1px);
+box-shadow: 0 6px 16px rgba(245,168,0,0.3);
+}
+
+
+.img-fullscreen {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.92);
+z-index: 500;
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+.img-fullscreen.open {
+display: flex;
+}
+.img-fullscreen img {
+max-width: 100%;
+max-height: 90vh;
+object-fit: contain;
+border-radius: 8px;
+}
+.img-fullscreen-close {
+position: absolute;
+top: 16px;
+right: 16px;
+background: transparent;
+border: none;
+color: var(--white);
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+@media(max-width:500px) {
+.post-main {
+gap: 8px;
+}
+.vote-col {
+min-width: 30px;
+}
+.upload-row {
+flex-direction: column;
+}
+}
+
+
+.bottom-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 72px;
+background: rgba(10,10,10,0.9);
+border-top: 1px solid rgba(245,168,0,.15);
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 999;
+}
+
+.bottom-item {
+flex: 1;
+text-decoration: none;
+color:var(--white);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+font-size: .75rem;
+transition: .3s;
+
+}
+
+.bottom-item i {
+font-size: 1.2rem;
+}
+
+.bottom-item:hover,
+.bottom-item.active {
+color: var(--gold);
+border-radius: 50px;
+overflow: hidden;
+}
+
+@media(min-width:769px) {
+.bottom-bar {
+display: none;
+}
+}
+
+</style>
+<link rel="stylesheet" href="shared-nav.css">
+<link rel="stylesheet" href="shared-ui.css">
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<body>
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<img src="data:image/png;base64,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" alt="Logo" />
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<div class="nav-right">
+<button class="btn-new-post" id="newPostBtn" onclick="openModal()">
+<i class="fa-solid fa-plus"></i> <span data-i18n="community.nav.newPost">publier</span>
+</button>
+
+<div class="nav-avatar" id="navAvatar" onclick="window.location.href='profile.html'">
+?
+</div>
+</div>
+</nav>
+
+<div class="page-header">
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+<h1 style="margin-bottom:0;"><span data-i18n="community.header.titlePrefix" style="color:var(--white);">La</span> <span data-i18n="community.header.titleWord">Communauté</span></h1>
+<button class="btn-user-group" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold);" onclick="window.location.href='discover.html'">
+<i class="fa-solid fa-user-group"></i> <span data-i18n="community.header.discover">Découvrir</span>
+</button>
+</div>
+<p data-i18n="community.header.subtitle">
+Pose tes questions, partage tes connaissances, apprends avec les autres
+</p>
+<div class="search-bar">
+<div class="search-wrap">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input type="text" id="searchInput" placeholder="Rechercher une question, un tutoriel..." data-i18n-placeholder="community.search.placeholder" />
+</div>
+<button class="btn-search" data-i18n="community.search.button" onclick="renderPosts()">Rechercher</button>
+</div>
+</div>
+
+<div class="filters">
+<button class="cat-btn active" onclick="filterCat('all',this)"><i class="fa-solid fa-globe"></i> <span data-i18n="community.filters.all">Tout</span></button>
+<button class="cat-btn" onclick="filterCat('question',this)"><i class="fa-solid fa-circle-question"></i> <span data-i18n="community.filters.questions">Questions</span> <span id="cQ">0</span></button>
+<button class="cat-btn" onclick="filterCat('tutorial',this)"><i class="fa-solid fa-book-open"></i> <span data-i18n="community.filters.tutorials">Tutoriels</span> <span id="cT">0</span></button>
+<button class="cat-btn" onclick="filterCat('discussion',this)"><i class="fa-solid fa-comments"></i> <span data-i18n="community.filters.discussions">Discussions</span> <span id="cD">0</span></button>
+<div class="filter-right">
+<button class="sort-btn active" id="sortRecent" onclick="setSort('recent',this)"><i class="fa-solid fa-clock"></i> <span data-i18n="community.filters.recent">Récent</span></button>
+<button class="sort-btn" id="sortPop" onclick="setSort('popular',this)"><i class="fa-solid fa-fire"></i> <span data-i18n="community.filters.popular">Populaire</span></button>
+</div>
+</div>
+
+<div class="main">
+<div id="loginNotice" class="login-notice" style="display:none;">
+<i class="fa-solid fa-circle-info"></i>
+<a href="login.html" data-i18n="community.loginNotice.login">Connecte-toi</a> <span data-i18n="community.loginNotice.or">ou</span> <a href="signup.html" data-i18n="community.loginNotice.signup">crée un compte</a> <span data-i18n="community.loginNotice.suffix">pour publier et commenter.</span>
+</div>
+<div id="postContainer">
+<div class="loading-state">
+<div class="spinner"></div>
+<p data-i18n="community.loading">
+Chargement...
+</p>
+</div>
+</div>
+</div>
+
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+<div class="modal">
+<div class="modal-header">
+<span class="modal-title"><i class="fa-solid fa-pen-to-square"></i> <span data-i18n="community.modal.title">Nouvelle publication</span></span>
+<button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="modal-group">
+<label class="modal-label" data-i18n="community.modal.type">Type</label>
+<select class="modal-select" id="postType">
+<option value="question" data-i18n="community.modal.typeQuestion">Question</option>
+<option value="tutorial" data-i18n="community.modal.typeTutorial">Tutoriel</option>
+<option value="discussion" data-i18n="community.modal.typeDiscussion">Discussion</option>
+</select>
+</div>
+<div class="modal-group">
+<label class="modal-label" data-i18n="community.modal.titleLabel">Titre *</label>
+<input class="modal-input" type="text" id="postTitle" placeholder="Ex: Comment utiliser les Promises en JavaScript ?" data-i18n-placeholder="community.modal.titlePlaceholder" />
+</div>
+<div class="modal-group">
+<label class="modal-label" data-i18n="community.modal.contentLabel">Contenu *</label>
+<textarea class="modal-textarea" id="postContent" placeholder="Décris ta question ou ton tutoriel en détail..." data-i18n-placeholder="community.modal.contentPlaceholder"></textarea>
+</div>
+<div class="modal-group">
+<label class="modal-label" data-i18n="community.modal.tagsLabel">Tags (séparés par virgules)</label>
+<input class="modal-input" type="text" id="postTags" placeholder="javascript, css, débutant" data-i18n-placeholder="community.modal.tagsPlaceholder" />
+</div>
+
+
+<div class="modal-group">
+<label class="modal-label"><i class="fa-solid fa-paperclip"></i> <span data-i18n="community.modal.mediaLabel">Ajouter une photo ou un PDF</span></label>
+<div class="upload-row">
+<button class="upload-btn" id="imgUploadBtn" onclick="document.getElementById('imgInput').click()">
+<i class="fa-solid fa-image"></i> <span data-i18n="community.modal.photoBtn">Photo</span>
+</button>
+<button class="upload-btn" id="pdfUploadBtn" onclick="document.getElementById('pdfInput').click()">
+<i class="fa-solid fa-file-pdf"></i> <span data-i18n="community.modal.pdfBtn">PDF</span>
+</button>
+</div>
+<input type="file" id="imgInput" class="upload-input" accept="image/*" onchange="handleImgSelect(event)" />
+<input type="file" id="pdfInput" class="upload-input" accept="application/pdf" onchange="handlePdfSelect(event)" />
+
+<div class="img-preview-wrap" id="imgPreviewWrap">
+<img class="img-preview" id="imgPreview" src="" alt="preview" />
+<button class="img-preview-remove" onclick="removeImg()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+
+<div class="pdf-preview-wrap" id="pdfPreviewWrap">
+<i class="fa-solid fa-file-pdf" style="color:#ff6b6b;font-size:1.2rem;flex-shrink:0;"></i>
+<span class="pdf-preview-name" id="pdfPreviewName"></span>
+<button class="pdf-preview-remove" onclick="removePdf()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</div>
+
+<button class="btn-post" id="submitPostBtn" onclick="submitPost()">
+<i class="fa-solid fa-paper-plane"></i> <span data-i18n="community.modal.publishBtn">Publier</span>
+</button>
+</div>
+</div>
+
+<div class="img-fullscreen" id="imgFullscreen" onclick="closeFullscreen()">
+<button class="img-fullscreen-close"><i class="fa-solid fa-xmark"></i></button>
+<img id="imgFullscreenImg" src="" alt="" />
+</div>
+
+
+<div class="bottom-bar">
+
+<a href="community.html" class="bottom-item">
+<i class="fa-solid fa-users"></i>
+<span class="nav-badge" id="navBadgeCommunity"></span>
+<span data-i18n="bottombar.community">Communauté</span>
+</a>
+
+<a href="messages.html" class="bottom-item">
+<i class="fa-solid fa-comments"></i>
+<span class="nav-badge" id="navBadgeMessages"></span>
+<span data-i18n="bottombar.messages">Messages</span>
+</a>
+
+<a href="status.html" class="bottom-item">
+<i class="fa-solid fa-circle-play"></i>
+<span class="nav-badge" id="navBadgeStatus"></span>
+<span data-i18n="bottombar.status">Statut</span>
+</a>
+
+<a href="settings.html" class="bottom-item">
+<i class="fa-solid fa-gear"></i>
+<span class="nav-badge" id="navBadgeSettings"></span>
+<span data-i18n="bottombar.settings">Paramètres</span>
+</a>
+
+</div>
+
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<script type="module">
+import {
+getApps, getApp, initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getAuth, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import "./onesignal-config.js";
+import {
+getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, orderBy,
+onSnapshot, addDoc, deleteDoc, increment, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = getApps().length ? getApp() : initializeApp({
+apiKey: "AIzaSyBXDDwYx0FPnJBc6vkgLPzeIJk6hiEVMEw",
+authDomain: "code-share-2c4ea.firebaseapp.com",
+projectId: "code-share-2c4ea",
+storageBucket: "code-share-2c4ea.firebasestorage.app",
+messagingSenderId: "706094984093",
+appId: "1:706094984093:web:bd62bbed06c156bb5c1d74"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const COMMUNITY_FALLBACK_FR = {
+"community.empty": "Aucune publication pour l'instant. Sois le premier !",
+"community.comment.empty": "Aucun commentaire. Sois le premier !",
+"community.toast.imageTooBig": "Image trop grande. Maximum 5MB.",
+"community.toast.pdfTooBig": "PDF trop grand. Maximum 500KB.",
+"community.toast.loginToComment": "Connecte-toi pour commenter !",
+"community.toast.loginToVote": "Connecte-toi pour voter !",
+"community.toast.onlyOwnDelete": "Tu ne peux supprimer que tes propres publications.",
+"community.toast.loginToPublish": "Connecte-toi pour publier !",
+"community.toast.fillTitleContent": "Remplis le titre et le contenu.",
+};
+function t(key) {
+if (typeof window.t === "function") {
+try {
+return window.t(key);
+} catch (e) {}
+}
+return COMMUNITY_FALLBACK_FR[key] || key;
+}
+
+let currentUser = null;
+let userPhoto = null;
+let allPosts = [];
+let currentFilter = "all";
+let currentSort = "recent";
+let commentUnsubs = {};
+
+let selectedImgBase64 = null;
+let selectedPdfBase64 = null;
+let selectedPdfName = null;
+
+onAuthStateChanged(auth, async user => {
+currentUser = user;
+
+const avatar = document.getElementById("navAvatar");
+const btn = document.getElementById("newPostBtn");
+const notice = document.getElementById("loginNotice");
+
+if (user) {
+initOneSignal(user.uid);
+
+try {
+const ud = await getDoc(doc(db, "users", user.uid));
+if (ud.exists() && ud.data().photoBase64) {
+userPhoto = ud.data().photoBase64;
+avatar.innerHTML = "<img src=\"" + userPhoto + "\" alt=\"avatar\"/>";
+} else {
+avatar.textContent = (user.displayName || user.email).substring(0, 2).toUpperCase();
+}
+} catch(e) {
+avatar.textContent = (user.displayName || user.email).substring(0, 2).toUpperCase();
+}
+
+btn.disabled = false;
+notice.style.display = "none";
+
+loadNotifCount();
+
+} else {
+avatar.textContent = "?";
+btn.disabled = true;
+notice.style.display = "block";
+}
+});
+
+onSnapshot(collection(db, "posts"), snap => {
+allPosts = snap.docs.map(d => ({
+id: d.id, ...d.data()
+}));
+allPosts.sort((a, b) => {
+const ta = a.createdAt?.toDate ? a.createdAt.toDate().getTime(): 0;
+const tb = b.createdAt?.toDate ? b.createdAt.toDate().getTime(): 0;
+return tb - ta;
+});
+document.getElementById("cQ").textContent = allPosts.filter(p => p.type === "question").length;
+document.getElementById("cT").textContent = allPosts.filter(p => p.type === "tutorial").length;
+document.getElementById("cD").textContent = allPosts.filter(p => p.type === "discussion").length;
+renderPosts();
+});
+
+async function sendNotification(toUserId, type, data) {
+if (!currentUser || toUserId === currentUser.uid) return;
+try {
+await addDoc(collection(db, "users", toUserId, "notifications"), {
+type,
+senderName: currentUser.displayName || currentUser.email.split("@")[0],
+senderPhoto: userPhoto || null,
+...data,
+read: false,
+createdAt: serverTimestamp()
+});
+
+sendOneSignalNotification(
+toUserId,
+currentUser.displayName || currentUser.email.split("@")[0],
+data.message || "a interagi avec toi",
+data.link || "/"
+);
+
+} catch(e) {
+console.log("Notif error:", e);
+}
+}
+
+window.handleImgSelect = function(event) {
+const file = event.target.files[0];
+if (!file) return;
+if (file.size > 5 * 1024 * 1024) {
+showToast(t("community.toast.imageTooBig")); return;
+}
+const btn = document.getElementById("imgUploadBtn");
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Compression...';
+const reader = new FileReader();
+reader.onload = function(e) {
+const img = new Image();
+img.onload = function() {
+const canvas = document.createElement("canvas");
+const MAX = 1024;
+let w = img.width,
+h = img.height;
+if (w > MAX || h > MAX) {
+if (w > h) {
+h = Math.round(h * MAX / w); w = MAX;
+} else {
+w = Math.round(w * MAX / h); h = MAX;
+}
+}
+canvas.width = w; canvas.height = h;
+canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+selectedImgBase64 = canvas.toDataURL("image/jpeg", 0.75);
+document.getElementById("imgPreview").src = selectedImgBase64;
+document.getElementById("imgPreviewWrap").classList.add("show");
+document.getElementById("pdfPreviewWrap").classList.remove("show");
+selectedPdfBase64 = null; selectedPdfName = null;
+document.getElementById("pdfUploadBtn").className = "upload-btn";
+document.getElementById("pdfUploadBtn").innerHTML = '<i class="fa-solid fa-file-pdf"></i> PDF';
+btn.className = "upload-btn has-file";
+btn.innerHTML = '<i class="fa-solid fa-check"></i> Photo ajoutée';
+};
+img.src = e.target.result;
+};
+reader.readAsDataURL(file);
+};
+
+window.removeImg = function() {
+selectedImgBase64 = null;
+document.getElementById("imgPreviewWrap").classList.remove("show");
+document.getElementById("imgInput").value = "";
+document.getElementById("imgUploadBtn").className = "upload-btn";
+document.getElementById("imgUploadBtn").innerHTML = '<i class="fa-solid fa-image"></i> Photo';
+};
+
+window.handlePdfSelect = function(event) {
+const file = event.target.files[0];
+if (!file) return;
+if (file.size > 500 * 1024) {
+showToast(t("community.toast.pdfTooBig")); return;
+}
+const btn = document.getElementById("pdfUploadBtn");
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Chargement...';
+const reader = new FileReader();
+reader.onload = function(e) {
+selectedPdfBase64 = e.target.result;
+selectedPdfName = file.name;
+const sizeKb = Math.round(file.size / 1024);
+document.getElementById("pdfPreviewName").textContent = file.name + " (" + sizeKb + " KB)";
+document.getElementById("pdfPreviewWrap").classList.add("show");
+document.getElementById("imgPreviewWrap").classList.remove("show");
+selectedImgBase64 = null;
+document.getElementById("imgUploadBtn").className = "upload-btn";
+document.getElementById("imgUploadBtn").innerHTML = '<i class="fa-solid fa-image"></i> Photo';
+btn.className = "upload-btn has-file";
+btn.innerHTML = '<i class="fa-solid fa-check"></i> PDF ajouté';
+};
+reader.readAsDataURL(file);
+};
+
+window.removePdf = function() {
+selectedPdfBase64 = null; selectedPdfName = null;
+document.getElementById("pdfPreviewWrap").classList.remove("show");
+document.getElementById("pdfInput").value = "";
+document.getElementById("pdfUploadBtn").className = "upload-btn";
+document.getElementById("pdfUploadBtn").innerHTML = '<i class="fa-solid fa-file-pdf"></i> PDF';
+};
+
+window.renderPosts = function() {
+const container = document.getElementById("postContainer");
+
+console.log("Nettoyage des écouteurs de commentaires avant re-rendu.");
+Object.values(commentUnsubs).forEach(unsub => unsub());
+for (let key in commentUnsubs) delete commentUnsubs[key];
+
+let posts = [...allPosts];
+if (currentFilter !== "all") posts = posts.filter(p => p.type === currentFilter);
+const search = document.getElementById("searchInput").value.toLowerCase();
+if (search) posts = posts.filter(p =>
+(p.title || "").toLowerCase().includes(search) ||
+(p.content || "").toLowerCase().includes(search)
+);
+if (currentSort === "popular") posts.sort((a, b) => (b.votes || 0)-(a.votes || 0));
+
+if (posts.length === 0) {
+container.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-inbox"></i></div><p>' + t("community.empty") + '</p></div>';
+return;
+}
+
+const bMap = {
+question: "badge-q",
+tutorial: "badge-t",
+discussion: "badge-d"
+};
+const lMap = {
+question: "QUESTION",
+tutorial: "TUTORIEL",
+discussion: "DISCUSSION"
+};
+const EXCERPT_MAX = 220;
+
+container.innerHTML = "<div class=\"post-list\">" + posts.map(p => {
+const date = p.createdAt?.toDate ? timeAgo(p.createdAt.toDate()): "à l instant";
+const tags = (p.tags || []).map(t => "<span class=\"post-tag\">"+t+"</span>").join("");
+const content = p.content || "";
+const isLong = content.length > EXCERPT_MAX;
+const postId = p.id;
+
+const imgBlock = p.imageBase64
+? `<img class="post-image" src="${p.imageBase64}" alt="image du post" onclick="openFullscreen('${postId}')" loading="lazy"/>`: "";
+
+const pdfBlock = p.pdfBase64
+? `<a class="post-pdf" href="${p.pdfBase64}" download="${p.pdfName || 'document.pdf'}">
+<i class="fa-solid fa-file-pdf post-pdf-icon"></i>
+<div class="post-pdf-info">
+<div class="post-pdf-name"><i class="fa-solid fa-download" style="font-size:0.7rem;margin-right:4px;"></i>${p.pdfName || "Document PDF"}</div>
+<div class="post-pdf-size">Cliquer pour télécharger</div>
+</div>
+</a>`: "";
+
+const isOwner = currentUser && p.userId === currentUser.uid;
+const deleteMenu = isOwner ? `
+<div class="post-menu-wrap" style="position:relative;margin-left:auto;">
+<button class="post-menu-btn" onclick="event.stopPropagation();togglePostMenu('${p.id}')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+<div class="post-menu-dropdown" id="postmenu-${p.id}">
+<button class="post-menu-item delete" onclick="event.stopPropagation();deletePost('${p.id}')"><i class="fa-solid fa-trash"></i> Supprimer</button>
+</div>
+</div>`: '';
+
+return `
+<div class="post-card" id="post-${p.id}">
+<div class="post-main">
+<div class="vote-col">
+<button class="vote-btn ${p.votedBy && currentUser && p.votedBy.includes(currentUser.uid) ? 'voted': ''}" onclick="vote('${p.id}',this)"><i class="fa-solid fa-thumbs-up"></i></button>
+<span class="vote-count" id="vc-${p.id}">${p.votes || 0}</span>
+<button class="vote-btn"><i class="fa-solid fa-thumbs-down"></i></button>
+</div>
+<div class="post-body">
+<div class="post-meta">
+<span class="post-badge ${bMap[p.type] || 'badge-q'}">${lMap[p.type] || 'QUESTION'}</span>
+<span class="post-author">par <strong><a href="user-profile.html?uid=${p.userId}" style="color:var(--blue);text-decoration:none;" onclick="event.stopPropagation()">@${p.username || 'anonyme'}</a></strong></span>
+<span class="post-time"><i class="fa-regular fa-clock"></i> ${date}</span>
+${deleteMenu}
+</div>
+<div class="post-title" onclick="toggleComments('${p.id}')">${p.title}</div>
+${imgBlock}
+${pdfBlock}
+<div class="post-excerpt ${isLong?'collapsed': ''}" id="excerpt-${p.id}">${content}</div>
+${isLong ? `<button class="voir-plus-btn visible" id="vpbtn-${p.id}" onclick="toggleVoirPlus('${p.id}')"><i class="fa-solid fa-chevron-down"></i> Voir plus</button>`: ''}
+<div class="post-footer">
+<span class="post-stat"><i class="fa-solid fa-heart"></i> ${p.votes || 0}</span>
+<button class="btn-toggle-comments" onclick="toggleComments('${p.id}')">
+<i class="fa-solid fa-comment"></i> ${p.comments || 0} commentaire${(p.comments || 0) > 1?'s': ''}
+</button>
+<div class="post-tags">${tags}</div>
+</div>
+</div>
+</div>
+<div class="comments-section" id="comments-${p.id}">
+<div class="comments-title"><i class="fa-solid fa-comments"></i> COMMENTAIRES</div>
+<div class="comment-list" id="comment-list-${p.id}">
+<div style="text-align:center;color:var(--gray);font-size:0.8rem;padding:10px;">Chargement...</div>
+</div>
+${currentUser ? `
+<div class="comment-input-wrap">
+<div class="comment-input-avatar" id="cinput-avatar-${p.id}">
+${userPhoto ? '<img src="'+userPhoto+'"/>': (currentUser ? (currentUser.displayName || currentUser.email).substring(0, 2).toUpperCase(): '?')}
+</div>
+<div class="comment-input-box">
+<textarea class="comment-input" id="cinput-${p.id}" placeholder="Écris ton commentaire..." data-i18n-placeholder="community.comment.placeholder" rows="1"></textarea>
+<button class="btn-send" onclick="sendComment('${p.id}')"><i class="fa-solid fa-paper-plane"></i> Envoyer</button>
+</div>
+</div>`: '<p style="font-size:0.8rem;color:var(--gray);text-align:center;"><a href="login.html" style="color:var(--gold)">Connecte-toi</a> pour commenter.</p>'}
+</div>
+</div>`;
+}).join("") + "</div>";
+};
+
+window.toggleVoirPlus = function(postId) {
+const excerpt = document.getElementById("excerpt-"+postId);
+const btn = document.getElementById("vpbtn-"+postId);
+const isCollapsed = excerpt.classList.contains("collapsed");
+if (isCollapsed) {
+excerpt.classList.remove("collapsed");
+btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Voir moins';
+} else {
+excerpt.classList.add("collapsed");
+btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Voir plus';
+}
+};
+
+window.openFullscreen = function(postId) {
+const post = allPosts.find(p => p.id === postId);
+if (!post || !post.imageBase64) return;
+document.getElementById("imgFullscreenImg").src = post.imageBase64;
+document.getElementById("imgFullscreen").classList.add("open");
+};
+window.closeFullscreen = function() {
+document.getElementById("imgFullscreen").classList.remove("open");
+};
+
+window.toggleComments = async function(postId) {
+const section = document.getElementById("comments-"+postId);
+const isOpen = section.classList.contains("open");
+section.classList.toggle("open");
+if (!isOpen) loadComments(postId);
+};
+
+async function loadComments(postId) {
+const listEl = document.getElementById("comment-list-"+postId);
+if (!listEl) return;
+try {
+const commentsRef = collection(db, "posts", postId, "comments");
+
+commentUnsubs[postId] = onSnapshot(commentsRef, snap => {
+if (!document.getElementById("comment-list-"+postId)) return;
+const sorted = snap.docs
+.map(d => d.data())
+.sort((a, b) => {
+const ta = a.createdAt?.toDate ? a.createdAt.toDate().getTime(): 0;
+const tb = b.createdAt?.toDate ? b.createdAt.toDate().getTime(): 0;
+return ta - tb;
+});
+if (sorted.length === 0) {
+listEl.innerHTML = "<p style=\"text-align:center;color:var(--gray);font-size:0.8rem;padding:14px;\">" + t("community.comment.empty") + "</p>";
+return;
+}
+listEl.innerHTML = sorted.map(c => {
+const date2 = c.createdAt?.toDate ? timeAgo(c.createdAt.toDate()): "à l instant";
+const avHtml = c.photoBase64 ? "<img src=\""+c.photoBase64+"\" alt=\"av\"/>": (c.username || "?").substring(0, 2).toUpperCase();
+return `<div class="comment-item">
+<div class="comment-avatar">${avHtml}</div>
+<div class="comment-bubble">
+<div class="comment-author"><a href="user-profile.html?uid=${c.userId}" style="color:var(--blue);text-decoration:none;">@${c.username || "anonyme"}</a></div>
+<div class="comment-text">${c.text}</div>
+<div class="comment-time"><i class="fa-regular fa-clock"></i> ${date2}</div>
+</div>
+</div>`;
+}).join("");
+});
+} catch(e) {
+if (listEl) listEl.innerHTML = "<p style=\"color:var(--gray);font-size:0.8rem;\">Erreur de chargement.</p>";
+}
+}
+
+window.sendComment = async function(postId) {
+if (!currentUser) {
+showToast(t("community.toast.loginToComment")); return;
+}
+const input = document.getElementById("cinput-"+postId);
+const text = input.value.trim();
+if (!text) return;
+const btn = input.nextElementSibling;
+btn.disabled = true;
+try {
+let photo = null;
+try {
+const ud = await getDoc(doc(db, "users", currentUser.uid));
+if (ud.exists()) photo = ud.data().photoBase64 || null;
+} catch(e) {}
+await addDoc(collection(db, "posts", postId, "comments"), {
+text,
+username: currentUser.displayName || currentUser.email.split("@")[0],
+userId: currentUser.uid,
+photoBase64: photo,
+createdAt: serverTimestamp()
+});
+await updateDoc(doc(db, "posts", postId), {
+comments: increment(1)
+});
+const postDoc = await getDoc(doc(db, "posts", postId));
+if (postDoc.exists() && postDoc.data().userId !== currentUser.uid) {
+try {
+await updateDoc(doc(db, "users", postDoc.data().userId), {
+points: increment(5)
+});
+} catch(e) {}
+await sendNotification(postDoc.data().userId, "comment", {
+postTitle: postDoc.data().title,
+message: "a commenté ton post",
+link: "community.html"
+});
+}
+await updateDoc(doc(db, "users", currentUser.uid), {
+points: increment(2)
+}).catch(()=> {});
+input.value = "";
+btn.disabled = false;
+} catch(e) {
+btn.disabled = false;
+showToast("Erreur: "+e.message, "error");
+}
+};
+
+window.vote = async function(postId, btn) {
+if (!currentUser) {
+showToast(t("community.toast.loginToVote")); return;
+}
+if (btn.classList.contains("voted")) return;
+try {
+const pd = await getDoc(doc(db, "posts", postId));
+if (!pd.exists()) return;
+const postData = pd.data();
+await updateDoc(doc(db, "posts", postId), {
+votes: increment(1),
+votedBy: [...(postData.votedBy || []), currentUser.uid]
+});
+btn.classList.add("voted");
+if (postData.userId !== currentUser.uid) {
+try {
+await updateDoc(doc(db, "users", postData.userId), {
+points: increment(10)
+});
+} catch(e) {}
+await sendNotification(postData.userId, "vote", {
+postTitle: postData.title,
+message: "a aimé ton post",
+link: "community.html"
+});
+}
+} catch(e) {}
+};
+
+window.togglePostMenu = function(postId) {
+const dropdown = document.getElementById("postmenu-"+postId);
+const wasOpen = dropdown.classList.contains("open");
+document.querySelectorAll(".post-menu-dropdown").forEach(d => d.classList.remove("open"));
+if (!wasOpen) dropdown.classList.add("open");
+};
+
+document.addEventListener("click", e => {
+if (!e.target.closest(".post-menu-wrap")) {
+document.querySelectorAll(".post-menu-dropdown").forEach(d => d.classList.remove("open"));
+}
+});
+
+window.deletePost = async function(postId) {
+if (!currentUser) return;
+if (!(await showConfirm("Cette action est irréversible.", {
+title: "Supprimer définitivement cette publication ?", danger: true, confirmLabel: "Supprimer"
+}))) return;
+try {
+const pd = await getDoc(doc(db, "posts", postId));
+if (!pd.exists() || pd.data().userId !== currentUser.uid) {
+showToast(t("community.toast.onlyOwnDelete"));
+return;
+}
+await deleteDoc(doc(db, "posts", postId));
+await updateDoc(doc(db, "users", currentUser.uid), {
+tutorials: increment(-1)
+}).catch(()=> {});
+const card = document.getElementById("post-"+postId);
+if (card) card.remove();
+} catch(e) {
+showToast("Erreur lors de la suppression: "+e.message, "error");
+}
+};
+
+window.filterCat = function(cat, el) {
+currentFilter = cat;
+document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+el.classList.add("active");
+renderPosts();
+};
+
+window.setSort = function(sort, el) {
+currentSort = sort;
+document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+el.classList.add("active");
+renderPosts();
+};
+
+window.submitPost = async function() {
+if (!currentUser) {
+showToast(t("community.toast.loginToPublish")); return;
+}
+const title = document.getElementById("postTitle").value.trim();
+const content = document.getElementById("postContent").value.trim();
+const type = document.getElementById("postType").value;
+const tags = document.getElementById("postTags").value.split(",").map(t => t.trim()).filter(Boolean);
+const btn = document.getElementById("submitPostBtn");
+if (!title || !content) {
+showToast(t("community.toast.fillTitleContent")); return;
+}
+btn.disabled = true;
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publication...';
+try {
+const postData = {
+title,
+content,
+type,
+tags,
+username: currentUser.displayName || currentUser.email.split("@")[0],
+userId: currentUser.uid,
+votes: 0,
+comments: 0,
+votedBy: [],
+createdAt: serverTimestamp()
+};
+if (selectedImgBase64) {
+postData.imageBase64 = selectedImgBase64;
+}
+if (selectedPdfBase64) {
+postData.pdfBase64 = selectedPdfBase64; postData.pdfName = selectedPdfName;
+}
+await addDoc(collection(db, "posts"), postData);
+await updateDoc(doc(db, "users", currentUser.uid), {
+points: increment(20), tutorials: increment(1)
+}).catch(()=> {});
+document.getElementById("postTitle").value = "";
+document.getElementById("postContent").value = "";
+document.getElementById("postTags").value = "";
+removeImg(); removePdf();
+btn.disabled = false;
+btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publier';
+closeModal();
+} catch(e) {
+btn.disabled = false;
+btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publier';
+showToast("Erreur: "+e.message, "error");
+}
+};
+
+async function loadNotifCount() {
+if (!currentUser) return;
+try {
+onSnapshot(query(collection(db, "users", currentUser.uid, "notifications"), where("read", "==", false)), snap => {
+const badge = document.getElementById("notifCount");
+if (badge) {
+if (snap.size > 0) {
+badge.style.display = "flex"; badge.textContent = snap.size > 9 ? "9+": snap.size;
+} else {
+badge.style.display = "none";
+}
+}
+});
+} catch(e) {}
+}
+
+document.getElementById("searchInput").addEventListener("input", () => renderPosts());
+
+window.openModal = function() {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+} document.getElementById("modalOverlay").classList.add("open");
+};
+window.closeModal = function() {
+document.getElementById("modalOverlay").classList.remove("open");
+};
+
+function timeAgo(date) {
+const d = Math.floor((Date.now()-date)/1000);
+if (d < 60) return "à l instant";
+if (d < 3600) return "Il y a "+Math.floor(d/60)+"min";
+if (d < 86400) return "Il y a "+Math.floor(d/3600)+"h";
+return "Il y a "+Math.floor(d/86400)+" jour(s)";
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.log('Erreur Service Worker:', err));
+}
+</script>
+
+</body>
+</html>
+<!-- Joker:mw supprimé kloch notification lan bar nav pou kreye plis espas lib pou kise sit la respire-->
+<!--map kontinye supprimé lan kek lot paj tou men map kite code css yo ak scriptS yo pou le nou anvi ajout yo anko-->
+<!--jodia 4 aout 2026 map fete 24 triem anivesem pou bonem hmm chwazi chita lakay mw poum code en solo sou reve mw happy day for me -->

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share — Politique de confidentialité</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+--text-soft: rgba(255,255,255,0.78);
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+background: var(--black);
+color:var(--white);
+font-family: sans-serif;
+min-height: 100vh;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+text-decoration: none;
+cursor:none;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size:1rem;
+font-weight: 700;
+color:var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.back-btn {
+color:var(--white);
+text-decoration: none;
+font-size: 0.85rem;
+cursor: none;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.back-btn:hover {
+color: var(--gold);
+}
+
+.doc-wrap {
+position: relative;
+z-index: 1;
+max-width: 720px;
+margin: 0 auto;
+padding: 32px 20px 60px;
+}
+.doc-wrap h1 {
+font-family: "Orbitron",monospace;
+font-size: 1.5rem;
+font-weight: 900;
+margin-bottom: 6px;
+}
+.doc-wrap h1 span {
+color: var(--gold);
+}
+.updated {
+color:var(--white);
+font-size: 0.8rem;
+margin-bottom: 28px;
+}
+.doc-wrap h2 {
+font-family:monospace;
+font-size: 0.98rem;
+color: var(--gold);
+margin: 28px 0 10px;
+}
+.doc-wrap p, .doc-wrap li {
+color: var(--text-soft);
+font-size: 0.88rem;
+line-height: 1.7;
+margin-bottom: 10px;
+}
+.doc-wrap ul {
+padding-left: 20px;
+margin-bottom: 14px;
+}
+.doc-wrap strong {
+color:var(--white);
+}
+.contact-box {
+margin-top: 32px;
+background: var(--blue);
+border: 1px solid rgba(245,168,0,0.15);
+border-radius: 12px;
+padding: 18px;
+font-size: 0.85rem;
+color: var(--text-soft);
+}
+.contact-box a {
+color: #E3E5E7;
+text-decoration: none;
+}
+</style>
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<body>
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<a class="back-btn" onclick="window.location.href='settings.html'"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+</nav>
+
+<div class="doc-wrap">
+<h1>Politique de <span>confidentialité</span></h1>
+<p class="updated">
+Dernière mise à jour : juillet 2026
+</p>
+
+<p>
+Code-Share ("l'application", "nous") respecte ta vie privée. Ce document explique quelles données nous collectons, pourquoi, et comment tu peux les contrôler.
+</p>
+
+<h2>1. Données que nous collectons</h2>
+<ul>
+<li><strong>Informations de compte :</strong> adresse e-mail, nom d'utilisateur, prénom/nom, photo de profil.</li>
+<li><strong>Contenu que tu publies :</strong> posts de la communauté, commentaires, statuts, messages privés, réponses de forum.</li>
+<li><strong>Données techniques :</strong> type de navigateur/appareil utilisé, horodatage de connexion — utilisées uniquement pour la sécurité du compte (ex. alerte de nouvelle connexion).</li>
+<li><strong>Interactions :</strong> likes, votes, abonnements, statut de lecture des messages.</li>
+</ul>
+
+<h2>2. Comment nous utilisons ces données</h2>
+<ul>
+<li>Faire fonctionner les fonctionnalités principales : profils, messagerie, communauté, statuts, notifications.</li>
+<li>Assurer la sécurité de ton compte (détection de connexion, blocage d'utilisateurs).</li>
+<li>Améliorer l'application à partir de statistiques d'usage générales.</li>
+</ul>
+<p>
+Nous ne vendons ni ne partageons tes données personnelles avec des tiers à des fins publicitaires.
+</p>
+
+<h2>3. Où sont stockées tes données</h2>
+<p>
+Toutes les données sont hébergées sur <strong>Google Firebase</strong> (Firestore Database et Firebase Authentication), un service d'hébergement cloud sécurisé de Google.
+</p>
+
+<h2>4. Partage entre utilisateurs</h2>
+<p>
+Ton nom d'utilisateur, ta photo de profil et le contenu que tu publies publiquement (posts, statuts, commentaires) sont visibles par les autres utilisateurs de l'application, selon les paramètres de confidentialité en vigueur sur chaque fonctionnalité. Tes messages privés ne sont visibles que par toi et ton ou tes interlocuteurs.
+</p>
+
+<h2>5. Tes droits</h2>
+<ul>
+<li><strong>Accès et modification :</strong> tu peux modifier ton profil à tout moment depuis la page Profil.</li>
+<li><strong>Suppression :</strong> tu peux supprimer individuellement tes posts, statuts et messages. La suppression complète de compte sera bientôt disponible depuis la page Paramètres.</li>
+<li><strong>Blocage :</strong> tu peux bloquer tout autre utilisateur depuis la messagerie pour couper toute interaction.</li>
+</ul>
+
+<h2>6. Sécurité</h2>
+<p>
+L'accès à tes données est protégé par des règles de sécurité strictes : seul toi peux modifier ton profil, seuls les membres d'une conversation peuvent la consulter, et les mots de passe ne sont jamais stockés en clair (gérés entièrement par Firebase Authentication).
+</p>
+
+<h2>7. Conservation des données</h2>
+<p>
+Tes données sont conservées tant que ton compte est actif. Les statuts sont automatiquement supprimés après 24 heures.
+</p>
+
+<h2>8. Modifications de cette politique</h2>
+<p>
+Cette politique peut évoluer. La date de dernière mise à jour en haut de cette page reflète tout changement.
+</p>
+
+<div class="contact-box">
+<i class="fa-solid fa-envelope"></i> Une question sur tes données ? Contacte-nous via la messagerie de l'application ou à l'adresse indiquée sur la page <a onclick="window.location.href='index.html'">Code-Share</a>.
+</div>
+</div>
+
+
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.log('Erreur Service Worker:', err));
+}
+</script>
+
+</body>
+</html>
+<!--jodia 4 aout 2026 map fete 24 triem anivesem pou bonem hmm chwazi chita lakay mw poum code en solo sou reve mw happy day for me -->

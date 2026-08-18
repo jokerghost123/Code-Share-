@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "598bd958-5b76-41b9-8d72-a84ffe1cf92b",
+      serviceWorkerParam: { scope: "/" },
+      serviceWorkerPath: "sw.js"
+    });
+  });
+</script>
+
+
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share — Paramètres</title>
+<link rel="manifest" href="manifest.json" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+--error: #e5484d;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+background: var(--black);
+color:var(--white);
+font-family: sans-serif;
+min-height: 100vh;
+padding-bottom: 90px;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+text-decoration: none;
+cursor:none;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size:1rem;
+font-weight: 700;
+color:var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.nav-links {
+display: flex;
+gap: 20px;
+}
+.nav-links a {
+color: var(--gray);
+text-decoration: none;
+font-size: 0.82rem;
+font-weight: 600;
+cursor: none;
+transition: color 0.2s;
+}
+.nav-links a:hover {
+color: var(--gold);
+}
+.nav-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.8rem;
+cursor: none;
+border: 1px solid rgba(245,168,0,0.4);
+overflow: hidden;
+}
+.nav-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+@media (max-width:768px) {
+.nav-links {
+display: none;
+}
+}
+
+.page-header {
+position: relative;
+z-index: 1;
+padding: 28px 20px 16px;
+max-width: 680px;
+margin: 0 auto;
+}
+.page-header h1 {
+font-family: "Orbitron",monospace;
+font-size: 1.6rem;
+font-weight: 900;
+}
+.page-header h1 span {
+color: var(--gold);
+}
+.page-header p {
+color:var(--white);
+font-size: 0.85rem;
+margin-top: 4px;
+}
+
+.settings-wrap {
+position: relative;
+z-index: 1;
+max-width: 680px;
+margin: 0 auto;
+padding: 0 20px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.settings-section {
+background: var(--black);
+border:none?
+border-radius: 16px;
+overflow: hidden;
+}
+.section-title {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 16px 18px;
+font-family: "Orbitron",monospace;
+font-size: 0.85rem;
+font-weight: 700;
+color: var(--gold);
+border:none;
+}
+
+.settings-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+padding: 16px 18px;
+border-bottom: 1px solid rgba(255,255,255,0.05);
+cursor:none;
+transition: background 0.15s;
+}
+.settings-row:last-child {
+border-bottom: none;
+}
+.settings-row:hover {
+background: rgba(255,255,255,0.02);
+}
+.settings-row.static {
+cursor: default;
+}
+.row-left {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+.row-left i.row-icon {
+width: 20px;
+text-align: center;
+color:var(--white);
+font-size: 0.95rem;
+}
+.row-label {
+font-size: 0.88rem;
+font-weight: 600;
+}
+.row-desc {
+font-size: 0.76rem;
+color:var(--white);
+margin-top: 2px;
+}
+.row-chevron {
+color: var(--white);
+font-size: 0.8rem;
+}
+.badge-soon {
+font-size: 0.65rem;
+font-weight: 700;
+color:var(--white);
+background: rgba(255,255,255,0.06);
+padding: 3px 8px;
+border-radius: 20px;
+text-transform: uppercase;
+letter-spacing: 0.4px;
+}
+
+/* Switch thème clair/sombre */
+.theme-switch {
+position: relative;
+display: inline-block;
+width: 46px;
+height: 26px;
+flex-shrink: 0;
+}
+.theme-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.switch-track {
+position: absolute;
+cursor: pointer;
+inset: 0;
+background: rgba(255,255,255,0.15);
+border-radius: 26px;
+transition: 0.2s;
+}
+.switch-track::before {
+content: "";
+position: absolute;
+height: 20px;
+width: 20px;
+left: 3px;
+bottom: 3px;
+background: var(--white);
+border-radius: 50%;
+transition: 0.2s;
+}
+.theme-switch input:checked + .switch-track {
+background: var(--gold);
+}
+.theme-switch input:checked + .switch-track::before {
+transform: translateX(20px);
+background: var(--black);
+}
+
+/* Sélecteur de langue */
+.lang-switcher {
+display: flex;
+gap: 6px;
+background: rgba(255,255,255,0.05);
+padding: 4px;
+border-radius: 10px;
+}
+.lang-btn {
+background: none;
+border: none;
+color:var(--white);
+font-family:sans-serif;
+font-weight: 700;
+font-size: 0.75rem;
+padding: 7px 12px;
+border-radius: 7px;
+cursor: none;
+transition: all 0.15s;
+}
+.lang-btn:hover {
+color: var(--white);
+}
+.lang-btn.active {
+background: var(--gold);
+color: var(--black);
+}
+
+/* Formulaire mot de passe */
+.pwd-form {
+padding: 6px 18px 18px;
+display: none;
+flex-direction: column;
+gap: 12px;
+}
+.pwd-form.open {
+display: flex;
+}
+.pwd-form input {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 11px 14px;
+color: var(--white);
+font-family: sans-serif;
+font-size: 0.88rem;
+outline: none;
+transition: border-color 0.2s;
+}
+.pwd-form input:focus {
+border-color: var(--gold);
+}
+.pwd-form label {
+font-size: 0.76rem;
+color: var(--white);
+margin-bottom: -6px;
+}
+.btn-save-pwd {
+padding: 11px;
+background: linear-gradient(135deg,var(--gold),#e09500);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.82rem;
+cursor: none;
+margin-top: 4px;
+}
+.btn-save-pwd:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+.pwd-alert {
+display: none;
+font-size: 0.78rem;
+padding: 9px 12px;
+border-radius: 8px;
+border: 1px solid;
+}
+.pwd-alert.error {
+display: block;
+background: rgba(229,72,77,0.1);
+border-color: rgba(229,72,77,0.3);
+color: var(--error);
+}
+.pwd-alert.success {
+display: block;
+background: rgba(40,200,64,0.1);
+border-color: rgba(40,200,64,0.3);
+color: #28C840;
+}
+
+.danger-row .row-label {
+color: var(--error);
+}
+.danger-row i.row-icon {
+color: var(--error);
+}
+
+/* Formulaire suppression de compte */
+.delete-form {
+padding: 6px 18px 18px;
+display: none;
+flex-direction: column;
+gap: 12px;
+}
+.delete-form.open {
+display: flex;
+}
+.delete-form input {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(229,72,77,0.3);
+border-radius: 8px;
+padding: 11px 14px;
+color:var(--white);
+font-family:sans-serif;
+font-size: 0.88rem;
+outline: none;
+}
+.delete-form input:focus {
+border-color: var(--error);
+}
+.delete-warning {
+font-size: 0.8rem;
+color: rgba(255,255,255,0.7);
+background: rgba(229,72,77,0.08);
+border: 1px solid rgba(229,72,77,0.2);
+border-radius: 8px;
+padding: 12px 14px;
+line-height: 1.6;
+}
+.delete-warning ul {
+margin: 8px 0 0 18px;
+}
+.btn-delete-account {
+padding: 11px;
+background: var(--error);
+color: #fff;
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.82rem;
+cursor: none;
+margin-top: 4px;
+}
+.btn-delete-account:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+.del-alert {
+display: none;
+font-size: 0.78rem;
+padding: 9px 12px;
+border-radius: 8px;
+border: 1px solid;
+}
+.del-alert.error {
+display: block;
+background: rgba(229,72,77,0.1);
+border-color: rgba(229,72,77,0.3);
+color: var(--error);
+}
+
+/* BOTTOM BAR */
+.bottom-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 72px;
+background: rgba(10,10,10,0.9);
+border:none;
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 999;
+}
+.bottom-item {
+flex: 1;
+text-decoration: none;
+color:var(--white);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+font-size: .75rem;
+transition: .3s;
+position: relative;
+}
+.bottom-item i {
+font-size: 1.2rem;
+}
+.bottom-item:hover, .bottom-item.active {
+color: var(--gold);
+}
+@media(min-width:769px) {
+.bottom-bar {
+display: none;
+}
+
+body {
+padding-bottom: 20px;
+}
+}
+</style>
+<link rel="stylesheet" href="shared-nav.css">
+<link rel="stylesheet" href="shared-ui.css">
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<body>
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<div class="nav-links">
+<a data-i18n="nav.community" onclick="window.location.href='community.html'">Communauté</a>
+<a data-i18n="nav.tutorials" onclick="window.location.href='tutorials.html'">Tutoriels</a>
+<a data-i18n="nav.messages" onclick="window.location.href='messages.html'">Messages</a>
+<a data-i18n="nav.discover" onclick="window.location.href='discover.html'">Découvrir</a>
+<a data-i18n="nav.profile" onclick="window.location.href='profile.html'">Profil</a>
+</div>
+
+<div class="nav-avatar" id="navAvatar" onclick="window.location.href='profile.html'">
+?
+</div>
+</nav>
+
+<div class="page-header">
+<h1><i class="fa-solid fa-gear" style="color:var(--gold);"></i> <span data-i18n="settings.pageTitle">Paramètres</span></h1>
+<p data-i18n="settings.subtitle">
+Gère ton compte, ta sécurité et tes préférences.
+</p>
+</div>
+
+<div class="settings-wrap">
+
+
+<div class="settings-section">
+<div class="section-title">
+<i class="fa-solid fa-shield-halved"></i> <span data-i18n="settings.security.title">Sécurité du compte</span>
+</div>
+
+<div class="settings-row" onclick="togglePwdForm()">
+<div class="row-left">
+<i class="fa-solid fa-lock row-icon"></i>
+<div>
+<div class="row-label" data-i18n="settings.security.changePwd">
+Changer mon mot de passe
+</div>
+<div class="row-desc" id="userEmailDisplay" data-i18n="settings.loading">
+Chargement...
+</div>
+</div>
+</div>
+<i class="fa-solid fa-chevron-down row-chevron" id="pwdChevron"></i>
+</div>
+<div class="pwd-form" id="pwdForm">
+<div class="pwd-alert" id="pwdAlert"></div>
+<label data-i18n="settings.pwd.current">Mot de passe actuel</label>
+<input type="password" id="currentPwd" placeholder="••••••••" data-i18n-placeholder="settings.pwd.currentPlaceholder" autocomplete="current-password" />
+<label data-i18n="settings.pwd.new">Nouveau mot de passe</label>
+<input type="password" id="newPwd" placeholder="Au moins 8 caractères" data-i18n-placeholder="settings.pwd.newPlaceholder" autocomplete="new-password" />
+<label data-i18n="settings.pwd.confirm">Confirmer le nouveau mot de passe</label>
+<input type="password" id="confirmPwd" placeholder="••••••••" data-i18n-placeholder="settings.pwd.currentPlaceholder" autocomplete="new-password" />
+<button class="btn-save-pwd" id="savePwdBtn" data-i18n="settings.pwd.submit" onclick="handleChangePassword()">Mettre à jour le mot de passe</button>
+</div>
+</div>
+
+
+<div class="settings-section">
+<div class="section-title">
+<i class="fa-solid fa-palette"></i> <span data-i18n="settings.appearance.title">Apparence</span>
+</div>
+<div class="settings-row static">
+<div class="row-left">
+<i class="fa-solid fa-circle-half-stroke row-icon"></i>
+<div>
+<div class="row-label" data-i18n="settings.theme.label">
+Thème clair / sombre
+</div>
+<div class="row-desc">
+<span data-i18n="settings.theme.current">Actuellement :</span> <span id="themeLabel">Sombre</span>
+</div>
+</div>
+</div>
+<label class="theme-switch">
+<input type="checkbox" id="themeToggle" onchange="toggleTheme(); document.getElementById('themeLabel').textContent = this.checked ? t('settings.theme.light') : t('settings.theme.dark');" />
+<span class="switch-track"></span>
+</label>
+</div>
+<div class="settings-row static">
+<div class="row-left">
+<i class="fa-solid fa-language row-icon"></i>
+<div>
+<div class="row-label" data-i18n="settings.language.label">
+Langue
+</div>
+<div class="row-desc" data-i18n="settings.language.desc">
+Choisis la langue de l'application
+</div>
+</div>
+</div>
+<div class="lang-switcher">
+<button class="lang-btn" data-lang-option="fr" onclick="setLanguage('fr')">FR</button>
+<button class="lang-btn" data-lang-option="en" onclick="setLanguage('en')">EN</button>
+<button class="lang-btn" data-lang-option="ht" onclick="setLanguage('ht')">HT</button>
+</div>
+</div>
+</div>
+
+
+<div class="settings-section">
+<div class="section-title">
+<i class="fa-solid fa-mobile-screen-button"></i> <span data-i18n="settings.app.title">Application</span>
+</div>
+<div class="settings-row" onclick="handleInstallClick()">
+<div class="row-left">
+<i class="fa-solid fa-download row-icon"></i>
+<div>
+<div class="row-label" data-i18n="settings.app.install">
+Installer l'application
+</div>
+<div class="row-desc" id="installStatusLabel" data-i18n="settings.app.notInstalled">
+Accède plus rapidement à Code-Share
+</div>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right row-chevron"></i>
+</div>
+</div>
+
+
+<div class="settings-section">
+<div class="section-title">
+<i class="fa-solid fa-file-shield"></i> <span data-i18n="settings.legal.title">Confidentialité &amp; Règlement</span>
+</div>
+<div class="settings-row" onclick="window.location.href='privacy-policy.html'">
+<div class="row-left">
+<i class="fa-solid fa-user-shield row-icon"></i>
+<div class="row-label" data-i18n="settings.legal.privacy">
+Politique de confidentialité
+</div>
+</div>
+<i class="fa-solid fa-chevron-right row-chevron"></i>
+</div>
+<div class="settings-row" onclick="window.location.href='terms.html'">
+<div class="row-left">
+<i class="fa-solid fa-scale-balanced row-icon"></i>
+<div class="row-label" data-i18n="settings.legal.terms">
+Conditions d'utilisation
+</div>
+</div>
+<i class="fa-solid fa-chevron-right row-chevron"></i>
+</div>
+</div>
+
+
+<div class="settings-section">
+<div class="section-title">
+<i class="fa-solid fa-triangle-exclamation" style="color:var(--error);"></i> <span data-i18n="settings.danger.title">Zone sensible</span>
+</div>
+<div class="settings-row danger-row" onclick="toggleDeleteForm()">
+<div class="row-left">
+<i class="fa-solid fa-trash-can row-icon"></i>
+<div>
+<div class="row-label" data-i18n="settings.danger.delete">
+Supprimer mon compte
+</div>
+<div class="row-desc" data-i18n="settings.danger.deleteDesc">
+Action définitive et irréversible
+</div>
+</div>
+</div>
+<i class="fa-solid fa-chevron-down row-chevron" id="delChevron"></i>
+</div>
+<div class="delete-form" id="deleteForm">
+<div class="delete-warning">
+<strong data-i18n="settings.delete.willDelete">Ce qui sera supprimé définitivement :</strong>
+<ul>
+<li data-i18n="settings.delete.item1">Ton profil et tes informations de compte</li>
+<li data-i18n="settings.delete.item2">Tes statuts et tes publications de la communauté</li>
+<li data-i18n="settings.delete.item3">Tes notifications</li>
+<li data-i18n="settings.delete.item4">Ton accès (connexion) à l'application</li>
+</ul>
+<span data-i18n="settings.delete.note" style="display:block;margin-top:8px;color:rgba(255,255,255,0.5);font-size:0.76rem;">Note : tes messages déjà envoyés à d'autres personnes et tes participations aux forums resteront visibles pour elles, comme sur la plupart des applications.</span>
+</div>
+<div class="del-alert" id="delAlert"></div>
+<label style="font-size:0.76rem;color:var(--gray);" data-i18n="settings.delete.confirmPwd">Confirme ton mot de passe</label>
+<input type="password" id="delPwd" placeholder="••••••••" data-i18n-placeholder="settings.pwd.currentPlaceholder" autocomplete="current-password" />
+<label style="font-size:0.76rem;color:var(--gray);" data-i18n="settings.delete.confirmWord">Tape <strong style="color:var(--error);">SUPPRIMER</strong> pour confirmer</label>
+<input type="text" id="delConfirmWord" placeholder="SUPPRIMER" />
+<button class="btn-delete-account" id="delBtn" data-i18n="settings.delete.submit" onclick="handleDeleteAccount()">Supprimer définitivement mon compte</button>
+</div>
+</div>
+
+</div>
+
+
+<div class="bottom-bar">
+<a href="community.html" class="bottom-item">
+<i class="fa-solid fa-users"></i>
+<span class="nav-badge" id="navBadgeCommunity"></span>
+<span data-i18n="bottombar.community">Communauté</span>
+</a>
+<a href="messages.html" class="bottom-item">
+<i class="fa-solid fa-comments"></i>
+<span class="nav-badge" id="navBadgeMessages"></span>
+<span data-i18n="bottombar.messages">Messages</span>
+</a>
+<a href="status.html" class="bottom-item">
+<i class="fa-solid fa-circle-play"></i>
+<span class="nav-badge" id="navBadgeStatus"></span>
+<span data-i18n="bottombar.status">Statut</span>
+</a>
+<a href="settings.html" class="bottom-item">
+<i class="fa-solid fa-gear"></i>
+<span class="nav-badge" id="navBadgeSettings"></span>
+<span data-i18n="bottombar.settings">Paramètres</span>
+</a>
+</div>
+
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<script type="module">
+
+import {
+getApps, getApp, initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import "./onesignal-config.js";
+import {
+getAuth, onAuthStateChanged, EmailAuthProvider,
+reauthenticateWithCredential, updatePassword, deleteUser
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+getFirestore, doc, getDoc, deleteDoc, collection, query, where, getDocs, writeBatch
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = getApps().length ? getApp() : initializeApp({
+apiKey: "AIzaSyBXDDwYx0FPnJBc6vkgLPzeIJk6hiEVMEw",
+authDomain: "code-share-2c4ea.firebaseapp.com",
+projectId: "code-share-2c4ea",
+storageBucket: "code-share-2c4ea.firebasestorage.app",
+messagingSenderId: "706094984093",
+appId: "1:706094984093:web:bd62bbed06c156bb5c1d74"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+
+const SETTINGS_FALLBACK_FR = {
+"msg.pwd.fillAll": "Merci de remplir tous les champs.",
+"msg.pwd.tooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères.",
+"msg.pwd.mismatch": "Les nouveaux mots de passe ne correspondent pas.",
+"msg.pwd.success": "Mot de passe mis à jour avec succès !",
+"msg.pwd.wrongPassword": "Mot de passe actuel incorrect.",
+"msg.pwd.tooMany": "Trop de tentatives. Réessaie plus tard.",
+"msg.pwd.error": "Erreur :",
+"msg.pwd.changedToast": "Mot de passe modifié.",
+"msg.del.needPwd": "Merci d'entrer ton mot de passe.",
+"msg.del.needWord": 'Merci de taper exactement "SUPPRIMER" pour confirmer.',
+"msg.del.confirmTitle": "Dernière confirmation",
+"msg.del.confirmMsg": "Cette action est définitive. Toutes tes données seront supprimées et tu seras déconnecté immédiatement.",
+"msg.del.confirmBtn": "Oui, tout supprimer",
+"msg.del.doneToast": "Compte supprimé. À bientôt !",
+"msg.del.wrongPassword": "Mot de passe incorrect.",
+"msg.del.tooMany": "Trop de tentatives. Réessaie plus tard.",
+"msg.del.reauth": "Merci de te reconnecter puis de réessayer immédiatement.",
+"settings.app.title": "Application",
+"settings.app.install": "Installer l'application",
+"settings.app.notInstalled": "Accède plus rapidement à Code-Share",
+"settings.app.installed": "Déjà installée sur cet appareil",
+"settings.app.alreadyInstalled": "L'application est déjà installée !",
+"settings.app.installing": "Installation en cours...",
+"settings.app.installSuccess": "Installation réussie !",
+"settings.app.installCancelled": "Installation annulée.",
+"settings.app.installGuide": "Installation en cours... Si rien ne se passe, utilise le menu de ton navigateur puis « Installer l'application » (ou « Ajouter à l'écran d'accueil » sur iPhone).",
+"settings.app.downloadComplete": "Téléchargement terminé !",
+};
+function t(key) {
+if (typeof window.t === "function") {
+try {
+return window.t(key);
+} catch (e) {}
+}
+return SETTINGS_FALLBACK_FR[key] || key;
+}
+
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+
+    currentUser = user;
+
+
+initOneSignal(user.uid);
+
+
+    document.getElementById("userEmailDisplay").textContent = user.email;
+
+
+    const navAv = document.getElementById("navAvatar");
+    try {
+        const ud = await getDoc(doc(db, "users", user.uid));
+        const data = ud.exists() ? ud.data() : {};
+
+        if (data.photoBase64) {
+            navAv.innerHTML = `<img src="${data.photoBase64}" alt="Avatar" />`;
+        } else {
+            const displayName = user.displayName || user.email || "?";
+            navAv.textContent = displayName.substring(0, 2).toUpperCase();
+        }
+    } catch (error) {
+        console.error("Erreur chargement avatar :", error);
+        navAv.textContent = "?";
+    }
+});
+
+window.togglePwdForm = function () {
+const form = document.getElementById("pwdForm");
+const chevron = document.getElementById("pwdChevron");
+form.classList.toggle("open");
+chevron.style.transform = form.classList.contains("open") ? "rotate(180deg)": "rotate(0deg)";
+};
+
+window.handleChangePassword = async function () {
+const currentPwd = document.getElementById("currentPwd").value;
+const newPwd = document.getElementById("newPwd").value;
+const confirmPwd = document.getElementById("confirmPwd").value;
+const alertBox = document.getElementById("pwdAlert");
+const btn = document.getElementById("savePwdBtn");
+
+alertBox.className = "pwd-alert";
+alertBox.style.display = "none";
+
+if (!currentPwd || !newPwd || !confirmPwd) {
+showPwdAlert("error", t("msg.pwd.fillAll"));
+return;
+}
+if (newPwd.length < 8) {
+showPwdAlert("error", t("msg.pwd.tooShort"));
+return;
+}
+if (newPwd !== confirmPwd) {
+showPwdAlert("error", t("msg.pwd.mismatch"));
+return;
+}
+
+btn.disabled = true;
+btn.textContent = "Mise à jour...";
+
+try {
+const credential = EmailAuthProvider.credential(currentUser.email, currentPwd);
+await reauthenticateWithCredential(currentUser, credential);
+await updatePassword(currentUser, newPwd);
+
+showPwdAlert("success", t("msg.pwd.success"));
+showToast(t("msg.pwd.changedToast"), "success");
+document.getElementById("currentPwd").value = "";
+document.getElementById("newPwd").value = "";
+document.getElementById("confirmPwd").value = "";
+} catch (e) {
+if (e.code === "auth/wrong-password" || e.code === "auth/invalid-credential") {
+showPwdAlert("error", t("msg.pwd.wrongPassword"));
+} else if (e.code === "auth/too-many-requests") {
+showPwdAlert("error", t("msg.pwd.tooMany"));
+} else {
+showPwdAlert("error", t("msg.pwd.error") + " " + e.message);
+}
+} finally {
+btn.disabled = false;
+btn.textContent = "Mettre à jour le mot de passe";
+}
+};
+
+function showPwdAlert(type, msg) {
+const box = document.getElementById("pwdAlert");
+box.className = "pwd-alert " + type;
+box.textContent = msg;
+box.style.display = "block";
+}
+
+
+window.toggleDeleteForm = function () {
+const form = document.getElementById("deleteForm");
+const chevron = document.getElementById("delChevron");
+form.classList.toggle("open");
+chevron.style.transform = form.classList.contains("open") ? "rotate(180deg)": "rotate(0deg)";
+};
+
+window.handleDeleteAccount = async function () {
+const pwd = document.getElementById("delPwd").value;
+const word = document.getElementById("delConfirmWord").value.trim();
+const btn = document.getElementById("delBtn");
+
+if (!pwd) {
+showDelAlert(t("msg.del.needPwd")); return;
+}
+if (word !== "SUPPRIMER") {
+showDelAlert(t("msg.del.needWord")); return;
+}
+
+const ok = await showConfirm(
+t("msg.del.confirmMsg"),
+{
+title: t("msg.del.confirmTitle"), danger: true, confirmLabel: t("msg.del.confirmBtn")
+}
+);
+if (!ok) return;
+
+btn.disabled = true;
+btn.textContent = "Suppression en cours...";
+
+try {
+
+const credential = EmailAuthProvider.credential(currentUser.email, pwd);
+await reauthenticateWithCredential(currentUser, credential);
+
+const uid = currentUser.uid;
+
+
+await deleteUserContent(uid, "posts");
+await deleteUserContent(uid, "statuses");
+
+const notifSnap = await getDocs(collection(db, "users", uid, "notifications"));
+const notifBatch = writeBatch(db);
+notifSnap.forEach(d => notifBatch.delete(d.ref));
+if (!notifSnap.empty) await notifBatch.commit();
+
+
+await deleteDoc(doc(db, "users", uid));
+
+
+await deleteUser(currentUser);
+
+showToast(t("msg.del.doneToast"), "success");
+setTimeout(() => {
+window.location.href = "index.html";
+}, 1800);
+
+} catch (e) {
+btn.disabled = false;
+btn.textContent = "Supprimer définitivement mon compte";
+if (e.code === "auth/wrong-password" || e.code === "auth/invalid-credential") {
+showDelAlert(t("msg.del.wrongPassword"));
+} else if (e.code === "auth/too-many-requests") {
+showDelAlert(t("msg.del.tooMany"));
+} else if (e.code === "auth/requires-recent-login") {
+showDelAlert(t("msg.del.reauth"));
+} else {
+showDelAlert(t("msg.pwd.error") + " " + e.message);
+}
+}
+};
+
+
+async function deleteUserContent(uid, collectionName) {
+try {
+const snap = await getDocs(query(collection(db, collectionName), where("userId", "==", uid)));
+if (snap.empty) return;
+const batch = writeBatch(db);
+snap.forEach(d => batch.delete(d.ref));
+await batch.commit();
+} catch (e) {
+console.error(`Erreur suppression ${collectionName}:`, e);
+}
+}
+
+function showDelAlert(msg) {
+const box = document.getElementById("delAlert");
+box.className = "del-alert error";
+box.textContent = msg;
+box.style.display = "block";
+}
+
+
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('/sw.js')
+.then(reg => console.log('Code-Share SW registered:', reg.scope))
+.catch(err => console.log('SW error:', err));
+});
+}
+
+let deferredPrompt = null;
+
+function isAppInstalled() {
+return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function refreshInstallRowLabel() {
+const label = document.getElementById("installStatusLabel");
+if (!label) return;
+if (isAppInstalled()) {
+label.textContent = t("settings.app.installed");
+} else {
+label.textContent = t("settings.app.notInstalled");
+}
+}
+refreshInstallRowLabel();
+
+window.addEventListener('beforeinstallprompt', (e) => {
+e.preventDefault();
+deferredPrompt = e;
+});
+
+window.addEventListener('appinstalled', () => {
+deferredPrompt = null;
+refreshInstallRowLabel();
+});
+
+
+function showInstallProgress() {
+const overlay = document.getElementById('installProgressOverlay');
+const icon = document.getElementById('installProgressIcon');
+const title = document.getElementById('installProgressTitle');
+const fill = document.getElementById('installProgressFill');
+if (!overlay) return;
+icon.innerHTML = '<i class="fa-solid fa-download"></i>';
+title.textContent = t("settings.app.installing");
+fill.classList.remove('done');
+overlay.classList.add('show');
+}
+function finishInstallProgress(success) {
+const overlay = document.getElementById('installProgressOverlay');
+const icon = document.getElementById('installProgressIcon');
+const title = document.getElementById('installProgressTitle');
+const fill = document.getElementById('installProgressFill');
+if (!overlay) return;
+fill.classList.add('done');
+if (success) {
+icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+title.textContent = t("settings.app.downloadComplete");
+} else {
+icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+title.textContent = t("settings.app.installCancelled");
+}
+setTimeout(() => overlay.classList.remove('show'), 1800);
+}
+
+window.handleInstallClick = async function () {
+if (isAppInstalled()) {
+showToast(t("settings.app.alreadyInstalled"), "success");
+return;
+}
+
+if (deferredPrompt) {
+showInstallProgress();
+deferredPrompt.prompt();
+const {
+outcome
+} = await deferredPrompt.userChoice;
+finishInstallProgress(outcome === "accepted");
+deferredPrompt = null;
+refreshInstallRowLabel();
+} else {
+showToast(t("settings.app.installGuide"), "info", 6000);
+}
+};
+</script>
+
+<script>
+(function syncThemeUI() {
+const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+const toggle = document.getElementById('themeToggle');
+if (toggle) toggle.checked = isLight;
+})();
+</script>
+
+
+<div class="install-progress-overlay" id="installProgressOverlay">
+<div class="install-progress-card">
+<div class="install-progress-icon" id="installProgressIcon">
+<i class="fa-solid fa-download"></i>
+</div>
+<div class="install-progress-title" id="installProgressTitle">
+Installation en cours...
+</div>
+<div class="install-progress-bar-track">
+<div class="install-progress-bar-fill" id="installProgressFill"></div>
+</div>
+</div>
+</div>
+
+<style>
+.install-progress-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.6);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 10002;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s ease;
+}
+.install-progress-overlay.show {
+opacity: 1;
+pointer-events: auto;
+}
+.install-progress-card {
+background: var(--card, #16191F);
+border: 1px solid rgba(245,168,0,0.25);
+border-radius: 16px;
+padding: 28px 26px;
+width: min(85vw, 300px);
+text-align: center;
+box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+transform: scale(0.92);
+transition: transform 0.2s ease;
+}
+.install-progress-overlay.show .install-progress-card {
+transform: scale(1);
+}
+.install-progress-icon {
+width: 54px;
+height: 54px;
+border-radius: 50%;
+background: rgba(245,168,0,0.12);
+color: var(--gold, #F5A800);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+margin: 0 auto 14px;
+}
+.install-progress-title {
+font-family: "Orbitron", monospace;
+font-size: 0.88rem;
+color: var(--white, #fff);
+margin-bottom: 16px;
+}
+.install-progress-bar-track {
+width: 100%;
+height: 6px;
+background: rgba(255,255,255,0.1);
+border-radius: 4px;
+overflow: hidden;
+}
+.install-progress-bar-fill {
+height: 100%;
+width: 40%;
+border-radius: 4px;
+background: linear-gradient(90deg, var(--gold, #F5A800), var(--blue, #1A6FE8));
+animation: installProgressSlide 1.1s ease-in-out infinite;
+}
+.install-progress-bar-fill.done {
+width: 100% !important;
+animation: none !important;
+background: #28C840;
+}
+@keyframes installProgressSlide {
+0% {
+margin-left: -40%;
+}
+100% {
+margin-left: 100%;
+}
+}
+</style>
+</body>
+</html>
+<!--jodia 4 aout 2026 map fete 24 triem anivesem pou bonem hmm chwazi chita lakay mw poum code en solo sou reve mw happy day for me -->

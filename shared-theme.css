@@ -1,0 +1,132 @@
+/* ============================================================
+   SHARED-THEME.CSS — logique du mode clair/sombre
+   ============================================================
+   COMMENT ÇA MARCHE :
+   Chaque page définit ses couleurs de BASE (mode sombre, celui
+   par défaut) dans son propre <style>, avec des variables CSS :
+
+       :root {
+         --gold:  #F5A800;   couleur d'accent (boutons, liens actifs)
+         --blue:  #1A6FE8;   couleur secondaire d'accent
+         --black: #0A0A0A;   fond de la page
+         --card:  #16191F;   fond des cartes/encadrés
+         --white: #FFFFFF;   éléments "clairs" (texte important, icônes)
+         --gray:  #8892A4;   texte secondaire / discret
+       }
+
+   Ce fichier-ci ne fait QU'UNE chose : quand la page a l'attribut
+   <html data-theme="light">, il RÉÉCRIT ces variables avec des
+   valeurs adaptées à un fond clair. Comme tout le reste du site
+   utilise var(--black), var(--card), var(--white) etc. au lieu
+   d'écrire les couleurs en dur, changer juste ces 5-6 variables
+   ici suffit à retourner presque toute l'appli.
+
+   Le petit script inline en haut de chaque page :
+     if (localStorage.getItem('theme')==='light')
+       document.documentElement.setAttribute('data-theme','light');
+   pose l'attribut data-theme AVANT que la page ne s'affiche, pour
+   éviter un flash "sombre puis clair" au chargement. shared-theme.js
+   s'occupe ensuite du bouton qui bascule ça au clic et sauvegarde
+   le choix dans localStorage.
+
+   ⚠️ LIMITE IMPORTANTE (à savoir) :
+   Beaucoup d'éléments de texte, dans tes fichiers .html, écrivent
+   leur couleur EN DUR : "color:#E2E5E7;" au lieu de
+   "color:var(--white);". Une couleur écrite en dur ne peut PAS
+   être changée depuis ce fichier — CSS n'a aucun moyen de dire
+   "remplace toute valeur #E2E5E7 par autre chose", il faut cibler
+   chaque sélecteur un par un. Ce fichier corrige donc tout ce qui
+   passe par les variables (fonds, cartes, bordures, nav) + le texte
+   de base du <body>, mais certains textes de composants précis
+   peuvent encore rester trop clairs en mode clair tant que ces
+   fichiers-là n'auront pas été mis à jour pour utiliser var(--white)
+   au lieu de la couleur en dur. Dis-moi si tu veux que je fasse ce
+   nettoyage (remplacement automatique dans tous les fichiers).
+   ============================================================ */
+
+html[data-theme="light"] {
+    /* --black sert de couleur de FOND (body, page). On la rend
+       gris très clair plutôt que blanc pur : plus doux, et ça
+       laisse les vraies cartes blanches (--card) se détacher. */
+    --black: #F4F5F7;
+
+    /* --card = fond des cartes/encadrés → blanc pur, pour qu'elles
+       ressortent légèrement sur le gris clair du fond de page. */
+    --card:  #FFFFFF;
+
+    /* --white servait à afficher du texte CLAIR sur fond SOMBRE.
+       En mode clair le fond s'inverse, donc ce texte doit devenir
+       FONCÉ, sinon il devient illisible (texte clair sur fond
+       clair). C'est le bug qui rendait le mode clair "incohérent" :
+       cette variable pointait encore vers une couleur claire. */
+    --white: #14171C;
+
+    /* --gray = texte secondaire/discret. On la garde gris, mais
+       un gris nettement plus foncé que du gris sur fond sombre,
+       pour rester lisible sur un fond clair. Volontairement
+       différente de --white pour garder une hiérarchie visuelle
+       (texte principal foncé / texte secondaire gris moyen). */
+    --gray:  #5B6472;
+
+    /* Variable utilisée par endroits pour du texte semi-transparent
+       (à la place de rgba(255,255,255,0.78) qui, elle, resterait
+       blanche et donc invisible sur fond clair). */
+    --text-soft: rgba(20,23,28,0.72);
+}
+
+/* Le <body> de chaque page fixe sa couleur de texte par défaut en
+   dur (color:#E2E5E7 — un gris clair, prévu pour un fond sombre).
+   Comme ce n'est pas une variable, on doit la réécrire ici
+   explicitement pour le mode clair, sinon le texte "de base" reste
+   gris clair sur fond gris clair = quasi invisible. */
+html[data-theme="light"] body {
+    color: var(--white) !important;
+}
+
+/* Petit motif de grille en fond de page (juste décoratif). Avant :
+   une valeur CSS invalide ("rgba var(--black); 1px, ...") — un
+   rgba() ne peut pas contenir "var(--black)" à la place de ses
+   paramètres, et le point-virgule cassait la liste de valeurs. Le
+   navigateur ignorait donc royalement cette ligne. On la remplace
+   par un quadrillage discret assorti au mode clair. */
+   /* 
+html[data-theme="light"] body::before {
+    background-image:
+        linear-gradient(rgba(10,10,10,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,168,0,0.06) 1px, transparent 1px);
+}
+*/ 
+html[data-theme="light"] nav {
+    background: rgba(255,255,255,0.92) !important;
+    border-bottom-color: rgba(245,168,0,0.25) !important;
+}
+
+html[data-theme="light"] .bottom-bar {
+    background: rgba(255,255,255,0.92) !important;
+    /* Avant : rgba(255,255,250,0,0.92) → 5 valeurs au lieu de 4,
+       une rgba() invalide est ignorée entièrement par le
+       navigateur. Corrigé en un orange assorti au thème, avec la
+       bonne opacité. */
+    border-top-color: rgba(245,168,0,0.25) !important;
+}
+
+/* Champs de formulaire : fond très légèrement teinté + texte foncé.
+   Avant, le texte y était mis à #E2E5E7 (gris clair) → invisible
+   sur le fond quasi-blanc du champ. C'était sans doute LE bug le
+   plus gênant pour toi : on tape dans un champ et on ne voit rien. */
+html[data-theme="light"] input,
+html[data-theme="light"] textarea {
+    background: rgba(0,0,0,0.04) !important;
+    border-color: rgba(0,0,0,0.12) !important;
+    color: var(--white) !important;
+}
+
+html[data-theme="light"] ::placeholder {
+    color: rgba(20,23,28,0.4) !important;
+}
+
+/* Transition douce quand on bascule le thème, pour éviter un
+   changement trop brutal/agressif à l'œil. */
+html, body {
+    transition: background-color 0.25s ease, color 0.25s ease;
+}

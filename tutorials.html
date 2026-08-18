@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "598bd958-5b76-41b9-8d72-a84ffe1cf92b",
+      serviceWorkerParam: { scope: "/" },
+      serviceWorkerPath: "sw.js"
+    });
+  });
+</script>
+
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share — Tutoriels</title> 
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+--text-soft: rgba(255,255,255,0.85);
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+background: var(--black);
+color:var(--white);
+font-family: sans-serif;
+min-height: 100vh;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+cursor:none;
+}
+.nav-logo img {
+width: 40px;
+height: 40px;
+object-fit: contain;
+border-radius: 50%;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size: 0.9rem;
+font-weight: 700;
+color:var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.nav-links {
+display: flex;
+gap: 20px;
+}
+.nav-links a {
+color: var(--gray);
+text-decoration: none;
+font-size: 0.82rem;
+font-weight: 600;
+cursor: none;
+transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+color: var(--gold);
+}
+.nav-right {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.nav-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.8rem;
+cursor:none;
+border: 1px solid rgba(245,168,0,0.4);
+overflow: hidden;
+}
+.nav-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.btn-write {
+padding: 8px 16px;
+background: var(--blue);
+color:var(--white);
+border: none;
+border-radius: 7px;
+font-family:sans-serif;
+font-weight: 700;
+font-size: 0.82rem;
+cursor:none;
+transition: all 0.2s;
+}
+.btn-write:hover {
+background: #e09500;
+transform: translateY(-1px);
+}
+
+.page-header {
+position: relative;
+z-index: 1;
+padding: 28px 20px 22px;
+background:var(--black);
+border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.page-header h1 {
+font-family: "Orbitron",monospace;
+font-size: 1.6rem;
+font-weight: 900;
+margin-bottom: 6px;
+}
+.page-header h1 span {
+color: var(--gold);
+}
+.page-header p {
+color:var(--white);
+font-size: 0.88rem;
+margin-bottom: 18px;
+}
+
+.search-row {
+display: flex;
+gap: 10px;
+margin-bottom: 14px;
+}
+.search-wrap {
+flex: 1;
+position: relative;
+}
+.search-wrap span {
+position: absolute;
+left: 12px;
+top: 50%;
+transform: translateY(-50%);
+}
+.search-wrap i {
+position: absolute;
+left: 12px;
+top: 50%;
+transform: translateY(-50%);
+color:var(--white);
+font-size: 0.88rem;
+}
+.search-wrap input {
+width: 100%;
+background: var(--black);
+border:none;
+border-radius: 8px;
+padding: 10px 12px 10px 36px;
+color:var(--white);
+font-family:sans-serif;
+font-size: 0.88rem;
+outline: none;
+transition: border-color 0.2s;
+}
+.search-wrap input:focus {
+border-color: var(--gold);
+}
+.search-wrap input::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.level-pills {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+}
+.pill {
+padding: 6px 16px;
+border-radius: 20px;
+border:none;
+background: transparent;
+color:var(--white);
+font-size: 0.8rem;
+font-weight: 600;
+cursor:none;
+transition: all 0.2s;
+}
+.pill.active {
+background: rgba(245,168,0,0.1);
+border-color: var(--gold);
+color: var(--gold);
+}
+
+.main {
+position: relative;
+z-index: 1;
+max-width: 900px;
+margin: 0 auto;
+padding: 24px 16px 60px;
+}
+
+.list-view {
+display: block;
+}
+.list-view.hidden {
+display: none;
+}
+.detail-view {
+display: none;
+}
+.detail-view.active {
+display: block;
+}
+
+.tut-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+gap: 16px;
+}
+.tut-card {
+background: var(--black);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 12px;
+overflow: hidden;
+cursor:none;
+transition: all 0.25s;
+}
+.tut-card:hover {
+border-color: rgba(245,168,0,0.25);
+transform: translateY(-4px);
+box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+.tut-thumb {
+height: 120px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 2.8rem;
+position: relative;
+overflow: hidden;
+}
+.tut-thumb-js {
+background: linear-gradient(135deg,#1a1400,#2d2100);
+}
+.tut-thumb-py {
+background: linear-gradient(135deg,#001a0d,#002d1a);
+}
+.tut-thumb-css {
+background: linear-gradient(135deg,#001a2d,#00152a);
+}
+.tut-thumb-html {
+background: linear-gradient(135deg,#1a0a00,#2d1500);
+}
+.tut-thumb-react {
+background: linear-gradient(135deg,#001428,#001f3d);
+}
+.tut-thumb-node {
+background: linear-gradient(135deg,#0a1a00,#102800);
+}
+.tut-thumb-default {
+background: linear-gradient(135deg,#1a1a1a,#2d2d2d);
+}
+.tut-thumb-glow {
+position: absolute;
+inset: 0;
+background: radial-gradient(circle,rgba(255,255,255,0.04),transparent 70%);
+}
+.tut-body {
+padding: 16px;
+}
+.tut-head {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 8px;
+}
+.level-tag {
+font-size: 0.65rem;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+}
+.level-debutant {
+background: rgba(40,200,64,0.12);
+color: #28C840;
+border: 1px solid rgba(40,200,64,0.3);
+}
+.level-intermediaire {
+background: rgba(245,168,0,0.12);
+color: var(--gold);
+border: 1px solid rgba(245,168,0,0.3);
+}
+.level-avance {
+background: rgba(255,77,77,0.12);
+color: #ff6b6b;
+border: 1px solid rgba(255,77,77,0.3);
+}
+.tut-title {
+font-family: "Orbitron",monospace;
+font-size:1rem;
+font-weight: 700;
+margin-bottom: 7px;
+line-height: 1.4;
+}
+.tut-card:hover .tut-title {
+color: var(--gold);
+}
+.tut-desc {
+font-size: 0.78rem;
+color: var(--gray);
+line-height: 1.5;
+margin-bottom: 12px;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+overflow: hidden;
+}
+.tut-footer {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding-top: 10px;
+border-top:none;
+}
+.tut-author {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 0.72rem;
+color:var(--white);
+}
+.tut-author-av {
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.55rem;
+font-weight: 700;
+overflow: hidden;
+flex-shrink: 0;
+}
+.tut-author-av img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.tut-stats {
+display: flex;
+gap: 8px;
+}
+.tut-stat {
+font-size: 0.72rem;
+color:;
+}
+
+.back-btn {
+display: flex;
+align-items: center;
+gap: 8px;
+background: transparent;
+border: 1.5px solid rgba(255,255,255,0.1);
+color:var(--white);
+padding: 8px 16px;
+border-radius: 8px;
+font-family: ,sans-serif;
+font-weight: 600;
+font-size: 0.82rem;
+cursor:none;
+margin-bottom: 20px;
+transition: all 0.2s;
+}
+.back-btn:hover {
+border-color: var(--gold);
+color: var(--gold);
+}
+
+.tut-detail-card {
+background: var(--black);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 14px;
+overflow: hidden;
+margin-bottom: 24px;
+}
+.tut-detail-banner {
+height: 140px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 4rem;
+position: relative;
+overflow: hidden;
+}
+.tut-detail-body {
+padding: 24px;
+}
+.tut-detail-meta {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 12px;
+flex-wrap: wrap;
+}
+.tut-detail-title {
+font-family: "Orbitron",monospace;
+font-size: 1.1rem;
+font-weight: 900;
+line-height: 1.4;
+margin-bottom: 14px;
+}
+.tut-detail-content {
+font-size: 0.9rem;
+color: var(--text-soft);
+line-height: 1.8;
+margin-bottom: 20px;
+white-space: pre-wrap;
+}
+.tut-detail-tags {
+display: flex;
+gap: 6px;
+flex-wrap: wrap;
+margin-bottom: 18px;
+}
+.detail-tag {
+font-size: 0.72rem;
+padding: 3px 10px;
+border-radius: 10px;
+background: rgba(26,111,232,0.08);
+color: #7ab3ff;
+border: 1px solid rgba(26,111,232,0.15);
+}
+.tut-detail-footer {
+display: flex;
+align-items: center;
+gap: 14px;
+padding-top: 16px;
+border-top: 1px solid rgba(255,255,255,0.07);
+}
+.btn-like {
+display: flex;
+align-items: center;
+gap: 6px;
+padding: 8px 18px;
+border-radius: 8px;
+border: 1.5px solid rgba(255,255,255,0.1);
+background: transparent;
+color:var(--white);
+cursor:none;
+font-size: 0.85rem;
+transition: all 0.2s;
+}
+.btn-like:hover, .btn-like.liked {
+border-color: var(--gold);
+color: var(--gold);
+background: rgba(245,168,0,0.1);
+}
+.like-count {
+font-family: "Orbitron",monospace;
+font-size: 0.88rem;
+font-weight: 700;
+}
+.detail-author {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-left: auto;
+cursor:none;
+}
+.detail-author:hover .detail-author-name {
+color: var(--gold);
+}
+.detail-author-av {
+width: 32px;
+height: 32px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.72rem;
+font-weight: 700;
+overflow: hidden;
+}
+.detail-author-av img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.detail-author-name {
+font-size: 0.82rem;
+font-weight: 600;
+color: var(--blue);
+}
+.detail-author-role {
+font-size: 0.7rem;
+color:var(--white);
+}
+
+.comments-wrap {
+background: var(--black);
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 14px;
+padding: 20px;
+}
+.comments-title {
+font-family: "Orbitron",monospace;
+font-size: 0.75rem;
+color: var(--gold);
+letter-spacing: 1.5px;
+margin-bottom: 16px;
+}
+.comment-list {
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin-bottom: 18px;
+}
+.comment-item {
+display: flex;
+gap: 10px;
+}
+.comment-av {
+width: 34px;
+height: 34px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.72rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.comment-av img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.comment-bubble {
+flex: 1;
+background: rgba(255,255,255,0.03);
+border: 1px solid rgba(255,255,255,0.06);
+border-radius: 10px;
+padding: 12px;
+}
+.comment-header {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 6px;
+}
+.comment-author {
+font-size: 0.8rem;
+font-weight: 700;
+color: var(--blue);
+cursor: none;
+text-decoration: none;
+}
+.comment-author:hover {
+text-decoration: underline;
+}
+.comment-role {
+font-size: 0.68rem;
+color: var(--gray);
+}
+.comment-time {
+font-size: 0.68rem;
+color: rgba(136,146,164,0.5);
+margin-left: auto;
+}
+.comment-text {
+font-size: 0.85rem;
+color: #E2E5E7;
+line-height: 1.6;
+}
+
+.comment-input-row {
+display: flex;
+gap: 10px;
+align-items: flex-start;
+}
+.comment-input-av {
+width: 32px;
+height: 32px;
+border-radius: 50%;
+background: var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.7rem;
+font-weight: 700;
+flex-shrink: 0;
+overflow: hidden;
+}
+.comment-input-av img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+.comment-input-box {
+flex: 1;
+}
+.comment-textarea {
+width: 100%;
+background:var(--black);
+border:none;
+border-radius: 8px;
+padding: 10px 12px;
+color:var(--white);
+font-family:sans-serif;
+font-size: 0.85rem;
+outline: none;
+resize: none;
+min-height: 70px;
+margin-bottom: 8px;
+transition: border-color 0.2s;
+}
+.comment-textarea:focus {
+border-color: var(--gold);
+}
+.comment-textarea::placeholder {
+color: rgba(255,255,255,0.2);
+}
+.btn-comment {
+padding: 9px 20px;
+background: linear-gradient(135deg,var(--gold),#e09500);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.8rem;
+cursor: none;
+transition: all 0.2s;
+}
+.btn-comment:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 16px rgba(245,168,0,0.3);
+}
+.btn-comment:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+.login-notice {
+text-align: center;
+padding: 14px;
+background: rgba(26,111,232,0.06);
+border: 1px solid rgba(26,111,232,0.15);
+border-radius: 8px;
+font-size: 0.85rem;
+color: var(--gray);
+}
+.login-notice a {
+color: var(--gold);
+font-weight: 600;
+text-decoration: none;
+}
+
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.78);
+z-index: 200;
+align-items: center;
+justify-content: center;
+padding: 16px;
+}
+.modal-overlay.open {
+display: flex;
+}
+.modal {
+background: #1a1f2a;
+border: 1px solid rgba(245,168,0,0.2);
+border-radius: 14px;
+padding: 24px;
+width: 100%;
+max-width: 580px;
+max-height: 90vh;
+overflow-y: auto;
+}
+.modal-title {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color: var(--gold);
+margin-bottom: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.modal-close {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 1.2rem;
+cursor: pointer;
+}
+.modal-label {
+display: block;
+font-size: 0.8rem;
+color: var(--gray);
+font-weight: 600;
+margin-bottom: 7px;
+}
+.modal-input, .modal-select, .modal-textarea {
+width: 100%;
+background: rgba(255,255,255,0.05);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 10px 12px;
+color: var(--white);
+font-family:sans-serif;
+font-size: 0.88rem;
+outline: none;
+margin-bottom: 14px;
+}
+.modal-textarea {
+min-height: 140px;
+resize: vertical;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus {
+border-color: var(--gold);
+}
+.modal-select option {
+background: #1a1f2a;
+}
+.modal-tags-wrap {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-bottom: 14px;
+}
+.modal-tag {
+padding: 5px 12px;
+border-radius: 16px;
+border: 1.5px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--gray);
+font-size: 0.78rem;
+cursor: pointer;
+transition: all 0.2s;
+}
+.modal-tag.selected {
+border-color: var(--blue);
+background: rgba(26,111,232,0.1);
+color: #7ab3ff;
+}
+.btn-publish {
+width: 100%;
+padding: 12px;
+background: linear-gradient(135deg,var(--gold),#e09500);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: "Orbitron",monospace;
+font-weight: 700;
+font-size: 0.9rem;
+cursor: pointer;
+transition: all 0.2s;
+}
+.btn-publish:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 20px rgba(245,168,0,0.3);
+}
+.btn-publish:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+
+.spinner {
+width: 30px;
+height: 30px;
+border: 3px solid rgba(245,168,0,0.2);
+border-top-color: var(--gold);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 30px auto;
+}
+@keyframes spin {
+to {
+transform: rotate(360deg);
+}
+}
+.empty-state {
+text-align: center;
+padding: 50px 20px;
+color: var(--gray);
+}
+.empty-icon {
+font-size: 2.8rem;
+margin-bottom: 12px;
+}
+
+@media(max-width:600px) {
+.nav-links {
+display: none;
+}
+.tut-grid {
+grid-template-columns: 1fr;
+}
+}
+
+
+.bottom-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 72px;
+background: rgba(10,10,10,0.9);
+border:none;
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 999;
+}
+
+.bottom-item {
+flex: 1;
+text-decoration: none;
+color:var(--white);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+font-size: .75rem;
+transition: .3s;
+
+}
+
+.bottom-item i {
+font-size: 1.2rem;
+}
+
+.bottom-item:hover,
+.bottom-item.active {
+color: var(--gold);
+border-radius: 50px;
+overflow: hidden;
+}
+
+@media(min-width:769px) {
+.bottom-bar {
+display: none;
+}
+}
+
+</style>
+<link rel="stylesheet" href="shared-nav.css">
+<link rel="stylesheet" href="shared-ui.css">
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<body>
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<img src="data:image/png;base64,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" alt="Logo" />
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<div class="nav-links">
+<a onclick="window.location.href='community.html'">Communauté</a>
+<a onclick="window.location.href='forums.html'">Forums</a>
+<a class="active">Tutoriels</a>
+<a onclick="window.location.href='messages.html'">Messages</a>
+<a onclick="window.location.href='discover.html'">Découvrir</a>
+<a onclick="window.location.href='profile.html'">Profil</a>
+</div>
+<div class="nav-right">
+<button class="btn-write" id="writeBtn" onclick="openWriteModal()"><i class="fa-solid fa-pen-to-square"></i> Écrire</button>
+
+<div class="nav-avatar" id="navAvatar" onclick="window.location.href='profile.html'">
+?
+</div>
+</div>
+</nav>
+
+<div class="page-header">
+<h1><span>Tutoriels</span></h1>
+<p>
+Apprends avec les meilleurs tutoriels rédigés par la communauté
+</p>
+<div class="search-row">
+<div class="search-wrap">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input type="text" id="searchInput" placeholder="Rechercher un tutoriel..." oninput="filterTutorials()" />
+</div>
+</div>
+<div class="level-pills">
+<button class="pill active" onclick="setLevel('all',this)"> Tous</button>
+<button class="pill" onclick="setLevel('debutant',this)"><i class="#" style="color:#28C840;"></i> Débutant</button>
+<button class="pill" onclick="setLevel('intermediaire',this)"><i class="#" style="color:#F5A800;"></i> Intermédiaire</button>
+<button class="pill" onclick="setLevel('avance',this)"><i class="f" style="color:#ff4d4d;"></i> Avancé</button>
+</div>
+</div>
+
+<div class="main">
+
+
+<div class="list-view" id="listView">
+<div id="tutGrid" class="tut-grid">
+<div class="spinner" style="grid-column:1/-1"></div>
+</div>
+</div>
+
+
+<div class="detail-view" id="detailView">
+<button class="back-btn" onclick="backToList()"><i class="fa-solid fa-arrow-left"></i> Retour aux tutoriels</button>
+<div id="detailContent"></div>
+<div class="comments-wrap" id="commentsWrap" style="margin-top:24px;">
+<div class="comments-title">
+// COMMENTAIRES
+</div>
+<div class="comment-list" id="commentList">
+<div class="spinner"></div>
+</div>
+<div id="commentInputSection"></div>
+</div>
+</div>
+
+</div>
+
+
+<div class="modal-overlay" id="writeModal" onclick="if(event.target===this)closeWriteModal()">
+<div class="modal">
+<div class="modal-title">
+<i class="fa-solid fa-pen-to-square"></i> Écrire un tutoriel
+<button class="modal-close" onclick="closeWriteModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<label class="modal-label">Titre *</label>
+<input class="modal-input" type="text" id="tutTitle" placeholder="Ex: Apprendre Flexbox CSS en 10 minutes" />
+<label class="modal-label">Niveau *</label>
+<select class="modal-select" id="tutLevel">
+<option value="debutant">Débutant</option>
+<option value="intermediaire">Intermédiaire</option>
+<option value="avance">Avancé</option>
+</select>
+<label class="modal-label">Contenu * (explique en détail)</label>
+<textarea class="modal-textarea" id="tutContent" placeholder="Explique ton tutoriel étape par étape...&#10;&#10;Tu peux utiliser des exemples de code, des explications claires..."></textarea>
+<label class="modal-label">Tags (clique pour sélectionner)</label>
+<div class="modal-tags-wrap">
+<span class="modal-tag" onclick="this.classList.toggle('selected')">JavaScript</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">Python</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">HTML/CSS</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">React</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">Node.js</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">Git</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">PHP</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">Java</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">TypeScript</span>
+<span class="modal-tag" onclick="this.classList.toggle('selected')">Firebase</span>
+</div>
+<button class="btn-publish" id="publishBtn" onclick="publishTutorial()">Publier le tutoriel <i class="fa-solid fa-arrow-right"></i></button>
+</div>
+</div>
+
+
+<div class="bottom-bar">
+    
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<a href="community.html" class="bottom-item">
+<i class="fa-solid fa-users"></i>
+<span class="nav-badge" id="navBadgeCommunity"></span>
+<span>Communauté</span>
+</a>
+
+<a href="messages.html" class="bottom-item">
+<i class="fa-solid fa-comments"></i>
+<span class="nav-badge" id="navBadgeMessages"></span>
+<span>Messages</span>
+</a>
+
+<a href="status.html" class="bottom-item">
+<i class="fa-solid fa-circle-play"></i>
+<span class="nav-badge" id="navBadgeStatus"></span>
+<span>Statut</span>
+</a>
+
+<a href="settings.html" class="bottom-item">
+<i class="fa-solid fa-gear"></i>
+<span class="nav-badge" id="navBadgeSettings"></span>
+<span data-i18n="bottombar.settings">Paramètres</span>
+</a>
+
+</div>
+
+<script type="module">
+
+import {
+getApps, getApp, initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import "./onesignal-config.js";
+import {
+getFirestore, collection, addDoc, doc, getDoc, setDoc, updateDoc, getDocs,
+query, where, orderBy, onSnapshot, increment, arrayUnion, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = getApps().length ? getApp() : initializeApp({
+apiKey: "AIzaSyBXDDwYx0FPnJBc6vkgLPzeIJk6hiEVMEw",
+authDomain: "code-share-2c4ea.firebaseapp.com",
+projectId: "code-share-2c4ea",
+storageBucket: "code-share-2c4ea.firebasestorage.app",
+messagingSenderId: "706094984093",
+appId: "1:706094984093:web:bd62bbed06c156bb5c1d74"
+});
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let myData = {};
+let allTuts = [];
+let currentLevel = "all";
+let activeTutId = null;
+let unsubComments = null;
+
+
+const thumbClass = t => {
+const tags = (t.tags || []).map(x => x.toLowerCase()).join(" ");
+if (tags.includes("javascript") || tags.includes("js")) return "tut-thumb-js";
+if (tags.includes("python")) return "tut-thumb-py";
+if (tags.includes("css") || tags.includes("html")) return "tut-thumb-css";
+if (tags.includes("react")) return "tut-thumb-react";
+if (tags.includes("node")) return "tut-thumb-node";
+return "tut-thumb-default";
+};
+
+const thumbEmoji = t => {
+const tags = (t.tags || []).map(x => x.toLowerCase()).join(" ");
+if (tags.includes("javascript")) return '<i class="fa-brands fa-square-js"></i>';
+if (tags.includes("python")) return '<i class="fa-brands fa-python"></i>';
+if (tags.includes("css")) return '<i class="fa-brands fa-css3-alt"></i>';
+if (tags.includes("html")) return '<i class="fa-brands fa-html5"></i>';
+if (tags.includes("react")) return '<i class="fa-brands fa-react"></i>';
+if (tags.includes("node")) return '<i class="fa-brands fa-node-js"></i>';
+if (tags.includes("git")) return '<i class="fa-brands fa-git-alt"></i>';
+if (tags.includes("php")) return '<i class="fa-brands fa-php"></i>';
+if (tags.includes("java")) return '<i class="fa-brands fa-java"></i>';
+return '<i class="fa-solid fa-book-open"></i>';
+};
+
+
+onAuthStateChanged(auth, async user => {
+
+    currentUser = user;
+    const navAv = document.getElementById("navAvatar");
+
+    if (user) {
+
+        initOneSignal(user.uid);
+
+
+        try {
+            const ud = await getDoc(doc(db, "users", user.uid));
+            myData = ud.exists() ? ud.data() : {};
+
+
+            if (myData.photoBase64) {
+                navAv.innerHTML = `<img src="${myData.photoBase64}" alt="Avatar" />`;
+            } else {
+                navAv.textContent = (user.displayName || user.email).substring(0, 2).toUpperCase();
+            }
+        } catch (error) {
+            console.error("Erreur chargement profil :", error);
+            navAv.textContent = (user.displayName || user.email).substring(0, 2).toUpperCase();
+        }
+
+    } else {
+
+        navAv.textContent = "?";
+
+    }
+});
+
+
+
+const qTutos = query(collection(db, "posts"), where("type", "==", "tutorial"));
+
+onSnapshot(qTutos, snap => {
+
+    allTuts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    allTuts.sort((a, b) => {
+        const ta = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+        const tb = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+        return tb - ta;
+    });
+    renderTutorials();
+});
+
+window.renderTutorials = function() {
+const grid = document.getElementById("tutGrid");
+let tuts = [...allTuts];
+const search = document.getElementById("searchInput").value.toLowerCase();
+
+
+if (currentLevel !== "all") tuts = tuts.filter(t => t.level === currentLevel);
+
+if (search) tuts = tuts.filter(t =>
+t.title?.toLowerCase().includes(search) ||
+t.content?.toLowerCase().includes(search) ||
+(t.tags || []).some(tag => tag.toLowerCase().includes(search))
+);
+
+if (tuts.length === 0) {
+grid.innerHTML = "<div class=\"empty-state\" style=\"grid-column:1/-1\"><div class=\"empty-icon\"><i class=\"fa-solid fa-inbox\"></i></div><p>Aucun tutoriel pour l\'instant.<br/>Sois le premier à en publier !</p></div>";
+return;
+}
+
+const levelLabel = {
+debutant: "DÉBUTANT",
+intermediaire: "INTERMÉDIAIRE",
+avance: "AVANCÉ"
+};
+const levelClass = {
+debutant: "level-debutant",
+intermediaire: "level-intermediaire",
+avance: "level-avance"
+};
+
+grid.innerHTML = tuts.map(t => {
+const date = t.createdAt?.toDate ? timeAgo(t.createdAt.toDate()): "récemment";
+const lvl = t.level || "debutant";
+const avHtml = t.authorPhoto ? "<img src=\""+t.authorPhoto+"\"/>": (t.username || "?").substring(0, 2).toUpperCase();
+const tags = (t.tags || []).slice(0, 2).map(tag => `<span class="detail-tag">${escapeHtml(tag)}</span>`).join("");
+return `<div class="tut-card" onclick="openTutorial('${t.id}')">
+<div class="tut-thumb ${thumbClass(t)}">
+<div class="tut-thumb-glow"></div>
+<span>${thumbEmoji(t)}</span>
+</div>
+<div class="tut-body">
+<div class="tut-head">
+<span class="level-tag ${levelClass[lvl] || "level-debutant"}">${levelLabel[lvl] || "DÉBUTANT"}</span>
+</div>
+<div class="tut-title">${escapeHtml(t.title)}</div>
+<div class="tut-desc">${escapeHtml(t.content)}</div>
+<div class="tut-footer">
+<div class="tut-author">
+<div class="tut-author-av">${avHtml}</div>
+@${escapeHtml(t.username || "anonyme")}
+</div>
+<div class="tut-stats">
+<span class="tut-stat"><i class="fa-solid fa-heart"></i> ${t.votes || 0}</span>
+<span class="tut-stat"><i class="fa-solid fa-comment"></i> ${t.comments || 0}</span>
+</div>
+</div>
+</div>
+</div>`;
+}).join("");
+};
+
+window.openTutorial = async function(tutId) {
+activeTutId = tutId;
+document.getElementById("listView").classList.add("hidden");
+document.getElementById("detailView").classList.add("active");
+
+const snap = await getDoc(doc(db, "posts", tutId));
+if (!snap.exists()) return;
+const t = snap.data();
+const date = t.createdAt?.toDate ? t.createdAt.toDate().toLocaleDateString("fr-FR", {
+day: "numeric", month: "long", year: "numeric"
+}): "récemment";
+const lvl = t.level || "debutant";
+const levelLabel = {
+debutant: "DÉBUTANT",
+intermediaire: "INTERMÉDIAIRE",
+avance: "AVANCÉ"
+};
+const levelClass = {
+debutant: "level-debutant",
+intermediaire: "level-intermediaire",
+avance: "level-avance"
+};
+const avHtml = t.authorPhoto ? "<img src=\""+t.authorPhoto+"\"/>": (t.username || "?").substring(0, 2).toUpperCase();
+const tags = (t.tags || []).map(tag => `<span class="detail-tag">${escapeHtml(tag)}</span>`).join("");
+const isLiked = currentUser && (t.votedBy || []).includes(currentUser.uid);
+
+document.getElementById("detailContent").innerHTML = `
+<div class="tut-detail-card">
+<div class="tut-detail-banner ${thumbClass(t)}">
+<div class="tut-thumb-glow"></div>
+<span style="font-size:4rem;">${thumbEmoji(t)}</span>
+</div>
+<div class="tut-detail-body">
+<div class="tut-detail-meta">
+<span class="level-tag ${levelClass[lvl] || "level-debutant"}">${levelLabel[lvl] || "DÉBUTANT"}</span>
+<span style="font-size:0.75rem;color:var(--gray);"><i class="fa-regular fa-calendar"></i> ${date}</span>
+</div>
+<div class="tut-detail-title">${escapeHtml(t.title)}</div>
+<div class="tut-detail-content">${escapeHtml(t.content)}</div>
+<div class="tut-detail-tags">${tags}</div>
+<div class="tut-detail-footer">
+<button class="btn-like ${isLiked?"liked": ""}" id="likeBtn" onclick="likeTutorial('${tutId}')">
+<i class="fa-solid fa-heart"></i> <span class="like-count" id="likeCount">${t.votes || 0}</span> J'aime
+</button>
+<div class="detail-author" onclick="window.location.href='user-profile.html?uid=${t.userId}'">
+<div class="detail-author-av">${avHtml}</div>
+<div>
+<div class="detail-author-name">@${escapeHtml(t.username || "anonyme")}</div>
+<div class="detail-author-role">${t.authorRole === "mentor"?'<i class="fa-solid fa-star"></i> Mentor': '<i class="fa-solid fa-graduation-cap"></i> Apprenant'}</div>
+</div>
+</div>
+</div>
+</div>
+</div>`;
+
+loadComments(tutId);
+
+const inputSection = document.getElementById("commentInputSection");
+if (currentUser) {
+const myAvHtml = myData.photoBase64 ? "<img src=\""+myData.photoBase64+"\"/>": (currentUser.displayName || currentUser.email).substring(0, 2).toUpperCase();
+inputSection.innerHTML = `
+<div class="comment-input-row">
+<div class="comment-input-av">${myAvHtml}</div>
+<div class="comment-input-box">
+<textarea class="comment-textarea" id="commentTextarea" placeholder="Partage ton avis ou pose une question..."></textarea>
+<button class="btn-comment" id="commentBtn" onclick="submitComment('${tutId}')">Commenter <i class="fa-solid fa-arrow-right"></i></button>
+</div>
+</div>`;
+} else {
+inputSection.innerHTML = `<div class="login-notice"><a href="login.html">Connecte-toi</a> ou <a href="signup.html">crée un compte</a> pour commenter.</div>`;
+}
+};
+
+function loadComments(tutId) {
+const list = document.getElementById("commentList");
+if (!list) return;
+if (unsubComments) unsubComments();
+
+const ref = collection(db, "posts", tutId, "comments");
+unsubComments = onSnapshot(ref, snap => {
+if (!document.getElementById("commentList")) return;
+
+const docs = [...snap.docs].sort((a, b) => {
+const ta = a.data().createdAt?.toDate ? a.data().createdAt.toDate().getTime(): 0;
+const tb = b.data().createdAt?.toDate ? b.data().createdAt.toDate().getTime(): 0;
+return ta - tb;
+});
+
+if (docs.length === 0) {
+list.innerHTML = "<div style=\"text-align:center;padding:20px;color:var(--gray);font-size:0.85rem;\">Aucun commentaire. Sois le premier !</div>";
+return;
+}
+
+list.innerHTML = docs.map(d => {
+const c = d.data();
+const date = c.createdAt?.toDate ? timeAgo(c.createdAt.toDate()): "récemment";
+const avHtml = c.photoBase64 ? "<img src=\""+c.photoBase64+"\"/>": (c.username || "?").substring(0, 2).toUpperCase();
+return `<div class="comment-item">
+<div class="comment-av">${avHtml}</div>
+<div class="comment-bubble">
+<div class="comment-header">
+<a class="comment-author" href="user-profile.html?uid=${c.userId}">@${escapeHtml(c.username || "anonyme")}</a>
+<span class="comment-role">${c.role === "mentor"?'<i class="fa-solid fa-star"></i> Mentor': '<i class="fa-solid fa-graduation-cap"></i> Apprenant'}</span>
+<span class="comment-time">${date}</span>
+</div>
+<div class="comment-text">${escapeHtml(c.text)}</div>
+</div>
+</div>`;
+}).join("");
+});
+}
+
+
+window.submitComment = async function(tutId) {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+}
+const textarea = document.getElementById("commentTextarea");
+const text = textarea?.value.trim();
+if (!text) {
+showToast("Écris un commentaire d\'abord !"); return;
+}
+const btn = document.getElementById("commentBtn");
+btn.disabled = true; btn.textContent = "Publication...";
+try {
+await addDoc(collection(db, "posts", tutId, "comments"), {
+text,
+username: myData.username || currentUser.email.split("@")[0],
+userId: currentUser.uid,
+photoBase64: myData.photoBase64 || null,
+role: myData.role || "apprenant",
+createdAt: serverTimestamp()
+});
+await setDoc(doc(db, "posts", tutId), {
+comments: increment(1)
+}, {
+merge: true
+});
+try {
+await setDoc(doc(db, "users", currentUser.uid), {
+points: increment(2)
+}, {
+merge: true
+});
+} catch(e) {}
+textarea.value = "";
+btn.disabled = false; btn.innerHTML = 'Commenter <i class="fa-solid fa-arrow-right"></i>';
+} catch(e) {
+btn.disabled = false; btn.innerHTML = 'Commenter <i class="fa-solid fa-arrow-right"></i>';
+showToast("Erreur: "+e.message, "error");
+}
+};
+
+
+window.likeTutorial = async function(tutId) {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+}
+const btn = document.getElementById("likeBtn");
+const countEl = document.getElementById("likeCount");
+if (!btn || btn.classList.contains("liked")) return;
+try {
+const ref = doc(db, "posts", tutId);
+const snap = await getDoc(ref);
+if (!snap.exists()) return;
+if ((snap.data().votedBy || []).includes(currentUser.uid)) return;
+await updateDoc(ref, {
+votes: increment(1), votedBy: arrayUnion(currentUser.uid)
+});
+btn.classList.add("liked");
+if (countEl) countEl.textContent = parseInt(countEl.textContent || "0") + 1;
+
+if (snap.data().userId !== currentUser.uid) {
+await setDoc(doc(db, "users", snap.data().userId), {
+points: increment(10)
+}, {
+merge: true
+});
+}
+} catch(e) {}
+};
+
+
+window.backToList = function() {
+activeTutId = null;
+if (unsubComments) unsubComments();
+document.getElementById("listView").classList.remove("hidden");
+document.getElementById("detailView").classList.remove("active");
+document.getElementById("detailContent").innerHTML = "";
+document.getElementById("commentList").innerHTML = "";
+};
+
+window.setLevel = function(level, el) {
+currentLevel = level;
+document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+el.classList.add("active");
+renderTutorials();
+};
+
+window.filterTutorials = function() {
+renderTutorials();
+};
+
+
+window.openWriteModal = function() {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+} document.getElementById("writeModal").classList.add("open");
+};
+window.closeWriteModal = function() {
+document.getElementById("writeModal").classList.remove("open");
+};
+
+window.publishTutorial = async function() {
+if (!currentUser) {
+window.location.href = "login.html"; return;
+}
+const title = document.getElementById("tutTitle").value.trim();
+const content = document.getElementById("tutContent").value.trim();
+const level = document.getElementById("tutLevel").value;
+const tags = [...document.querySelectorAll(".modal-tag.selected")].map(t => t.textContent);
+const btn = document.getElementById("publishBtn");
+
+if (!title) {
+showToast("Ajoute un titre à ton tutoriel."); return;
+}
+if (!content || content.length < 50) {
+showToast("Le contenu doit faire au moins 50 caractères."); return;
+}
+
+btn.disabled = true; btn.textContent = "Publication...";
+try {
+await addDoc(collection(db, "posts"), {
+title, content, level, tags,
+type: "tutorial",
+username: myData.username || currentUser.email.split("@")[0],
+userId: currentUser.uid,
+authorPhoto: myData.photoBase64 || null,
+authorRole: myData.role || "apprenant",
+votes: 0,
+comments: 0,
+votedBy: [],
+createdAt: serverTimestamp()
+});
+
+await setDoc(doc(db, "users", currentUser.uid), {
+points: increment(30), tutorials: increment(1)
+}, {
+merge: true
+});
+
+
+document.getElementById("tutTitle").value = "";
+document.getElementById("tutContent").value = "";
+document.querySelectorAll(".modal-tag.selected").forEach(t => t.classList.remove("selected"));
+btn.disabled = false; btn.innerHTML = 'Publier le tutoriel <i class="fa-solid fa-arrow-right"></i>';
+closeWriteModal();
+showToast("Tutoriel publie avec succes ! +30 points", "success");
+} catch(e) {
+btn.disabled = false; btn.innerHTML = 'Publier le tutoriel <i class="fa-solid fa-arrow-right"></i>';
+showToast("Erreur: "+e.message, "error");
+}
+};
+
+function escapeHtml(text) {
+return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function timeAgo(date) {
+const d = Math.floor((Date.now()-date)/1000);
+if (d < 60) return "à l instant";
+if (d < 3600) return "Il y a "+Math.floor(d/60)+"min";
+if (d < 86400) return "Il y a "+Math.floor(d/3600)+"h";
+return "Il y a "+Math.floor(d/86400)+" jour(s)";
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.log('Erreur Service Worker:', err));
+}
+</script>
+
+</body>
+</html>

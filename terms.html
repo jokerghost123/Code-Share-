@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share — Conditions d'utilisation</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+--text-soft: rgba(255,255,255,0.78);
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+background: var(--black);
+color: #E2E5E7;
+font-family:sans-serif;
+min-height: 100vh;
+}
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+text-decoration: none;
+cursor: pointer;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color:var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.back-btn {
+color: var(--gray);
+text-decoration: none;
+font-size: 0.85rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.back-btn:hover {
+color: var(--gold);
+}
+
+.doc-wrap {
+position: relative;
+z-index: 1;
+max-width: 720px;
+margin: 0 auto;
+padding: 32px 20px 60px;
+}
+.doc-wrap h1 {
+font-family: monospace;
+font-size: 1.5rem;
+font-weight: 900;
+margin-bottom: 6px;
+}
+.doc-wrap h1 span {
+color: var(--gold);
+}
+.updated {
+color:var(--white);
+font-size: 0.8rem;
+margin-bottom: 28px;
+}
+.doc-wrap h2 {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+color: var(--gold);
+margin: 28px 0 10px;
+}
+.doc-wrap p, .doc-wrap li {
+color: var(--text-soft);
+font-size: 0.88rem;
+line-height: 1.7;
+margin-bottom: 10px;
+}
+.doc-wrap ul {
+padding-left: 20px;
+margin-bottom: 14px;
+}
+.doc-wrap strong {
+color: var(--white);
+}
+.warn-box {
+margin-top: 10px;
+margin-bottom: 14px;
+background:var(--blue);
+border: 1px solid rgba(229,72,77,0.25);
+border-radius: 12px;
+padding: 14px 16px;
+font-size: 0.85rem;
+color: var(--text-soft);
+}
+</style>
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<body>
+
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<a class="back-btn" onclick="window.location.href='settings.html'"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+</nav>
+
+<div class="doc-wrap">
+<h1>Conditions d'<span>utilisation</span></h1>
+<p class="updated">
+Dernière mise à jour : juillet 2026
+</p>
+
+<p>
+En créant un compte et en utilisant Code-Share, tu acceptes les règles suivantes. Merci de les lire attentivement.
+</p>
+
+<h2>1. Qui peut utiliser Code-Share</h2>
+<p>
+Code-Share est une communauté de développeurs. Tu dois fournir des informations exactes lors de ton inscription et es responsable de la confidentialité de ton mot de passe.
+</p>
+
+<h2>2. Règles de conduite</h2>
+<p>
+En utilisant Code-Share, tu t'engages à <strong>ne pas</strong> :
+</p>
+<ul>
+<li>Publier de contenu illégal, haineux, harcelant, discriminatoire ou sexuellement explicite.</li>
+<li>Usurper l'identité d'une autre personne ou créer de faux comptes.</li>
+<li>Envoyer du spam ou des messages non sollicités en masse.</li>
+<li>Partager du code malveillant, des virus ou des outils destinés à nuire à des tiers.</li>
+<li>Harceler, menacer ou intimider d'autres utilisateurs.</li>
+<li>Tenter de contourner les mesures de sécurité de l'application.</li>
+</ul>
+
+<div class="warn-box">
+<i class="fa-solid fa-triangle-exclamation" style="color:#e5484d;"></i> Le non-respect de ces règles peut entraîner un avertissement, une suspension temporaire, ou la suppression définitive de ton compte, à notre discrétion.
+</div>
+
+<h2>3. Contenu publié</h2>
+<p>
+Tu restes propriétaire du contenu que tu publies (posts, statuts, tutoriels, commentaires). En le publiant sur Code-Share, tu nous accordes le droit de l'afficher au sein de l'application. Tu es seul responsable du contenu que tu partages.
+</p>
+
+<h2>4. Modération</h2>
+<p>
+Nous nous réservons le droit de retirer tout contenu enfreignant ces conditions, avec ou sans préavis. Un outil de signalement est disponible pour nous alerter d'un contenu ou comportement problématique.
+</p>
+
+<h2>5. Blocage entre utilisateurs</h2>
+<p>
+Tu peux bloquer un autre utilisateur à tout moment depuis la messagerie. Cela empêche tout échange de messages dans les deux sens.
+</p>
+
+<h2>6. Statuts éphémères</h2>
+<p>
+Les statuts publiés sont automatiquement supprimés après 24 heures. Nous ne garantissons pas leur conservation au-delà de cette période.
+</p>
+
+<h2>7. Disponibilité du service</h2>
+<p>
+Code-Share est fourni "tel quel". Nous faisons de notre mieux pour assurer un service stable, mais ne garantissons pas une disponibilité ininterrompue.
+</p>
+
+<h2>8. Résiliation</h2>
+<p>
+Tu peux cesser d'utiliser Code-Share à tout moment. Nous pouvons suspendre ou résilier ton accès en cas de violation de ces conditions.
+</p>
+
+<h2>9. Modifications</h2>
+<p>
+Ces conditions peuvent être mises à jour. Les changements importants te seront signalés dans l'application.
+</p>
+
+<h2>10. Contact</h2>
+<p>
+Pour toute question concernant ces conditions, contacte-nous via la messagerie de l'application.
+</p> 
+</div>
+
+<script src="shared-ui.js"></script>
+
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.log('Erreur Service Worker:', err));
+}
+</script>
+
+</body>
+</html>

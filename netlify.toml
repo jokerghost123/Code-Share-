@@ -1,0 +1,10 @@
+# Ce fichier va à LA RACINE de ton dossier de déploiement (au même
+# niveau que index.html), PAS dans le dossier netlify/functions.
+#
+# Sans lui, Netlify ne sait pas forcément où chercher tes fonctions
+# quand tu déploies en glisser-déposer manuel (contrairement à un
+# déploiement connecté à Git, où Netlify les détecte plus souvent
+# automatiquement).
+
+[build]
+  functions = "netlify/functions"

@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "598bd958-5b76-41b9-8d72-a84ffe1cf92b",
+      serviceWorkerParam: { scope: "/" },
+      serviceWorkerPath: "sw.js"
+    });
+  });
+</script>
+
+<script>
+(function() {
+try {
+if (localStorage.getItem('theme') === 'light')document.documentElement.setAttribute('data-theme', 'light');
+}catch(e) {}})();
+</script>
+<title>Code-Share</title>
+
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#F5A800" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Code-Share" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png" />
+<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png" />
+<meta name="description" content="Plateforme communautaire pour développeurs. Apprends, partage et évolue avec des mentors experts." />
+<meta name="keywords" content="programmation, développeurs, mentors, tutoriels, communauté, code" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+--gold: #F5A800;
+--blue: #1A6FE8;
+--black: #0A0A0A;
+--card: #16191F;
+--white: #FFFFFF;
+--gray: #8892A4;
+--jaune: #EEC03E;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+background: var(--black);
+color:var(--white);
+font-family: sans-serif;
+}
+
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+/* pati navigatè a  */
+nav {
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 20px;
+background: rgba(10,10,10,0.95);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(245,168,0,0.15);
+}
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+cursor: none;
+}
+.nav-logo img {
+width: 40px;
+height: 40px;
+object-fit: contain;
+border-radius: 50%;
+}
+.logo-text {
+font-family: "Orbitron",monospace;
+font-size: 1rem;
+font-weight: 700;
+color:var(--white);
+}
+.logo-text .b {
+color: var(--blue);
+}
+
+.logo-text .g {
+color: var(--gold);
+}
+.nav-links {
+display: flex;
+gap: 20px;
+}
+.nav-links a {
+color: var(--gray);
+text-decoration: none;
+font-size: 0.82rem;
+font-weight: 600;
+cursor: none;
+transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+color: var(--gold);
+}
+.nav-right {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.nav-actions {
+display: flex;
+gap: 20px;
+}
+
+.nav-avatar {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+background:var(--blue);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 0.8rem;
+cursor: none;
+border: 1px solid rgba(245,168,0,0.4);
+overflow: hidden;
+flex-shrink: 0;
+}
+.nav-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+
+.btn-outline {
+padding: 9px 20px;
+border: 1.5px solid var(--gold);
+background: transparent;
+color: var(--gold);
+border-radius: 6px;
+font-family: sans-serif;
+font-weight: 600;
+font-size: 0.88rem;
+cursor:none;
+transition: all 0.2s;
+}
+.btn-outline:hover {
+background: var(--gold);
+color: var(--black);
+}
+.btn-solid {
+padding: 5px 5px;
+background: var(--blue);
+color: var(--white);
+border: 1.5px solid var(--blue);
+border-radius: 6px;
+font-family: sans-serif;
+font-weight: 600;
+font-size: 0.88rem;
+cursor:none;
+transition: all 0.2s;
+}
+.btn-solid:hover {
+background: #2a7fff;
+transform: translateY(-1px);
+}
+
+
+
+/* prinsipal la */
+/*
+.hero {
+position: relative;
+z-index: 1;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 120px 20px 60px;
+
+}
+*/ 
+.hero-glow {
+position: absolute;
+top: 40%;
+left: 50%;
+transform: translate(-50%,-50%);
+width: 600px;
+height: 600px;
+pointer-events: none;
+}
+.hero-badge {
+display: inline-flex;
+align-items: center;
+background:
+border: 1px solid rgba(245,168,0,0.3);
+color: var(--gold);
+padding: 6px 16px;
+border-radius: 20px;
+font-size: 0.8rem;
+font-weight: 600;
+letter-spacing: 1px;
+margin-bottom: 28px;
+}
+.hero-badge::before {
+content: "";
+width: 7px;
+height: 7px;
+background: var(--gold);
+border-radius: 50%;
+animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+0%,100% {
+opacity: 1;
+transform: scale(1)
+}
+
+50% {
+opacity: 0.5;
+transform: scale(1.4)
+}
+}
+.hero h1 {
+font-family: monospace;
+justify-content:center;
+align-items:center;
+font-size:1.5rem;
+font-weight: 900;
+line-height: 1.1;
+margin-bottom:20px;
+display :flex;
+margin-top:0px;
+}
+.hero h1 .gold {
+color: var(--gold);
+}
+
+.hero h1 .blue {
+color: var(--blue);
+}
+.hero p {
+font-size: 1.05rem;
+text-align: center;
+color:var(--white);
+line-height: 1.7;
+max-width: 540px;
+margin: 0 auto 40px;
+}
+.hero-buttons {
+display: flex;
+gap: 16px;
+justify-content: center;
+flex-wrap: wrap;
+}
+.btn-primary {
+padding: 14px 36px;
+background:var(--blue);
+color: var(--black);
+border: none;
+border-radius: 8px;
+font-family: sans-serif;
+font-weight: 700;
+font-size: 1rem;
+cursor: none;
+transition: all 0.25s;
+}
+.btn-primary:hover {
+transform: translateY(-3px);
+box-shadow: 0 12px 30px rgba(245,168,0,0.35);
+}
+.btn-secondary {
+padding: 14px 36px;
+background:var(--blue);
+color: var(--black);
+border-radius: 8px;
+font-family: sans-serif;
+font-weight: 700;
+font-size: 1rem;
+cursor:none;
+border:none;
+transition: all 0.25s;
+}
+.btn-secondary:hover {
+transform: translateY(-3px);
+box-shadow: 0 12px 30px rgba(245,168,0,0.35);
+}
+
+/* seksyon 1 */
+.code-section {
+position: relative;
+z-index: 1;
+padding: 0 40px 60px;
+}
+.code-card {
+background: var(--black);
+overflow: hidden;
+max-width: 680px;
+margin: 0 auto;
+box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+.code-header {
+background: rgba(255,255,255,0.03);
+padding: 12px 18px;
+display: flex;
+align-items: center;
+gap: 8px;
+border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.dot {
+width: 12px;
+height: 12px;
+border-radius: 50%;
+}
+.dot-r {
+background: #FF5F57;
+}
+
+.dot-y {
+background: #FFBD2E;
+}
+
+.dot-g {
+background: #28C840;
+}
+/*la avek margin tob hmm feh ti blok code title la fe yn ti desann a 20px */
+.code-title {
+margin-left: 8px;
+margin-top: 20px ;
+font-size: 0.78rem;
+color:var(--white);
+}
+.code-body {
+padding: 22px 24px;
+font-family: "Courier New",monospace;
+font-size: 0.85rem;
+line-height: 1.8;
+}
+.c-c {
+color: #4a5568;
+}
+
+.c-k {
+color: var(--blue);
+}
+
+.c-s {
+color: var(--gold);
+}
+
+.c-f {
+color: #68d391;
+}
+
+.c-v {
+color: #fc8181;
+}
+
+/* seksyon 2 */
+/* 
+.stats {
+position: relative;
+z-index: 1;
+padding: 50px 40px;
+display: flex;
+justify-content: center;
+border-top: 1px solid rgba(255,255,255,0.06);
+border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.stat-item {
+flex: 1;
+max-width: 200px;
+text-align: center;
+padding: 0 30px;
+border-right: 1px solid rgba(255,255,255,0.07);
+}
+.stat-item:last-child {
+border-right: none;
+}
+.stat-num {
+font-family: "Orbitron",monospace;
+font-size: 2rem;
+font-weight: 900;
+color: var(--gold);
+display: block;
+}
+.stat-label {
+font-size: 0.82rem;
+color: var(--gray);
+margin-top: 4px;
+}
+*/
+/* seksyon 3 */
+.features {
+position: relative;
+z-index: 1;
+padding: 80px 40px;
+max-width: 1100px;
+margin: 0 auto;
+}
+.section-tag {
+font-family: "Orbitron",monospace;
+font-size: 0.7rem;
+color:var(--white);
+letter-spacing: 3px;
+margin-bottom: 14px;
+}
+.section-title {
+font-family: "Orbitron",monospace;
+font-size: clamp(1.4rem,3vw,2.2rem);
+font-weight: 700;
+margin-bottom: 50px;
+line-height: 1.5;
+color:var(--white);
+}
+.features-grid {
+display: grid;
+gap:20px;
+padding: 1rem;
+border-radius: 10px;
+justify-content: center;
+align-items: center;
+background-color:var(--black);
+flex-direction: column;
+}
+.feature-card {
+background: var(--black);
+border-radius: 50px;
+padding: 30px;
+transition: all 0.3s;
+position: relative;
+overflow: hidden;
+cursor: none;
+flex-direction:;
+margin-bottom:;
+}
+.feature-card::before {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 3px;
+background: linear-gradient(90deg,var(--gold)var(--black))
+opacity: 0;
+transition: opacity 0.3s;
+}
+.feature-card:hover {
+border-color: rgba(245,168,0,0.25);
+transform: translateY(-4px);
+box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.feature-card:hover::before {
+opacity: 1;
+}
+.feature-icon {
+width: 50px;
+height: 50px;
+background-color:var(--blue);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.4rem;
+margin-bottom: 40px;
+}
+.feature-card h3 {
+font-family:monospace;
+font-size: 0.9rem;
+font-weight: 700;
+margin-bottom: 10px;
+}
+.feature-card p {
+font-size: 0.86rem;
+color:var(--white);
+line-height: 1.6;
+}
+
+/* cta*/
+.cta {
+position: relative;
+z-index: 1;
+margin: 0 40px 80px;
+margin-top: 20px ;
+background: var(--black);
+border:none;
+border-radius: 20px;
+padding: 60px 60px;
+text-align: center;
+overflow: hidden;
+}
+.cta::before {
+position: absolute;
+right: 40px;
+top: 50%;
+transform: translateY(-50%);
+font-family:monospace;
+font-size: 8rem;
+font-weight: 900;
+color: rgba(245,168,0,0.05);
+pointer-events: none;
+}
+.cta h2 {
+font-family: monospace;
+font-size: clamp(1.4rem,3vw,2rem);
+font-weight: 700;
+margin-bottom: 14px;
+}
+.cta p {
+color: ;
+font-size: 1rem;
+margin-bottom: 32px;
+max-width: 480px;
+margin-left: auto;
+margin-right: auto;
+}
+.cta-buttons {
+display: flex;
+gap: 14px;
+justify-content: center;
+flex-wrap: wrap;
+}
+
+/* pati pye */
+footer {
+position: relative;
+z-index: 1;
+border-top: 1px solid rgba(255,255,255,0.07);
+padding: 28px 40px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 10px;
+}
+/* pati sa t lan model v1 front-end site lan 
+.footer-logo {
+display: flex;
+align-items: center;
+gap: 8px;
+font-family: "Orbitron",monospace;
+font-size: 0.85rem;
+color: var(--gray);
+}
+.footer-logo img {
+width: 24px;
+height: 24px;
+object-fit: contain;
+border-radius: 50px;
+}
+footer p {
+font-size: 0.8rem;
+color: var(--gray);
+}
+*/
+/* ANimasyon */
+@keyframes fadeDown {
+from {
+opacity: 0;
+transform: translateY(-20px)
+}
+
+to {
+opacity: 1;
+transform: translateY(0)
+}
+}
+@keyframes fadeUp {
+from {
+opacity: 0;
+transform: translateY(30px)
+}
+
+to {
+opacity: 1;
+transform: translateY(0)
+}
+}
+.anim1 {
+animation: fadeDown 0.6s ease both;
+}
+.anim2 {
+animation: fadeDown 0.7s 0.1s ease both;
+}
+.anim3 {
+animation: fadeDown 0.7s 0.2s ease both;
+}
+.anim4 {
+animation: fadeDown 0.7s 0.3s ease both;
+}
+
+
+/* seksyon NOTIFICATION */
+.notif-bell {
+position: relative;
+width: 35px;
+height:35px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor:none;
+color:var(--white);
+font-size: 1.05rem;
+transition: all 0.2s;
+}
+.notif-bell:hover, .notif-bell.has-notif {
+border-color: var(--gold);
+color: var(--gold);
+}
+.notif-bell.has-notif {
+animation: bellRing 2s ease infinite;
+}
+@keyframes bellRing {
+0%,100% {
+transform: rotate(0)
+}
+
+5% {
+transform: rotate(15deg)
+}
+
+10% {
+transform: rotate(-12deg)
+}
+
+15% {
+transform: rotate(8deg)
+}
+
+20% {
+transform: rotate(0)
+}
+}
+.notif-count {
+position: absolute;
+top: -4px;
+right: -4px;
+background: var(--gold);
+color: var(--black);
+font-size: 0.62rem;
+font-weight: 700;
+min-width: 18px;
+height: 18px;
+border-radius: 9px;
+display: none;
+align-items: center;
+justify-content: center;
+padding: 0 4px;
+font-family: "Orbitron",monospace;
+}
+.notif-count.show {
+display: flex;
+}
+
+.notif-dropdown {
+display: none;
+position: absolute;
+top: 50px;
+right: 0;
+width: 320px;
+max-height: 420px;
+overflow-y: auto;
+background: #1a1f2a;
+border: 1px solid rgba(245,168,0,0.2);
+border-radius: 12px;
+box-shadow: 0 16px 50px rgba(0,0,0,0.5);
+z-index: 300;
+}
+.notif-dropdown.open {
+display: block;
+}
+.notif-drop-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 16px;
+border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.notif-drop-title {
+font-family:monospace;
+font-size: 0.78rem;
+font-weight: 700;
+color: var(--gold);
+letter-spacing: 1px;
+}
+.notif-drop-clear {
+background: transparent;
+border: none;
+color: var(--gray);
+font-size: 0.72rem;
+cursor: pointer;
+font-family:sans-serif;
+}
+.notif-drop-clear:hover {
+color: var(--gold);
+}
+.notif-drop-list {
+display: flex;
+flex-direction: column;
+}
+.notif-drop-item {
+display: flex;
+gap: 10px;
+padding: 12px 16px;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+cursor: pointer;
+transition: background 0.2s;
+}
+.notif-drop-item:hover {
+background: rgba(255,255,255,0.03);
+}
+.notif-drop-item.unread {
+background: rgba(245,168,0,0.05);
+border-left: 3px solid var(--gold);
+}
+.notif-drop-icon {
+width: 34px;
+height: 34px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.85rem;
+flex-shrink: 0;
+}
+.notif-drop-icon.comment {
+background: rgba(26,111,232,0.15);
+color: #7ab3ff;
+}
+.notif-drop-icon.vote {
+background: rgba(245,168,0,0.15);
+color: var(--gold);
+}
+.notif-drop-icon.message {
+background: rgba(168,85,247,0.15);
+color: #c084fc;
+}
+.notif-drop-icon.badge {
+background: rgba(40,200,64,0.15);
+color: #28C840;
+}
+.notif-drop-icon.follow {
+background: rgba(255,107,107,0.15);
+color: #ff6b6b;
+}
+.notif-drop-text {
+flex: 1;
+min-width: 0;
+}
+.notif-drop-msg {
+font-size: 0.8rem;
+line-height: 1.4;
+margin-bottom: 3px;
+}
+.notif-drop-msg strong {
+color: var(--blue);
+}
+.notif-drop-time {
+font-size: 0.68rem;
+color: var(--gray);
+}
+.notif-drop-empty {
+text-align: center;
+padding: 30px 16px;
+color: var(--gray);
+font-size: 0.82rem;
+}
+.notif-drop-footer {
+padding: 10px 16px;
+text-align: center;
+border-top: 1px solid rgba(255,255,255,0.07);
+}
+.notif-drop-footer a {
+color: var(--gold);
+text-decoration: none;
+font-size: 0.78rem;
+font-weight: 600;
+}
+
+/*  seksyon TOAST NOTIFICATION */
+.toast-notif {
+position: fixed;
+top: 90px;
+right: 20px;
+max-width: 340px;
+background: #1a1f2a;
+border: 1px solid rgba(245,168,0,0.3);
+border-radius: 12px;
+padding: 14px 16px;
+display: flex;
+gap: 12px;
+align-items: flex-start;
+box-shadow: 0 16px 50px rgba(0,0,0,0.5);
+z-index: 500;
+transform: translateX(120%);
+transition: transform 0.4s ease;
+}
+.toast-notif.show {
+transform: translateX(0);
+}
+.toast-notif-icon {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+background: rgba(245,168,0,0.12);
+color: var(--gold);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1rem;
+flex-shrink: 0;
+}
+.toast-notif-body {
+flex: 1;
+}
+.toast-notif-title {
+font-family: monospace;
+font-size: 0.78rem;
+font-weight: 700;
+color: var(--gold);
+margin-bottom: 3px;
+}
+.toast-notif-msg {
+font-size: 0.8rem;
+color: var(--white);
+line-height: 1.4;
+}
+.toast-notif-close {
+background: transparent;
+border: none;
+color: var(--gray);
+cursor: pointer;
+font-size: 0.9rem;
+flex-shrink: 0;
+}
+
+@media(max-width:768px) {
+.notif-dropdown {
+width: 280px;
+right: -40px;
+}
+}
+
+/* poum RESPONSIVE li  */
+@media(max-width:768px) {
+nav {
+padding: 14px 20px;
+}
+.nav-links {
+display: none;
+}
+.nav-actions .btn-outline {
+display: none;
+}
+.hero {
+padding: 100px 20px 40px;
+}
+.hero-glow {
+width: 300px;
+height: 300px;
+}
+.hero-buttons {
+flex-direction: column;
+align-items: center;
+}
+.btn-primary,.btn-secondary {
+width: 100%;
+max-width: 300px;
+}
+.code-section {
+padding: 0 20px 40px;
+}
+.stats {
+flex-wrap: wrap;
+padding: 30px 20px;
+gap: 20px;
+}
+.stat-item {
+border-right: none;
+min-width: 40%;
+}
+.stat-num {
+font-size: 1.6rem;
+}
+.features {
+padding: 50px 20px;
+}
+.cta {
+margin: 0 20px 50px;
+padding: 40px 20px;
+}
+.cta::before {
+display: none;
+}
+.cta-buttons {
+flex-direction: column;
+align-items: center;
+}
+footer {
+flex-direction: column;
+text-align: center;
+padding: 20px;
+}
+}
+
+/*pati Bottom Navigation */
+
+.bottom-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 72px;
+background: rgba(10,10,10,0.9);
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 999;
+}
+
+.bottom-item {
+flex: 1;
+text-decoration: none;
+color:var(--white);
+font-weight:700px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+font-size: .75rem;
+transition: .3s;
+
+}
+
+.bottom-item i {
+font-size: 1.2rem;
+}
+
+.bottom-item:hover,
+.bottom-item.active {
+color: var(--gold);
+border-radius: 50px;
+overflow: hidden;
+}
+
+@media(min-width:769px) {
+.bottom-bar {
+display: none;
+}
+}
+
+</style>
+<link rel="stylesheet" href="shared-nav.css">
+<link rel="stylesheet" href="shared-ui.css">
+<link rel="stylesheet" href="shared-theme.css">
+</head>
+<!--pati head la c JOKER ki code si youn lan nou pah konprann ou byen remake yon ere fel konnen-->
+<body>
+<!--body a c toujou joker ak zoulou ki code yo-->
+<!-- NAvigatè -->
+<nav>
+<div class="nav-logo" onclick="window.location.href='index.html'">
+<img src="data:image/png;base64,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" alt="Logo" />
+<span class="logo-text"><span class="b">&lt;</span><span class="g">CODE</span>-Share<span class="b">&gt;</span></span>
+</div>
+<div class="nav-links">
+<a onclick="window.location.href='community.html'">Communauté</a>
+<a onclick="window.location.href='forums.html'">Forums</a>
+<a onclick="window.location.href='tutorials.html'">Tutoriels</a>
+<a onclick="window.location.href='messages.html'">Messages</a>
+<a onclick="window.location.href='reputation.html'">Réputation</a>
+</div>
+<div class="nav-actions">
+<div style="position:relative;">
+<div class="notif-bell" id="notifBell" onclick="toggleNotifDropdown()">
+<i class="fa-solid fa-bell"></i>
+<div class="notif-count" id="notifCount"></div>
+</div>
+<div class="notif-dropdown" id="notifDropdown">
+<div class="notif-drop-header">
+<span class="notif-drop-title"><i class="fa-solid fa-bell"></i> <span data-i18n="index.notif.title">NOTIFICATIONS</span></span>
+<button class="notif-drop-clear" data-i18n="index.notif.markAllRead" onclick="markAllRead()">Tout marquer lu</button>
+</div>
+<div class="notif-drop-list" id="notifDropList">
+<div class="notif-drop-empty" data-i18n="index.notif.empty">
+Aucune notification
+</div>
+</div>
+<div class="notif-drop-footer">
+<a href="notifications.html" data-i18n="index.notif.viewAll">Voir toutes les notifications</a>
+</div>
+</div>
+</div>
+<div class="nav-avatar" id="navAvatar" onclick="window.location.href='profile.html'">
+?
+</div>
+</div>
+</nav>
+<!--  pati TOAST NOTIFICATION -->
+<div class="toast-notif" id="toastNotif">
+<div class="toast-notif-icon">
+<i class="fa-solid fa-bell" id="toastIcon"></i>
+</div>
+<div class="toast-notif-body">
+<div class="toast-notif-title" id="toastTitle">
+Notification
+</div>
+<div class="toast-notif-msg" id="toastMsg"></div>
+</div>
+<button class="toast-notif-close" onclick="hideToast()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+
+<!-- kat pou instalasyon an -->
+<div class="install-progress-overlay" id="installProgressOverlay">
+<div class="install-progress-card">
+<div class="install-progress-icon" id="installProgressIcon">
+<i class="fa-solid fa-download"></i>
+</div>
+<div class="install-progress-title" id="installProgressTitle">
+Installation en cours...
+</div>
+<div class="install-progress-bar-track">
+<div class="install-progress-bar-fill" id="installProgressFill"></div>
+</div>
+</div>
+</div>
+
+<style>
+.install-progress-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.6);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 10002;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s ease;
+}
+.install-progress-overlay.show {
+opacity: 1;
+pointer-events: auto;
+}
+.install-progress-card {
+background: var(--card, #16191F);
+border: 1px solid rgba(245,168,0,0.25);
+border-radius: 16px;
+padding: 28px 26px;
+width: min(85vw, 300px);
+text-align: center;
+box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+transform: scale(0.92);
+transition: transform 0.2s ease;
+}
+.install-progress-overlay.show .install-progress-card {
+transform: scale(1);
+}
+.install-progress-icon {
+width: 54px;
+height: 54px;
+border-radius: 50%;
+background: rgba(245,168,0,0.12);
+color: var(--gold, #F5A800);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+margin: 0 auto 14px;
+}
+.install-progress-title {
+font-family: "Orbitron", monospace;
+font-size: 0.88rem;
+color: var(--white, #fff);
+margin-bottom: 16px;
+}
+.install-progress-bar-track {
+width: 100%;
+height: 6px;
+background: rgba(255,255,255,0.1);
+border-radius: 4px;
+overflow: hidden;
+}
+.install-progress-bar-fill {
+height: 100%;
+width: 40%;
+border-radius: 4px;
+background: linear-gradient(90deg, var(--gold, #F5A800), var(--blue, #1A6FE8));
+animation: installProgressSlide 1.1s ease-in-out infinite;
+}
+.install-progress-bar-fill.done {
+width: 100% !important;
+animation: none !important;
+background: #28C840;
+}
+@keyframes installProgressSlide {
+0% {
+margin-left: -40%;
+}
+100% {
+margin-left: 100%;
+}
+}
+</style>
+<!--hmmm suprime blok hero a poum k jwenn plus espas la page la -->
+<!-- pati prinsipal 2 -->
+<!--
+
+<div class="hero-badge anim1" data-i18n="index.hero.badge">
+COMMUNAUTE DE PROGRAMMEURS
+</div>
+-->
+<main>
+<section class="hero">
+    <div class="hero-glow"></div>
+<h1 class="anim2"><span data-i18n="index.hero.title1">Apprends.</span><br /><span class="gold" data-i18n="index.hero.title2">Partage.</span> <span class="blue" data-i18n="index.hero.title3">Evolue.</span></h1>
+<p class="anim3" data-i18n="index.hero.subtitle">
+ Code-Share est une communaute de developpeurs passionnes par la technologie, l'innovation et le partage des connaissances.au sein de cette communauté, chacun a la possibilité d'apprendre, de partager son expérience, d'améliorer ses compétences et de progresser dans le monde du développement informatique. Quel que soit votre niveau, vous trouverez un environnement d'entraide, de respect et de collaboration, {Ensemble on code mieux}
+</p>
+<!--
+<div class="hero-buttons anim4">
+<button class="btn-primary" data-i18n="index.hero.joinFree" onclick="window.location.href='signup.html'">Rejoindre gratuitement</button>
+<button class="btn-secondary" data-i18n="index.hero.explore" onclick="window.location.href='community.html'">Explorer la communaute</button>
+-->
+</div>
+</section>
+<!-- seksyon 1 an-->
+<div class="code-section">
+<div class="code-card">
+<div class="code-header">
+<span class="code-title">mentor_reply.js — Code-Share Community</span>
+</div>
+<div class="code-body">
+<span class="c-c">// Reponse d un mentor — niveau Expert</span><br />
+<span class="c-k">function</span> <span class="c-f">expliquerRecursion</span>(<span class="c-v">n</span>) {<br />
+&nbsp;&nbsp;<span class="c-k">if</span> (<span class="c-v">n</span> &lt;= <span class="c-s">1</span>) <span class="c-k">return</span> <span class="c-s">1</span>;<br />
+&nbsp;&nbsp;<span class="c-k">return</span> <span class="c-v">n</span> * <span class="c-f">expliquerRecursion</span>(<span class="c-v">n</span> - <span class="c-s">1</span>);<br />
+}<br /><br />
+<span class="c-c">// Partage avec la communaute Code-Share</span><br />
+<span class="c-f">console</span>.<span class="c-f">log</span>(<span class="c-s">"Bienvenue sur Code-Share !"</span>);
+</div>
+</div>
+</div>
+</main>
+<!--pou toujou pi senp hmm retire ti seksyon features la -->
+<!--seksyon 2 @ 3 -->
+<!---
+<section class="features">
+<div class="section-tag" data-i18n="index.features.tag">
+// FONCTIONNALITES
+</div>
+-->
+<h2 class="section-title"><span data-i18n="index.features.title1">Tout ce dont tu as besoin</span><br /><span data-i18n="index.features.title2">pour progresser</span></h2>
+<!--premye card features la-->
+<div class="features-grid">
+<div class="feature-card" onclick="window.location.href='tutorials.html'">
+<div class="feature-icon">
+<i class="fa-solid fa-book-open"></i>
+</div>
+<h3 data-i18n="index.features.tutorials.title">Partage de Tutoriels</h3>
+<p data-i18n="index.features.tutorials.desc">
+Publie des articles, partage des snippets de code avec coloration syntaxique.
+</p>
+</div>
+<!--2 em card feature la -->
+<div class="feature-card" onclick="window.location.href='reputation.html'">
+<div class="feature-icon">
+<i class="fa-solid fa-trophy"></i>
+</div>
+<h3 data-i18n="index.features.reputation.title">Systeme de Reputation</h3>
+<p data-i18n="index.features.reputation.desc">
+Gagne des points en aidant les autres. Les meilleurs mentors sont mis en avant.
+</p>
+</div>
+<!--3 em card feature la -->
+<div class="feature-card" onclick="window.location.href='forums.html'">
+<div class="feature-icon">
+<i class="fa-solid fa-comments"></i>
+</div>
+<h3 data-i18n="index.features.forums.title">Forums par Theme</h3>
+<p data-i18n="index.features.forums.desc">
+Des fils de discussion organises par langage: JavaScript, Python, HTML/CSS, React et plus.
+</p>
+</div>
+</div>
+</section>
+
+<!-- pou class cta -->
+<div class="cta">
+<h2><span data-i18n="index.cta.titlePrefix">Pret a rejoindre</span> <br> <span style="color:var(--gold)">Code-Share</span><span data-i18n="index.cta.titleSuffix">?</span></h2>
+<p data-i18n="index.cta.subtitle">
+Des milliers de developpeurs t attendent. Cree ton compte gratuitement et commence aujourd hui.
+</p>
+<div class="cta-buttons">
+<button class="btn-primary" data-i18n="index.cta.createAccount" onclick="window.location.href='signup.html'">Creer mon compte gratuit</button>
+<button class="btn-secondary" data-i18n="index.cta.login" onclick="window.location.href='login.html'">Se connecter</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- pye pag la ak nav bar lan men nou gen pou modifier l lan jou yo  -->
+<div class="bottom-bar">
+
+<a href="community.html" class="bottom-item">
+<i class="fa-solid fa-users"></i>
+<span class="nav-badge" id="navBadgeCommunity"></span>
+<span data-i18n="bottombar.community">Communauté</span>
+</a>
+
+<a href="messages.html" class="bottom-item">
+<i class="fa-solid fa-comments"></i>
+<span class="nav-badge" id="navBadgeMessages"></span>
+<span data-i18n="bottombar.messages">Messages</span>
+</a>
+
+<a href="status.html" class="bottom-item">
+<i class="fa-solid fa-circle-play"></i>
+<span class="nav-badge" id="navBadgeStatus"></span>
+<span data-i18n="bottombar.status">Statut</span>
+</a>
+
+<a href="settings.html" class="bottom-item">
+<i class="fa-solid fa-gear"></i>
+<span class="nav-badge" id="navBadgeSettings"></span>
+<span data-i18n="bottombar.settings">Paramètres</span>
+</a>
+
+
+</div>
+
+<script src="shared-ui.js"></script>
+<script type="module" src="shared-nav.js"></script>
+<script type="module" src="shared-theme.js"></script>
+<script type="module" src="shared-i18n.js"></script>
+<!--pati script yo c zoulou ki code mw hmm jus feh kek ti aproche sou code yo -->
+<script type="module">
+import {
+getApps, getApp, initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getAuth, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import "./onesignal-config.js";
+import {
+getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, orderBy, onSnapshot, writeBatch
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = getApps().length ? getApp() : initializeApp({
+apiKey: "AIzaSyBXDDwYx0FPnJBc6vkgLPzeIJk6hiEVMEw",
+authDomain: "code-share-2c4ea.firebaseapp.com",
+projectId: "code-share-2c4ea",
+storageBucket: "code-share-2c4ea.firebasestorage.app",
+messagingSenderId: "706094984093",
+appId: "1:706094984093:web:bd62bbed06c156bb5c1d74"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let myData = {};
+let allNotifs = [];
+let notifUnsub = null;
+let lastNotifCount = 0;
+
+onAuthStateChanged(auth, async (user) => {
+    
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+
+    currentUser = user;
+
+
+    initOneSignal(user.uid);
+
+
+    try {
+        const ud = await getDoc(doc(db, "users", user.uid));
+        if (ud.exists()) {
+            myData = ud.data();
+        } else {
+            myData = {};
+        }
+    } catch (error) {
+        console.error("Erreur chargement profil :", error);
+        myData = {};
+    }
+
+    
+    const navAvatar = document.getElementById("navAvatar");
+    if (navAvatar) {
+        if (myData.photoBase64) {
+            navAvatar.innerHTML = `<img src="${myData.photoBase64}" alt="Avatar" />`;
+        } else {
+            const displayName = user.displayName || user.email || "?";
+            const initials = displayName.substring(0, 2).toUpperCase();
+            navAvatar.textContent = initials;
+        }
+    }
+
+    // notifikasyon telechage pou kont yo 
+    loadNotifications(user.uid);
+
+    // progame apel souban an 
+    scheduleDailyReminder();
+});
+
+
+// telechaje a 
+async function loadStats() {
+try {
+const u = await getDocs(collection(db, "users"));
+const p = await getDocs(collection(db, "posts"));
+const uc = u.size;
+const pc = p.size;
+const statMembersEl = document.getElementById("statMembers");
+const statPostsEl = document.getElementById("statPosts");
+if (statMembersEl) statMembersEl.textContent = uc > 999 ? (uc/1000).toFixed(1)+"K+": uc+"+";
+if (statPostsEl) statPostsEl.textContent = pc > 999 ? (pc/1000).toFixed(1)+"K": pc;
+} catch(e) {}
+}
+loadStats();
+
+// ─ fonksyon─ NOTIFICATION BELL:─la
+function loadNotifications(uid) {
+if (notifUnsub) notifUnsub();
+const notifsRef = collection(db, "users", uid, "notifications");
+
+notifUnsub = onSnapshot(notifsRef, snap => {
+allNotifs = snap.docs
+.map(d => ({
+id: d.id, ...d.data()}))
+.sort((a, b) => {
+const ta = a.createdAt?.toDate ? a.createdAt.toDate().getTime(): (a.createdAt?.seconds ? a.createdAt.seconds*1000: 0);
+const tb = b.createdAt?.toDate ? b.createdAt.toDate().getTime(): (b.createdAt?.seconds ? b.createdAt.seconds*1000: 0);
+return tb - ta;
+});
+
+const unreadCount = allNotifs.filter(n => !n.read).length;
+
+const bell = document.getElementById("notifBell");
+const badge = document.getElementById("notifCount");
+if (unreadCount > 0) {
+bell.classList.add("has-notif");
+badge.textContent = unreadCount > 9 ? "9+": unreadCount;
+badge.classList.add("show");
+} else {
+bell.classList.remove("has-notif");
+badge.classList.remove("show");
+}
+
+if (lastNotifCount > 0 && unreadCount > lastNotifCount) {
+const newNotif = allNotifs.find(n => !n.read);
+if (newNotif) {
+const iconMap = {
+comment: "fa-solid fa-comment",
+vote: "fa-solid fa-heart",
+message: "fa-solid fa-envelope",
+badge: "fa-solid fa-trophy",
+follow: "fa-solid fa-user-plus"
+};
+showToastNotif(
+"Nouvelle notification",
+"@"+(newNotif.senderName || "quelqu un")+" — "+(newNotif.message || "a interagi avec toi"),
+iconMap[newNotif.type] || "fa-solid fa-bell"
+);
+}
+}
+lastNotifCount = unreadCount;
+
+renderNotifDropdown();
+});
+}
+
+function renderNotifDropdown() {
+const list = document.getElementById("notifDropList");
+if (!list) return;
+const recent = allNotifs.slice(0, 6);
+
+if (recent.length === 0) {
+list.innerHTML = '<div class="notif-drop-empty"><i class="fa-regular fa-bell-slash" style="font-size:1.5rem;margin-bottom:8px;display:block;"></i>Aucune notification</div>';
+return;
+}
+
+const iconMap = {
+comment: { icon: "fa-solid fa-comment", cls: "comment" },
+vote: { icon: "fa-solid fa-heart", cls: "vote" },
+message: { icon: "fa-solid fa-envelope", cls: "message" },
+badge: { icon: "fa-solid fa-trophy", cls: "badge" },
+follow: { icon: "fa-solid fa-user-plus", cls: "follow" },
+};
+
+list.innerHTML = recent.map(n => {
+const info = iconMap[n.type] || { icon: "fa-solid fa-bell", cls: "vote" };
+const date = n.createdAt?.toDate ? timeAgo(n.createdAt.toDate()):
+n.createdAt?.seconds ? timeAgo(new Date(n.createdAt.seconds*1000)): "récemment";
+return `<div class="notif-drop-item ${n.read?"": "unread"}" onclick="openNotif('${n.id}','${n.type}','${n.link || ""}')">
+<div class="notif-drop-icon ${info.cls}"><i class="${info.icon}"></i></div>
+<div class="notif-drop-text">
+<div class="notif-drop-msg"><strong>@${n.senderName || "Code-Share"}</strong> ${n.message || "a interagi avec toi"}</div>
+<div class="notif-drop-time"><i class="fa-regular fa-clock"></i> ${date}</div>
+</div>
+</div>`;
+}).join("");
+}
+
+window.openNotif = async function(notifId, type, link) {
+if (!currentUser) return;
+try {
+await updateDoc(doc(db, "users", currentUser.uid, "notifications", notifId), {
+read: true
+});
+} catch(e) {}
+toggleNotifDropdown();
+if (link && link !== "undefined") window.location.href = link;
+else if (type === "message") window.location.href = "messages.html";
+else if (type === "badge") window.location.href = "reputation.html";
+else window.location.href = "notifications.html";
+};
+
+window.markAllRead = async function() {
+if (!currentUser) return;
+try {
+const batch = writeBatch(db);
+allNotifs.filter(n => !n.read).forEach(n => {
+batch.update(doc(db, "users", currentUser.uid, "notifications", n.id), {
+read: true
+});
+});
+await batch.commit();
+} catch(e) {}
+};
+
+window.toggleNotifDropdown = function() {
+document.getElementById("notifDropdown").classList.toggle("open");
+};
+
+document.addEventListener("click", e => {
+const bell = document.getElementById("notifBell");
+const dd = document.getElementById("notifDropdown");
+if (!bell?.contains(e.target) && !dd?.contains(e.target)) {
+dd?.classList.remove("open");
+}
+});
+
+//ti song notifikasyon an
+function playNotifSound() {
+try {
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.type = "sine";
+osc.frequency.setValueAtTime(880, ctx.currentTime);
+osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
+gain.gain.setValueAtTime(0.3, ctx.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+osc.start(ctx.currentTime);
+osc.stop(ctx.currentTime + 0.3);
+} catch(e) {}
+}
+
+// fonksyon tast notifikasyon 
+
+window.showToastNotif = function(title, msg, iconClass) {
+const toast = document.getElementById("toastNotif");
+const icon = document.getElementById("toastIcon");
+document.getElementById("toastTitle").textContent = title;
+document.getElementById("toastMsg").textContent = msg;
+icon.className = iconClass || "fa-solid fa-bell";
+toast.classList.add("show");
+playNotifSound();
+setTimeout(() => toast.classList.remove("show"), 5000);
+};
+
+window.hideToast = function() {
+document.getElementById("toastNotif").classList.remove("show");
+};
+
+function scheduleDailyReminder() {
+const MESSAGES = [
+{ title: "Code-Share t'attend !", msg: "De nouveaux tutoriels ont été publiés aujourd'hui." },
+{ title: "Quelqu'un a besoin d'aide !", msg: "Des questions sans réponse t'attendent sur la communauté." },
+{ title: "Progresse aujourd'hui !", msg: "Rejoins une discussion dans les forums par thème." },
+{ title: "Partage ton expertise !", msg: "La communauté bénéficierait de tes connaissances." },
+];
+
+const now = new Date();
+const lastShown = localStorage.getItem("cs_last_reminder");
+const lastDate = lastShown ? new Date(parseInt(lastShown)): null;
+
+const twelveHours = 12 * 60 * 60 * 1000;
+if (!lastDate || (now - lastDate) > twelveHours) {
+setTimeout(() => {
+const msg = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+showToastNotif(msg.title, msg.msg, "fa-solid fa-code");
+localStorage.setItem("cs_last_reminder", now.getTime().toString());
+
+if (Notification.permission === "granted") {
+new Notification(msg.title, {
+body: msg.msg,
+icon: "icons/icon-192.png",
+badge: "icons/icon-72.png",
+vibrate: [200, 100, 200]
+});
+}
+}, 3000);
+}
+
+if (Notification.permission === "default") {
+setTimeout(() => {
+Notification.requestPermission().then(perm => {
+if (perm === "granted") {
+showToastNotif("Notifications activées !", "Tu recevras des rappels de Code-Share.", "fa-solid fa-check-circle");
+}
+});
+}, 8000);
+}
+}
+
+function timeAgo(date) {
+const d = Math.floor((Date.now()-date)/1000);
+if (d < 60) return "à l instant";
+if (d < 3600) return "Il y a "+Math.floor(d/60)+"min";
+if (d < 86400) return "Il y a "+Math.floor(d/3600)+"h";
+return "Il y a "+Math.floor(d/86400)+" jour(s)";
+}
+</script>
+
+<!-- INSTALL BANNER -->
+<div id="installBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:linear-gradient(135deg,#16191F,#1a1f2a);border-top:2px solid rgba(245,168,0,0.3);padding:14px 20px;align-items:center;gap:12px;box-shadow:0 -8px 30px rgba(0,0,0,0.4);">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAIAAADajyQQAAANwklEQVR42uXbeZzVVd0H8Pfvzj7DDAwgO4IIgoQLGhmmZG7Vk5lSlpg9trhlPW7UY72wEveXubxaHsL0MUzMpUUheVGamYBgpqAggiiyKjMwAgOzMMu95/nj3t/MHXFYhqHC5/u6r3nd17nnfM/5nO/3fLdzJrIHFELw70RRFO2+zwGEZ68QRgcopN3CSxzoqNpbcOJAR9XeshMfAFTvu/jEBwPVzhAS+xPVC2ourJ4SVVQ1t7YtPcriSP0tpPYrtqizgS3x1hetWG4jNRRZcpPaX1d99Pgemd+nRZYziMHsoB9Df6jH5E43kolOQ7XxPH+K/OpIf17ubQo4mMP1/xB5ha3devAx0WX/eOHvjGM106/388jTESs7UWi5ncBp7TiL59pALr0YSG/KSZHQ/XB9Cl7h+Ezn0QzA6OMmh9mh76cmV1jIMl5l/lAjOGcVgztBbvsksfqbPTPJGgo4hJF0ZQ2vWrbEvW+Mnblm7JvPzV2yaOqoo49Jj5j1g75HNFUMenyd1wfgzM9MmfHEt2xgEVWso4GPc0rYR22MOo5qceQlAr35MIXM8a3HL5jywjQVVNOU6fi3p/768VNPjqcE3WmigUZ6C29F8nmOraxlA9349mOKz+owtkSHRm3wdGQOJRzJaazwsQsfiC4KUx6eZgUNlNOdIqwd3vO11qFdQSPdKKeUSlFJMG+okZTSm5HgurO9MKzDwPb+jDU8ZuZ4VQxgFP29eFfumPuavEXgILpRSAF1bObt3JKiZOvwQqrpSlcCldTTLPrEG+HPkX5U00xPCnnwTWsi54T9L7GG+/1hvAoO5gj6++6VV4+5rckKujCcPpRRSglldEe/SGkrh/wYXook5TTj2hnnRQ5nMymKYmEOZQH3RPtbYnPN+KoqDqUfQ0z86sQ7/3C7WgbRnVzyKaEbCTZSieZEtyNbeewAtXQhh4XICUtSRrGYZNZWl5HDMF5leuT8sN8k9rtxNtKHUo62+i53PnC7Gg6mVyyigeQzl4e/7q+RjRF5xb37tzLZFBGpeNEIFrrhmCiElFFsIEX24gNFFDKCBczus3eGcU+t4l8iL9OXgziK7aIxwVb60DP2YN2Yy4ZoFyFcJncqCIrYGh3B4il8MxO02MbGLISBQB01LOTGh/Q7t1MltvJDllFK14zh+t6tZ9pKOT0pog95PHrLzqjaOasTbY3SWKLLlEY0cwSFsdls8bIRxZQwkhsmdK7ENrmvl1r60pWhdBH1CjCA8lgPZ57OU+kBpQnJAnX17UvsfUOhKnrwAu9S21Yt0x5vmYaBCi4PnSSxp3upopwCIvoxDxRTTjFdmfmrNKriSNfSKFGU39Cct3vOeW2sV9QTDCOffKJYFQN55HCIggVqqzd0BrCGGRZSQH6cZxR4dG7v9BdJuvMKvp5GldtFKuTXRQV7oJGRJjSn8aXpsiMppzyrLcQ6WUghQ9Vd368zgD15lh10oaDVOzz75tgMsHwCK49MM8opkarPq28IoaGhuWm3CtPSoaml6RdLWM3h5GVBapFbLgfrusbGdev3Edi7llNGQTxNDhTmNmSmzGd92gQoKdKYzK0LIZVKNadaLff8S9qiWeuwXU55zzUUkUthnC1GWc49R/5htk8duG/A5g/UTGkGDxlt/Ozg2ZAkn3UZ4TU3aGxIpUIqlUpKZoCFYOyP1G7J4tnb60G39ue8+NH4AIe29kO8s/0UvWLTPgFbVK8LRXGvtFbscNKnwVYaqZ6TxlufElJBKiUEUqTK00xusSxbcebBlvt3t67CeNKQhTBtRUr0K7N65g0dBrbRZkrJzcKWZD2nxRF6DTalm9seG/jCUZkvdXUNbQx3NX33ZsPDTkIbovapH3YU2PKLNcbql9asFE1shFcuj+Jjf5B26jK90ryHOKh0a2trih3pHdkl1b3f0tL+OsVARSt3o43tA1syQymF5JJDHsXkEPGOI3+CLd5A//YY3LTovD/ddpInHd5r0XvX19TutJecFkfJ6ZijkJLY1hfEcXY3/ZutXd+x6L6SAfSgNIafQ5Ic6iBs7x6VBg5tn/mET19zBtbVLx/Q0nYovbKs0U409clBrFEW++i0XoT4ICQyGjSgrzcXP2TAhL2X2Gu8wyaqqKSSd+Mg9R2W0EV4OmIXh/iqTGUkr9XC9x136dJPsqAd1/YE1pjDVraxjWq2U8d2tsR/t5BU89xVHYkV9+QOajx/YMDwEUMGlDU2RlK5SCQbk7blNL6+LrpmXeWF1j/YnLw4J9E3ZvsGn2SVsqHDB/UrKtqRH+U0hdxhPWqOTyyaP8ujexzmju4fLVyf2mtgy1LWb5LIERVKJEhKEpo0p4Sk/ISyfCJjyjqzjlvHsjqV1ZLNGpMamtrYpYYGSKU0bFNbU//ZE4tGlO57PnagUcIHlNoHFmZRvwccts3+e7Jyi8aAVCqVCsG2msY1a9f+7h8um+OcX7Xp/Y9Kz9ZazbZ3ZuzYvryhYVtjY8P22riqt6eUYkEmnNsrVdzRqPFzUdnpRDt5hLTNTbuXs3ylxPT2uX/povMfuWfyLfcP+d5/alMwzVRz3ks/6On6dczjbbbRRJIkuXFVK0EzxTxv0utuejnsncQK81UFqqiLSw411NNII7XUScclh7Ufq1812MO/nB4uO3TMoNU7/VjyvkNuqLLp24wmj2Q8XZIdNNJMM4GE2rctKxzREQdd048S+mSShYx1iuLdyKMrxXoPZsX7c9icTuGq5OS3Gq87rhg78ScLdrGgXv87IExd7yMspYGIxjhSScQBcXcVQeqQ8R05Y3UH59ocY8iJ0/X0J5fcDMj8knZZF3fN7MXWhu4tjVff9nwI0ZRLzm5/SSc8dP2d6cqKvMyVjQIKyIs/xeasVHrYOR0BFj58Z3JjnDhnB9ohjokTkGjfjYecTGbVHLI6zYdv3vR4+0t65LzbroJu5O5UaUxnNHX+XGnUiUd3BFj5Kf+1tCKL785pXwr692iX9awFmYuV4vys1vRO/WaXJYMkz9AzDimjrOg5HYuv8gSnnNohc39YkddyeKdtRpSGF8VJJ6cc3y7rdelSzal6ds9qHQoDL2931NBDGWP2dHrGRytk/U1QbtUstYZ+uGN+LEH9uG/sWJhlX6IseGkbtYnP7LIQlcfjPnJ4lqwPMrmrXSQcP7v9QoM8OG+Q4lhE2aqYIOHyp3xowv90vGD6Uq3Vx0Wfn0REIpZSFM9RQl+OURKl85j2dWvPCqYtnaMynyke8sT6Vf7E9qxJ8+nBi6Lv+u0b4QtDOxpSHVvi5X48T85OZyydLL4LtbM7LQ7qXQS2++iwVRnv3FJrSfubHm7+IcbvGtXuY8Wjfxx+M6PtU7IWhGn38iKfMq5P5wCrqMts3qUnUxefgnSdr5ieLDCp3pXTH9nXIPjzR3miXJhNUWzls+9B0olghWc3dAKq5S/ehehQ6PkfVKbvBOPiVAE9XHYJTrr9y7n7Cgxfejx86z52tDUeLWXaOpZTZx+znwemXj382Cvr8BZu9RHWxsAKM+VEU/yCax+dldMpacvnBqk8f9Ifv0/P+KI1m2rZzt/ZLgTjP9ERVKF52fmX3IGSCCp+/H1bqY9llUs574p+weBJN5xT3Gn52H0P3Pjd9aruoUt8R7wztpdY4/d/FSr17b2nkH406eIQgpwRiNLXf67o/R0WxjYjjyK6O/dU5C9afGNnJppduWt9GP0Iz1JOY5aFjOKcfjsrmUt371QIIfHy/Ua2U2P/yoRPhVAVQrjuxrszbK5gKoRNP7WSxthmFDHUb8/1CNdMW3l06Z5u2V6UBn70mIfGRytuYwyb4tQoOy7Ji0t/JfEFPB4Wzg27dl7RMSyCMC9yLM+QT5I8DrH0CqNm+uhFMxb88sz9UhqYfLbjb10x8L+Zn67/Uti2vN5ELdVs4xUe4y9e/6kZ7acpA24URWlUq8ILkY/xTBzUlzDcq1cYNVPpCXfsFSp7+4Bl2jXDvty8Im/SYbWXyv8amyiiKaummUnmYt9QojpYtb6OzIm//NdeqrCyRuV0VrUMOCuEGep5mmIa6E2JB092/uvKxt5UPffqvTVIe/0y58FJw/oOSRWcl3hsrrOmkM+WOHRsyoqSZYq4dY0219S3APvZBe/hd2mYc7cTWU5FbAMHstKJp5vHyPH3Lv39N/5JVarbJ0TTloWzlzrm48yPL93z4/K6rMg1IQrveV23gItKuo+beW0UaqMQ7s4cqg3kZZ5bbLpZdLp5fO22BR1DpcPvFS8Y4ZMhDD/2umji5GsTbrib46hlS3x/m0MzOYpzlWR5v/DK8frQi7QvXkN+/LQKM4yd6Hk46cmlz5w28l9RV+xD9UvX/fyZcGNqdHSR74zmKbowOJZhGXnyUuRklXNXcD+z+Bt1DOEQktzrhKGiiZ7njImzQtgnVK2Zwj7S5dPqGIveTB8hXCfMFJ4XVqo5w08fXNHa9Y/Cw8KrwmvCbOF7bm5NQ3NHffGelfX7vpzQacDSNOXpUHLcHa2mnG9zJlPu/WNLn2XnuoIJlLfZ2zMuuOW5d0OnUScDS1NNCFOfC+O++aTyr6T5/+aJxS2/njyupVJxQvm4W6+c8uqSzaHTyX54nv5eqqJn25aNse3YT5RO0vc7sH8+tb6738NrvgMIVRtz/wHAlg0h0d4PBzSq93HQByi2nZed2JNOBxwq/+/++fTfHOGe6NT/Af4N5sNQw2OFAAAAAElFTkSuQmCC" style="width:42px;height:42px;border-radius:10px;object-fit:cover;flex-shrink:0;" />
+<div style="flex:1;min-width:0;">
+<div style="font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:#F5A800;margin-bottom:2px;">
+Installer Code-Share
+</div>
+<div style="font-size:0.75rem;color:#8892A4;">
+Ajoute l app sur ton écran d accueil
+</div>
+</div>
+<button onclick="installApp()" style="padding:9px 18px;background:linear-gradient(135deg,#F5A800,#e09500);color:#0A0A0A;border:none;border-radius:8px;font-family:'Orbitron',monospace;font-weight:700;font-size:0.78rem;cursor:pointer;flex-shrink:0;">Installer</button>
+<button onclick="dismissInstall()" style="background:transparent;border:none;color:#8892A4;font-size:1.2rem;cursor:pointer;padding:4px;flex-shrink:0;">✕</button>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('/sw.js')
+.then(reg => console.log('Code-Share SW registered:', reg.scope))
+.catch(err => console.log('SW error:', err));
+});
+}
+
+// PWA la 
+let deferredPrompt = null;
+const installBanner = document.getElementById('installBanner');
+
+
+if (installBanner) installBanner.style.display = 'none';
+
+//function sa la pou verifye si app lan instale deja 
+function isAppInstalled() {
+return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function showInstallToast() {
+if (isAppInstalled()) return;
+const toast = document.getElementById("toastNotif");
+if (!toast) return;
+document.getElementById("toastTitle").textContent = "Installe Code-Share !";
+document.getElementById("toastMsg").textContent = "Ajoute l'app à ton écran d'accueil pour un accès plus rapide. Touche ici pour installer.";
+document.getElementById("toastIcon").className = "fa-solid fa-download";
+toast.classList.add("show");
+toast.style.cursor = "pointer";
+toast.onclick = function(e) {
+if (e.target.closest('.toast-notif-close')) return;
+installApp();
+toast.classList.remove("show");
+toast.onclick = null;
+toast.style.cursor = "";
+};
+setTimeout(() => {
+toast.classList.remove("show");
+toast.onclick = null;
+toast.style.cursor = "";
+}, 8000);
+}
+setTimeout(showInstallToast, 2000);
+
+window.addEventListener('beforeinstallprompt', e => {
+e.preventDefault();
+deferredPrompt = e;
+});
+
+
+function showInstallProgress() {
+const overlay = document.getElementById('installProgressOverlay');
+const icon = document.getElementById('installProgressIcon');
+const title = document.getElementById('installProgressTitle');
+const fill = document.getElementById('installProgressFill');
+if (!overlay) return;
+icon.innerHTML = '<i class="fa-solid fa-download"></i>';
+title.textContent = 'Installation en cours...';
+fill.classList.remove('done');
+overlay.classList.add('show');
+}
+function finishInstallProgress(success) {
+const overlay = document.getElementById('installProgressOverlay');
+const icon = document.getElementById('installProgressIcon');
+const title = document.getElementById('installProgressTitle');
+const fill = document.getElementById('installProgressFill');
+if (!overlay) return;
+fill.classList.add('done');
+if (success) {
+icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+title.textContent = 'Téléchargement terminé !';
+} else {
+icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+title.textContent = 'Installation annulée';
+}
+setTimeout(() => overlay.classList.remove('show'), 1800);
+}
+
+window.installApp = async function() {
+
+if (isAppInstalled()) {
+if (typeof showToast === "function") {
+showToast("L'application est déjà installée !", "success");
+} else {
+alert("L'application est déjà installée !");
+}
+return;
+}
+
+if (deferredPrompt) {
+
+showInstallProgress();
+deferredPrompt.prompt();
+const {
+outcome
+} = await deferredPrompt.userChoice;
+finishInstallProgress(outcome === 'accepted');
+deferredPrompt = null;
+} else {
+    
+if (typeof showToast === "function") {
+showToast("Installation en cours... Si rien ne se passe, utilise le menu de ton navigateur puis « Installer l'application » (ou « Ajouter à l'écran d'accueil » sur iPhone).", "info", 6000);
+} else {
+alert("Installation en cours... Si rien ne se passe, utilise le menu de ton navigateur puis « Installer l'application ».");
+}
+}
+};
+
+window.dismissInstall = function() {
+if (installBanner) installBanner.style.display = 'none';
+};
+
+
+window.addEventListener('appinstalled', () => {
+console.log('Code-Share installée avec succès !');
+if (installBanner) installBanner.style.display = 'none';
+deferredPrompt = null;
+});
+</script>
+
+</body>
+<!-- 3 moun ki travay sou page sa c mw,zoulou ak cassie-->
+</html>
+<!-- mwen JOKER  fini ak interface la hmm ajoute afichaj foto profil lan-->
+<!--mw cassie hmm fini korige fot otograf ki t genyen an -->
+<!--zoulou finn sekirize ti fay sekirite a lan firestore lan -->
+<!--remak mw feh le site la ouvri sou yon pc nav bar buttom la pah aktive men c pah problem lan sa problem lan se paske c lan sel nav bar butom lan opsyon paramet la paret sak vinn feh depi moun lan sou pc li pap k ale lan paramet lan 
+sam bral feh c remete buton paramet la lan page profil la anko -->
+<!--jodia 4 aout 2026 map fete 24 triem anivesem pou bonem hmm chwazi chita lakay mw poum code en solo sou reve mw happy day for me -->

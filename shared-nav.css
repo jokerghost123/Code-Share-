@@ -1,0 +1,55 @@
+/* mw travay poukont mw sous nav css la */
+
+.notif-bell-mini {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.15rem;
+    color: var(--gray, #8892A4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    transition: color 0.2s;
+}
+.notif-bell-mini:hover { color: var(--gold, #F5A800); }
+.notif-badge-mini {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: var(--gold, #F5A800);
+    color: #000;
+    border-radius: 50%;
+    font-size: 0.62rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 0 0 2px rgba(10,10,10,0.9);
+}
+
+.bottom-item { position: relative; }
+.nav-badge {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    margin-left: 4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: var(--gold, #F5A800);
+    color: #000;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 0 0 2px rgba(10,10,10,0.9);
+}
+/*jodia 4 aout 2026 map fete 24 triem anivesem pou bonem hmm chwazi chita lakay mw poum code en solo sou reve mw happy day for me */
