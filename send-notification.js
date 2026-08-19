@@ -1,27 +1,8 @@
-// netlify/functions/send-notification.js
-//
-// Cette fonction tourne sur le SERVEUR de Netlify, jamais dans le
-// navigateur du visiteur — c'est pour ça qu'on peut y mettre la clé
-// secrète OneSignal (REST API Key) sans risque qu'elle soit visible
-// par un visiteur qui inspecterait le code source.
-//
-// Le client (onesignal-config.js) l'appelle avec :
-//   fetch('/.netlify/functions/send-notification', {
-//     method: 'POST',
-//     body: JSON.stringify({ receiverId, title, body, link })
-//   })
-//
-// Elle transmet ça à l'API OneSignal, qui pousse la notification
-// sur le téléphone de l'utilisateur ciblé (receiverId = le uid
-// Firebase, utilisé comme "external_id" côté OneSignal grâce à
-// OneSignal.login(userId) appelé dans initOneSignal()).
 
 const ONESIGNAL_APP_ID = "598bd958-5b76-41b9-8d72-a84ffe1cf92b";
 
 exports.handler = async function (event) {
-    // On n'accepte que du POST — tout le reste (comme le test GET
-    // que tu as fait dans le navigateur) reçoit une réponse claire
-    // au lieu d'un 404 muet.
+
     if (event.httpMethod !== "POST") {
         return {
             statusCode: 405,
@@ -29,10 +10,6 @@ exports.handler = async function (event) {
         };
     }
 
-    // La clé secrète NE DOIT JAMAIS être écrite ici en dur. Elle doit
-    // être configurée dans Netlify : Site settings → Environment
-    // variables → ajouter ONESIGNAL_REST_API_KEY (valeur trouvable
-    // dans OneSignal : Settings → Keys & IDs → REST API Key).
     const REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY;
     if (!REST_API_KEY) {
         console.error("ONESIGNAL_REST_API_KEY manquante dans les variables d'environnement Netlify.");
@@ -61,10 +38,7 @@ exports.handler = async function (event) {
     }
 
     try {
-        // OneSignal a remplacé son ancien système de clé ("Legacy API Key",
-        // en cours de désactivation) par un nouveau système de clés "rich".
-        // Ça change DEUX choses : l'URL de l'API, et le format de
-        // l'en-tête d'autorisation ("Key ..." au lieu de "Basic ...").
+        
         const response = await fetch("https://api.onesignal.com/notifications", {
             method: "POST",
             headers: {
@@ -73,8 +47,7 @@ exports.handler = async function (event) {
             },
             body: JSON.stringify({
                 app_id: ONESIGNAL_APP_ID,
-                // Cible l'utilisateur via son external_id (le uid Firebase,
-                // rattaché côté client par OneSignal.login(userId)).
+        
                 include_aliases: { external_id: [String(receiverId)] },
                 target_channel: "push",
                 headings: { en: title || "Code-Share", fr: title || "Code-Share" },
